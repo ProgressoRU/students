@@ -5,17 +5,16 @@ require_once 'config.php';
 //Поиск пользователя
     try
     {
-$checkUser = $DBH->prepare("SELECT passHash, uID FROM tblusers WHERE username=:user");
-$checkUser->bindValue(":user", $login);
-$checkUser->setFetchMode(PDO::FETCH_ASSOC); //returns an array indexed by column name as returned in result set 
-$checkUser->execute();
+$stmCheckUser = $DBH->prepare("SELECT passHash, uID FROM tblusers WHERE username=?");
+$stmCheckUser->execute(array($login));
+$stmCheckUser->execute();
     }
     catch(PDOException $e) {  
     echo $e->getMessage();  
 } 
-if ($checkUser->rowCount()==0) die("Такого пользователя не существует.");  
+if ($stmCheckUser->rowCount()==0) die("Такого пользователя не существует.");  
 //Проверка пароля
-$Result = $checkUser->fetch();
+$Result = $stmCheckUser->fetch(PDO::FETCH_ASSOC); //returns an array indexed by column name as returned in result set 
     //print_r($Result['passHash']);
     //echo "<br>".md5(md5($pass)); //debug
     if ($Result['passHash'] === md5(md5($pass)))
@@ -24,11 +23,9 @@ $Result = $checkUser->fetch();
         $hash = md5(uniqid(rand(),true)); //генерируем и хэшируем код
        try
         {
-            $upSession = $DBH->prepare("UPDATE tblUsers SET sessionHash=:hash, lastIp=:ip WHERE username=:user;"); 
-            $upSession->bindValue(":user", $login);
-            $upSession->bindValue(":hash", $hash);
-            $upSession->bindValue(":ip", $_SERVER['REMOTE_ADDR']);
-            $upSession->execute(); //записываем хэш в БД
+            $stmUpSession = $DBH->prepare("UPDATE tblUsers SET sessionHash=?, lastIp=? WHERE username=?"); 
+            $stmUpSession->execute(array($login, $hash, $_SERVER['REMOTE_ADDR']));
+            $stmUpSession->execute(); //записываем хэш в БД
            //Устанавливем куки (на час)
             setcookie("id", $Result['uID'], time()+3600); 
             setcookie("hash", $hash, time()+3600);
