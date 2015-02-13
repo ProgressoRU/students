@@ -6,9 +6,12 @@ var app = angular.module('students', [])
         otherwise({redirectTo:'/'});
 });
 
-function HomeCtrl($scope) {
-
-}
+function HomeCtrl($scope, $http) {
+$http({method: 'GET', url: 'api/courses/all'}).success(function(data) {
+            $scope.courses = data;
+            console.log($scope.courses);
+        });
+    };
 
 function LoginCtrl($scope) {
 
