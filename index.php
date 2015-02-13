@@ -17,8 +17,8 @@ catch(PDOException $e) {
 //** //
 
 if (!headers_sent()) {
-    header("Location: public/views/auth.html");
- }
+    header("Location: public/views/index.html");
+ } 
 
 
 ?>
