@@ -1,4 +1,4 @@
-var app = angular.module('Students', [])
+var app = angular.module('students', [])
     .config(function($routeProvider) {
     $routeProvider.
         when('/', {controller:HomeCtrl, templateUrl:'public/views/home.html'}).
