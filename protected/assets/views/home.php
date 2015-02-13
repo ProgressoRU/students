@@ -8,10 +8,12 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js" ></script>
     <link rel="stylesheet" href="/public/css/bootstrap.css"/>
     <link rel="stylesheet" href="/public/css/bootstrap-responsive.css"/>
-    <script src="/public/lib/bootstrap/bootstrap.min.js"></script>
-    <!-- script src="./public/lib/angular/angular.min.js"></script-->
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular-resource.min.js"></script>
+        <script src="/public/lib/bootstrap/bootstrap.min.js"></script>
+    <script src="/public/lib/angular/angular.min.js"></script>
+    <script src="/public/lib/angular/angular-resource.min.js"></script>
+    <script src="/public/lib/angular/angular-route.min.js"></script>
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular-resource.min.js"></script>-->
     <script src="/public/js/app.js"></script>
     <script src="/public/js/controllers.js"></script>
 </head>
