@@ -1,24 +1,8 @@
 <?php
-# DB Connection data
-$host = 'localhost';
-$username = 'root';
-$password = 'hi';
-$dbName = 'students';
 
-try {  
-# MySQL через PDO_MYSQL  
-  $DBH = new PDO("mysql:host=$host;dbname=$dbName", $username, $password);  
-}  
-catch(PDOException $e) {  
-    echo $e->getMessage();  
-}
+$root = __DIR__ . '/protected';
+$loader = require $root.'/vendor/autoload.php';
+$loader->add('', $root.'/classes/');
 
-# Место для проверки авторизации
-//** //
-
-if (!headers_sent()) {
-    header("Location: public/views/index.html");
- } 
-
-
-?>
+$pixie = new \App\Pixie;
+$pixie->bootstrap($root)->handle_http_request();
