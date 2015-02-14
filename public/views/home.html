@@ -1,3 +1,4 @@
+<!-- HEADER -->
 <header ng-controller="HeaderCtrl">
     <div class="navbar navbar-inverse navbar-fixed-top navbar-default">
         <div class="navbar-header"><a class="navbar-brand" href="#">Students</a>
@@ -18,9 +19,23 @@
 </header>
 <article class="myWrap" ng-controller="NewsCtrl">
     <div class="page-header">
-         <h1>Новости</h1>
+        <h1>Пульс</h1>
     </div>
-    <ul ng-repeat="n in news">
-        <li>{{n.txtTitle}}</li>
-    </ul>
+<!-- NEWS BLOCK -->
+<div class="panel panel-info" ng-class="{'panel-warning': n.intImpotrance==1, 'panel-danger': n.intImpotrance==2}" ng-repeat="n in news">
+  <div class="panel-heading">
+    <h3 class="panel-title">{{n.txtTitle}}</h3>
+  </div>
+  <div class="panel-body">
+      {{n.txtNews}}
+  </div>
+    <div class="panel-footer right-align"><small><em>{{n.dateCreated}}</em></small></div>
+</div>
+<!-- PAGER -->
+<nav>
+  <ul class="pager">
+    <li class="previous"><a href="#"><span aria-hidden="true">&larr;</span> Older</a></li>
+    <li class="next disabled"><a href="#">Newer <span aria-hidden="true">&rarr;</span></a></li>
+  </ul>
+</nav>
 </article>
