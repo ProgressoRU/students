@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50523
 File Encoding         : 65001
 
-Date: 2015-02-12 17:29:16
+Date: 2015-02-14 17:13:03
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -35,10 +35,6 @@ CREATE TABLE `tblarticles` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of tblarticles
--- ----------------------------
-
--- ----------------------------
 -- Table structure for tblattachments
 -- ----------------------------
 DROP TABLE IF EXISTS `tblattachments`;
@@ -57,10 +53,6 @@ CREATE TABLE `tblattachments` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of tblattachments
--- ----------------------------
-
--- ----------------------------
 -- Table structure for tblclasses
 -- ----------------------------
 DROP TABLE IF EXISTS `tblclasses`;
@@ -74,10 +66,6 @@ CREATE TABLE `tblclasses` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of tblclasses
--- ----------------------------
-
--- ----------------------------
 -- Table structure for tblcourses
 -- ----------------------------
 DROP TABLE IF EXISTS `tblcourses`;
@@ -87,10 +75,6 @@ CREATE TABLE `tblcourses` (
   `intCourseNum` int(11) unsigned NOT NULL,
   PRIMARY KEY (`CourseID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
-
--- ----------------------------
--- Records of tblcourses
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for tblgroups
@@ -105,8 +89,16 @@ CREATE TABLE `tblgroups` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of tblgroups
+-- Table structure for tblnews
 -- ----------------------------
+DROP TABLE IF EXISTS `tblnews`;
+CREATE TABLE `tblnews` (
+  `newsID` int(11) NOT NULL,
+  `txtTitle` varchar(100) DEFAULT NULL,
+  `txtNews` longtext,
+  `intImpotrance` tinyint(4) DEFAULT NULL,
+  PRIMARY KEY (`newsID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for tblusers
@@ -126,8 +118,3 @@ CREATE TABLE `tblusers` (
   KEY `GroupID` (`GroupID`),
   CONSTRAINT `tblusers_ibfk_1` FOREIGN KEY (`GroupID`) REFERENCES `tblgroups` (`GroupID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of tblusers
--- ----------------------------
-INSERT INTO `tblusers` VALUES ('1', 'login', '35f504164d5a963d6a820e71614a4009', 'sad', null, null, null, '8e27f7e2164d641902d0261acf702b95', '127.0.0.1');

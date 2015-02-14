@@ -8,6 +8,13 @@ return array(
 			'action' => 'index'
 		)
 	),
+	'api/news/all' => array(
+		'/api/news/all',
+		array(
+			'controller' => 'apiNews',
+			'action' => 'index'
+		)
+	),
 	'api/courses/all' => array(
 		'/api/courses/all',
 		array(

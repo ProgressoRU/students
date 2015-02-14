@@ -1,6 +1,10 @@
 var stCtrls = angular.module('stCtrls',[]);
 
-stCtrls.controller('HomeCtrl',['$scope','$http',
+stCtrls.controller('HomeCtrl',['$scope', function($scope){
+}
+    ]);
+
+stCtrls.controller('HeaderCtrl',['$scope','$http',
     function($scope,$http) {
         $http.get('api/courses/all').success(function(data){
             $scope.courses=data.courses;
@@ -9,6 +13,15 @@ stCtrls.controller('HomeCtrl',['$scope','$http',
             $scope.classes=data.classes;
         })   
     }]);
+
+stCtrls.controller('NewsCtrl',['$scope','$http',
+    function($scope,$http) {
+        $http.get('api/news/all').success(function(data){
+            $scope.news=data.news;
+        })  
+    }]);
+
+
 /*
 function HomeCtrl($scope, $http) {
 $http({method: 'GET', url: 'api/courses/all'}).success(function(data) {
