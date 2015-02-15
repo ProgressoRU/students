@@ -2,15 +2,24 @@ body
 {
     padding-top: 65px;
     padding-left: 8px;
+    background: #E5E5E5;
 }
 
 .myWrap
 {
     margin: 0 auto;
-    width: 65%;
+    width: 70%;
+    padding: 12px;
+    background: #FFF;
+    border-radius: 5px;
 }
 
 .right-align
 {
     text-align: right;
+}
+    
+.panel-footer
+{
+    background-color: #FAFAFA;
 }
