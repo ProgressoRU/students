@@ -17,7 +17,6 @@ stCtrls.controller('HeaderCtrl',['$scope','$http',
 stCtrls.controller('NewsCtrl',['$scope','$http',
     function($scope,$http) {
         $http.get('api/news/all').success(function(data){
-            //$scope.news = data.news;
             $scope.length = data.news.length;
             $scope.totalPages = $scope.length / 3;
             $scope.CurPage = 1;
@@ -40,9 +39,6 @@ stCtrls.controller('NewsCtrl',['$scope','$http',
                 if ($scope.CurPage > 1)
                     $scope.CurPage-=1;
             }
-            console.log($scope.lastNews(3));
-            console.log($scope.totalPages);
-            console.log($scope.length);
         })
     }]);
 
