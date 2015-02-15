@@ -4,6 +4,12 @@ stCtrls.controller('HomeCtrl',['$scope', function($scope){
 }
     ]);
 
+stCtrls.controller('ClassCtrl',['$scope', '$routeParams',   
+    function($scope, $routeParams) {
+    $scope.classID = $routeParams.classID;
+    $scope.classDesc = $routeParams.txtShortDesc;
+    }]);
+
 stCtrls.controller('HeaderCtrl',['$scope','$http',
     function($scope,$http) {
         $http.get('api/courses/all').success(function(data){
