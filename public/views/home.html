@@ -1,22 +1,6 @@
-<!-- HEADER -->
-<header ng-controller="HeaderCtrl">
-    <div class="navbar navbar-inverse navbar-fixed-top navbar-default">
-        <div class="navbar-header"><a class="navbar-brand" href="#">Students</a>
-        </div>
-        <div class="container">
-            <ul class="nav navbar-nav" role="navigation">
-                <li class="dropdown" ng-repeat="course in courses"> <a id="drop1" href="" role="button" class="dropdown-toggle" data-toggle="dropdown">{{course.intCourseNum}}{{course.txtSpeciality}}<b class="caret"></b></a>
-                    <ul
-                    class="dropdown-menu" role="menu" aria-labelledby="drop1">
-                        <li role="presentation" ng-if="course.CourseID==class.CourseID" ng-repeat="class in classes"
-                        ng-cloak="ng-cloak"> <a role="menuitem" tabindex="-1" href="http://google.com">{{class.txtTitle}}</a>
-                        </li>
-            </ul>
-            </li>
-            </ul>
-        </div>
-    </div>
-</header>
+<!-- header -->
+<stheader></stheader>
+<!-- //header -->
 <article class="myWrap" ng-controller="NewsCtrl">
     <div class="page-header">
         <h1>Пульс</h1>

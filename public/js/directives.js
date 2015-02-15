@@ -1,3 +1,7 @@
-/**
- * Created by Виктор on 09.02.2015.
- */
+var stDrctv = angular.module('stDrctv', []);
+
+stDrctv.directive('stheader', function () {
+    return {
+        templateUrl: 'public/views/header.html'
+    };
+});
