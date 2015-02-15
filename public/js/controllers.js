@@ -18,8 +18,8 @@ stCtrls.controller('NewsCtrl',['$scope','$http',
     function($scope,$http) {
         $http.get('api/news/all').success(function(data){
             $scope.length = data.news.length;
-            $scope.totalPages = $scope.length / 3;
             $scope.CurPage = 1;
+            $scope.totalPages = Math.ceil($scope.length / 3);
             $scope.lastNews = function(k)
             {
                 $scope.visNews = new Array();
