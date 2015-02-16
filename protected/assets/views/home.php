@@ -13,6 +13,7 @@
     <script src="/public/lib/angular/angular-route.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
     <script src="/public/js/app.js"></script>
+    <script src="/public/js/services.js"></script>
     <script src="/public/js/controllers.js"></script>
     <script src="/public/js/directives.js"></script>
 </head>
