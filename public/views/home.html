@@ -3,7 +3,7 @@
         <h1>Пульс</h1>
     </div>
 <!-- NEWS BLOCK -->
-<!-- ng-class="{'panel-warning': n.intImpotrance==1, 'panel-danger': n.intImpotrance==2}" -->
+<!--  -->
 <div class="panel panel-info" stdata ng-repeat="n in lastNews(3) track by $index" ng-if="n.txtTitle!=null">
   <div class="panel-heading">
     <h3 class="panel-title">{{n.txtTitle}}</h3>
@@ -11,7 +11,11 @@
   <div class="panel-body">
       {{n.txtNews}}
   </div>
-    <div class="panel-footer right-align"><small><em>{{n.dateCreated}}</em></small></div>
+    <!-- ng-class="{'panel-warning': n.intImpotrance==1, 'panel-danger': ==2}" -->
+    <div ng-switch="n.intImpotrance" class="panel-footer"><small><em>{{n.dateCreated||'Дата не указана'}}</em></small>
+        <span ng-switch-when="1" class="label label-warning" style="float:right;">Обратите внимание</span>
+        <span ng-switch-when="2" class="label label-danger" style="float:right;">Важно</span>
+    </div>
 </div>
 <!-- PAGER -->
 <nav>
