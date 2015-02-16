@@ -18,6 +18,7 @@
     <script src="/public/js/directives.js"></script>
 </head>
 <body>
+<st-Header></st-Header>
 <div ng-view></div>
 </body>
 </html>
