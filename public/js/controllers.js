@@ -48,6 +48,7 @@ stCtrls.controller('NewsCtrl',['$scope','$http',
         })
     }]);
 
+
 /*
 function LoginCtrl($scope) {
 

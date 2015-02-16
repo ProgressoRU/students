@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru" ng-app="students">
+<html lang="ru" ng-app="students" ng-cloak>
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">

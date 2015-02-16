@@ -1,5 +1,5 @@
 <!-- HEADER -->
-<header ng-controller="HeaderCtrl">
+<header ng-controller="HeaderCtrl" ng-cloak>
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
@@ -16,7 +16,7 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li class="dropdown" ng-repeat="course in courses">
+        <li class="dropdown" ng-repeat="course in courses" ng-cloak>
           <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{course.intCourseNum}}{{course.txtSpeciality}} <span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu">
             <li ng-if="course.CourseID==class.CourseID" ng-repeat="class in classes"><a href="#/class/{{class.ClassID}}">{{class.txtTitle}}</a></li>
