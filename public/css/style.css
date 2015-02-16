@@ -2,7 +2,8 @@ body
 {
     padding-top: 65px;
     padding-left: 8px;
-    background: #E5E5E5;
+    /*background: #E5E5E5;*/
+    background: url(/public/img/bg2.jpg) repeat;
 }
 
 .myWrap
@@ -12,6 +13,9 @@ body
     padding: 12px;
     background: #FFF;
     border-radius: 5px;
+    -webkit-box-shadow: 3px 3px 5px 0px rgba(0,0,0,0.53); /*Chrome 4-9 */
+    -moz-box-shadow: 3px 3px 5px 0px rgba(0,0,0,0.53); /*FF 3.5-3.6 */
+    box-shadow: 3px 3px 5px 0px rgba(0,0,0,0.53);
 }
 
 .right-align
@@ -22,4 +26,36 @@ body
 .panel-footer
 {
     background-color: #FAFAFA;
+}
+
+.navbar-inverse
+{
+    background: #436586;
+    border-bottom: #324B64;
+}
+
+.navbar-inverse .navbar-brand
+{
+    color: #DBE4ED;
+}
+
+.navbar-inverse .navbar-nav > li > a
+{
+    color: #DBE4ED;
+}
+
+.navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:focus, .navbar-inverse .navbar-nav > .open > a:hover
+{
+    background-color: #324B64;
+}
+
+.panel
+{
+    border-color: #98B2CB;
+}
+
+.panel-info > .panel-heading
+{
+   background: #DBE4ED;
+   border-color: #98B2CB;
 }

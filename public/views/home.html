@@ -3,7 +3,8 @@
         <h1>Пульс</h1>
     </div>
 <!-- NEWS BLOCK -->
-<div class="panel panel-info" stdata ng-class="{'panel-warning': n.intImpotrance==1, 'panel-danger': n.intImpotrance==2}" ng-repeat="n in lastNews(3) track by $index" ng-if="n.txtTitle!=null">
+<!-- ng-class="{'panel-warning': n.intImpotrance==1, 'panel-danger': n.intImpotrance==2}" -->
+<div class="panel panel-info" stdata ng-repeat="n in lastNews(3) track by $index" ng-if="n.txtTitle!=null">
   <div class="panel-heading">
     <h3 class="panel-title">{{n.txtTitle}}</h3>
   </div>
