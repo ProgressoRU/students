@@ -1,28 +1,30 @@
 var stCtrls = angular.module('stCtrls',[]);
 
+stCtrls.controller('GeneralCtrl', ['$scope', 'srvcData', function ($scope, srvcData) {
+        srvcData.get('api/classes/all')
+        .then(function(data) {
+            if (data.status == 1)
+                $scope.classes = data.classes;
+            //плохой случай
+        })
+}])
+
 stCtrls.controller('HomeCtrl',['$scope', function($scope){
 }
     ]);
 
-stCtrls.controller('ClassCtrl',['$scope', '$routeParams',   
-    function($scope, $routeParams) {
+stCtrls.controller('ClassCtrl',['$scope', '$routeParams', function($scope, $routeParams){
     $scope.classID = $routeParams.classID;
-    $scope.classDesc = $routeParams.txtShortDesc;
-    }]);
+}
+]);
 
 stCtrls.controller('HeaderCtrl', ['$scope','srvcData', function ($scope, srvcData) {
     srvcData.get('api/courses/all')
         .then(function(data) {
             if (data.status == 1)
-                $scope.courses=data.courses;
+                $scope.courses  = data.courses;
         //добавить херовый случай
         })
-    srvcData.get('api/classes/all')
-        .then(function(data) {
-            if (data.status == 1)
-                $scope.classes = data.classes;
-        })
-
 }])
 
 stCtrls.controller('NewsCtrl',['$scope','$http', 'srvcData',

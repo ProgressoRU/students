@@ -17,7 +17,7 @@
     <script src="/public/js/controllers.js"></script>
     <script src="/public/js/directives.js"></script>
 </head>
-<body>
+<body ng-controller="GeneralCtrl">
 <st-Header></st-Header>
 <div ng-view></div>
 </body>
