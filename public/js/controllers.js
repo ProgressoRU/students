@@ -1,6 +1,6 @@
 var stCtrls = angular.module('stCtrls',[]);
-
-stCtrls.controller('GeneralCtrl', ['$scope', 'srvcData', function ($scope, srvcData) {
+//Wrap controller
+stCtrls.controller('WrapCtrl', ['$scope', 'srvcData', function ($scope, srvcData) {
         srvcData.get('api/classes/all')
         .then(function(data) {
             if (data.status == 1)
@@ -11,12 +11,18 @@ stCtrls.controller('GeneralCtrl', ['$scope', 'srvcData', function ($scope, srvcD
 
 stCtrls.controller('HomeCtrl',['$scope', function($scope){
 }
-    ]);
-
-stCtrls.controller('ClassCtrl',['$scope', '$routeParams', function($scope, $routeParams){
-    $scope.classID = $routeParams.classID;
-}
 ]);
+
+stCtrls.controller('ClassCtrl',['$scope', '$routeParams', 'srvcData', function($scope, $routeParams,srvcData){
+    $scope.classID = $routeParams.classID;
+    srvcData.get('api/classes/'+$scope.classID) //classesAPI call
+        .then(function(data) {
+            if (data.status == 1)
+                $scope.lectures = data.lectures;
+        console.log($scope.lectures);
+            //плохой случай
+})
+}]);
 
 stCtrls.controller('HeaderCtrl', ['$scope','srvcData', function ($scope, srvcData) {
     srvcData.get('api/courses/all')

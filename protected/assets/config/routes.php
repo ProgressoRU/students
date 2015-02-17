@@ -1,21 +1,28 @@
 <?php
 
 return array(
-	'api/classes/all' => array(
+	'classes' => array(
 		'/api/classes/all',
 		array(
 			'controller' => 'apiClasses',
 			'action' => 'index'
-		)
+		),
 	),
-	'api/news/all' => array(
+	'classlectures' => array(
+        '/api/classes/<id>',
+		array(
+			'controller' => 'apiClasses',
+			'action' => 'getLectures'
+		),
+	),
+	'news' => array(
 		'/api/news/all',
 		array(
 			'controller' => 'apiNews',
 			'action' => 'index'
 		)
 	),
-	'api/courses/all' => array(
+	'courses' => array(
 		'/api/courses/all',
 		array(
 			'controller' => 'apiCourses',
