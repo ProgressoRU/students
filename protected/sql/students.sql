@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50523
 File Encoding         : 65001
 
-Date: 2015-02-15 22:47:55
+Date: 2015-02-18 00:12:58
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -24,7 +24,7 @@ CREATE TABLE `tblarticles` (
   `txtTitle` varchar(255) NOT NULL,
   `txtShortDesc` varchar(255) DEFAULT NULL,
   `txtDetails` longtext,
-  `isVisible` binary(255) DEFAULT NULL,
+  `isVisible` tinyint(255) DEFAULT NULL,
   `dateCreated` timestamp NULL DEFAULT NULL,
   `dateUpdated` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `dateDeadLine` timestamp NULL DEFAULT NULL COMMENT 'Срок сдачи',
@@ -93,13 +93,13 @@ CREATE TABLE `tblgroups` (
 -- ----------------------------
 DROP TABLE IF EXISTS `tblnews`;
 CREATE TABLE `tblnews` (
-  `newsID` int(11) NOT NULL,
+  `newsID` int(11) NOT NULL AUTO_INCREMENT,
   `txtTitle` varchar(100) DEFAULT NULL,
   `txtNews` longtext,
   `intImpotrance` tinyint(4) DEFAULT NULL,
   `dateCreated` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`newsID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for tblusers

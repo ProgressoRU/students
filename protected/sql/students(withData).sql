@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50523
 File Encoding         : 65001
 
-Date: 2015-02-15 22:48:10
+Date: 2015-02-18 00:12:51
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -24,7 +24,7 @@ CREATE TABLE `tblarticles` (
   `txtTitle` varchar(255) NOT NULL,
   `txtShortDesc` varchar(255) DEFAULT NULL,
   `txtDetails` longtext,
-  `isVisible` binary(255) DEFAULT NULL,
+  `isVisible` tinyint(255) DEFAULT NULL,
   `dateCreated` timestamp NULL DEFAULT NULL,
   `dateUpdated` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `dateDeadLine` timestamp NULL DEFAULT NULL COMMENT 'Срок сдачи',
@@ -37,6 +37,9 @@ CREATE TABLE `tblarticles` (
 -- ----------------------------
 -- Records of tblarticles
 -- ----------------------------
+INSERT INTO `tblarticles` VALUES ('1', 'Лекция 1', 'Интересная же лекция', 'Очень детальное описание', '1', '2015-02-17 22:34:10', '2015-02-17 22:44:17', '2015-02-20 22:34:17', '1');
+INSERT INTO `tblarticles` VALUES ('2', 'Лекция 2', 'Продолжение темы, поднятой в 1 лекции', 'Описание', '1', '2015-02-17 22:44:46', '2015-02-18 22:44:51', '2015-02-21 22:44:54', '1');
+INSERT INTO `tblarticles` VALUES ('3', 'Невидимая 3 лекция', 'Продолжает первые 2 лекции, но пока еще не видна', 'Описаньеце', '0', '2015-02-17 22:45:36', '2015-02-17 22:45:48', '2015-04-29 22:45:41', '1');
 
 -- ----------------------------
 -- Table structure for tblattachments
@@ -76,10 +79,10 @@ CREATE TABLE `tblclasses` (
 -- ----------------------------
 -- Records of tblclasses
 -- ----------------------------
-INSERT INTO `tblclasses` VALUES ('1', 'Очень интересный предмет', '222', '1');
+INSERT INTO `tblclasses` VALUES ('1', 'Очень интересный предмет', 'Очень интересное описание', '1');
 INSERT INTO `tblclasses` VALUES ('2', 'Еще интересный предмет', '333', '2');
 INSERT INTO `tblclasses` VALUES ('3', 'Больше предметов', null, '1');
-INSERT INTO `tblclasses` VALUES ('4', 'Архитектура ЭВМ', null, '1');
+INSERT INTO `tblclasses` VALUES ('4', 'Архитектура ЭВМ', 'Предмет, который запомнится надолго', '1');
 INSERT INTO `tblclasses` VALUES ('5', 'Базы Данных', null, '1');
 INSERT INTO `tblclasses` VALUES ('6', 'фывфывыфв', null, '2');
 INSERT INTO `tblclasses` VALUES ('7', 'ывыфввы', null, '2');
@@ -126,13 +129,13 @@ CREATE TABLE `tblgroups` (
 -- ----------------------------
 DROP TABLE IF EXISTS `tblnews`;
 CREATE TABLE `tblnews` (
-  `newsID` int(11) NOT NULL,
+  `newsID` int(11) NOT NULL AUTO_INCREMENT,
   `txtTitle` varchar(100) DEFAULT NULL,
   `txtNews` longtext,
   `intImpotrance` tinyint(4) DEFAULT NULL,
   `dateCreated` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`newsID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tblnews
@@ -152,6 +155,7 @@ INSERT INTO `tblnews` VALUES ('12', 'sdskadjkjsad', 'wwdadkladkjsadkjsakdljsalkd
 INSERT INTO `tblnews` VALUES ('13', 'Test ', 'sfjskdj', '1', null);
 INSERT INTO `tblnews` VALUES ('14', 'Test 2 ', 'test', '2', null);
 INSERT INTO `tblnews` VALUES ('15', 'Last news everyone!', 'Pager is totally working now!', '2', null);
+INSERT INTO `tblnews` VALUES ('16', 'Long text', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce pretium metus sit amet molestie accumsan. Ut molestie fringilla tortor in posuere. Suspendisse blandit quam vel nisi auctor pulvinar. Donec vel arcu mollis, gravida elit ut, laoreet velit. Quisque venenatis tempus velit a elementum. Phasellus vestibulum fringilla ligula, a ultrices ligula facilisis nec. Etiam volutpat vehicula erat.', '1', '2015-02-16 01:53:55');
 
 -- ----------------------------
 -- Table structure for tblusers
