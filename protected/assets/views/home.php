@@ -17,7 +17,7 @@
     <script src="/public/js/controllers.js"></script>
     <script src="/public/js/directives.js"></script>
 </head>
-<body ng-controller="GeneralCtrl">
+<body ng-controller="WrapCtrl">
 <st-Header></st-Header>
 <div ng-view></div>
 </body>
