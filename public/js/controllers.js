@@ -13,15 +13,9 @@ stCtrls.controller('HomeCtrl',['$scope', function($scope){
 }
 ]);
 
-stCtrls.controller('ClassCtrl',['$scope', '$routeParams', 'srvcData', function($scope, $routeParams,srvcData){
+stCtrls.controller('ClassCtrl',['$scope', '$routeParams', 'srvcData', 'courses', function($scope, $routeParams,srvcData, courses){
     $scope.classID = $routeParams.classID;
-    srvcData.get('api/classes/info', { id : $scope.classID }) //classesAPI call
-        .then(function(data) {
-            if (data.status == 1)
-                $scope.lectures = data.lectures;
-        console.log($scope.lectures);
-            //плохой случай
-})
+    $scope.courses = courses;
 }]);
 
 stCtrls.controller('HeaderCtrl', ['$scope','srvcData', function ($scope, srvcData) {
