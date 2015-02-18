@@ -13,6 +13,29 @@ stCtrls.controller('HomeCtrl',['$scope', function($scope){
 }
 ]);
 
+stCtrls.controller('LoginCtrl', ['$scope','$modal', function ($scope,$modal) {
+  $scope.open = function (size) {
+    var modalInstance = $modal.open({
+      templateUrl: 'public/views/login.html',
+      controller: 'LoginModalCtrl',
+      size: size,
+      resolve: {
+        /*items: function () {
+          return $scope.items;
+        }*/
+      }
+    });
+}
+}])
+
+stCtrls.controller('LoginModalCtrl', ['$scope', function ($scope) {
+    $scope.user={};
+    $scope.tryLogin = function() {
+        console.log($scope.user.pass);
+
+    }
+}])
+
 stCtrls.controller('ClassCtrl',['$scope', '$routeParams', 'srvcData', function($scope, $routeParams,srvcData){
     $scope.classID = $routeParams.classID;
     srvcData.get('api/classes/'+$scope.classID) //classesAPI call

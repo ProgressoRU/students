@@ -1,15 +1,18 @@
-<div class="container" >
-    <form class="form-signin" action="../../_protected/auth.php" method="post">
+<div class="modal-header" >
         <h2 class="form-signin-heading">Вход в панель администратора</h2>
-        <label for="login" class="sr-only">Логин</label>
-        <input type="login" id="login" class="form-control" placeholder="" name="login" required autofocus>
-        <label for="password" class="sr-only">Пароль</label>
-        <input type="password" id="password" class="form-control" placeholder="" name="password" required>
-        <div class="checkbox">
+</div>
+<div class="modal-body">
+    <form class="form-signin" action="../../_protected/auth.php" method="post">
+        <input type="user.login" id="login" class="form-control" placeholder="Логин" name="login" required autofocus ng-model="login"><br>
+        <input type="password" id="password" class="form-control" placeholder="Пароль" name="password" required ng-model="user.pass">
+        <!--<div class="checkbox">
             <label>
                 <input type="checkbox" value="remember-me"> Запомнить меня
             </label>
+        </div>-->
         </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>
+<div class="modal-footer">
+        <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="tryLogin()">Войти</button>
+</div>
     </form>
 </div>
