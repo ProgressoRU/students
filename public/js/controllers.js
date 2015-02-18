@@ -36,9 +36,10 @@ stCtrls.controller('LoginModalCtrl', ['$scope', function ($scope) {
     }
 }]);
 
-stCtrls.controller('ClassCtrl',['$scope', '$routeParams', function($scope, $routeParams){
+stCtrls.controller('ClassCtrl',['$scope', '$routeParams', 'courses', function($scope, $routeParams, courses){
+        console.log(courses.data);
     $scope.classID = $routeParams.classID;
-    //$scope.courses = courses;
+    $scope.courses = courses;
 }]);
 
 stCtrls.controller('HeaderCtrl', ['$scope','srvcData', function ($scope, srvcData) {
