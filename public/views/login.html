@@ -2,8 +2,10 @@
         <h2 class="form-signin-heading">Вход в панель администратора</h2>
 </div>
 <div class="modal-body">
+<alert ng-if="loggedOn==1" type="success">Вход выполнен. Типа.</alert>
+<alert ng-if="loggedOn==0" type="danger">Черт. Что-то пошло не так...</alert>
     <form class="form-signin" action="../../_protected/auth.php" method="post">
-        <input type="user.login" id="login" class="form-control" placeholder="Логин" name="login" required autofocus ng-model="login"><br>
+        <input type="login" id="login" class="form-control" placeholder="Логин" name="login" required autofocus ng-model="user.login"><br>
         <input type="password" id="password" class="form-control" placeholder="Пароль" name="password" required ng-model="user.pass">
         <!--<div class="checkbox">
             <label>

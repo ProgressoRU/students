@@ -29,11 +29,16 @@ stControllers.controller('LoginCtrl', ['$scope','$modal', function ($scope,$moda
     }
 }]);
 
-stControllers.controller('LoginModalCtrl', ['$scope', function ($scope) {
+stControllers.controller('LoginModalCtrl', ['$scope', 'serviceData', function ($scope, serviceData) {
     $scope.user={};
+  $scope.closeAlert = function() {
+    $scope.alerts.splice(1,1);
+  };
     $scope.tryLogin = function() {
-    serviceData.get('api/classes/info', { id : $route.current.params.classID })
-
+    serviceData.get('api/user/auth', { login : $scope.user.login, pass : $scope.user.pass}).
+    then(function(data) {
+        return data.status == 1 ? $scope.loggedOn=1 : $scope.loggedOn=0;
+    })
     }
 }]);
 
