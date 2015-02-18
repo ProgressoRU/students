@@ -1,7 +1,8 @@
-var stCtrls = angular.module('stCtrls',[]);
+var stControllers = angular.module('stControllers',[]);
+
 //Wrap controller
-stCtrls.controller('WrapCtrl', ['$scope', 'srvcData', function ($scope, srvcData) {
-        srvcData.get('api/classes/all')
+stControllers.controller('WrapCtrl', ['$scope', 'serviceData', function ($scope, serviceData) {
+        serviceData.get('api/classes/all')
         .then(function(data) {
             if (data.status == 1)
                 $scope.classes = data.classes;
@@ -9,11 +10,11 @@ stCtrls.controller('WrapCtrl', ['$scope', 'srvcData', function ($scope, srvcData
         })
 }]);
 
-stCtrls.controller('HomeCtrl',['$scope', function($scope){
+stControllers.controller('HomeCtrl',['$scope', function($scope){
 }
 ]);
 
-stCtrls.controller('LoginCtrl', ['$scope','$modal', function ($scope,$modal) {
+stControllers.controller('LoginCtrl', ['$scope','$modal', function ($scope,$modal) {
     $scope.open = function (size) {
         var modalInstance = $modal.open({
             templateUrl: 'public/views/login.html',
@@ -28,22 +29,22 @@ stCtrls.controller('LoginCtrl', ['$scope','$modal', function ($scope,$modal) {
     }
 }]);
 
-stCtrls.controller('LoginModalCtrl', ['$scope', function ($scope) {
+stControllers.controller('LoginModalCtrl', ['$scope', function ($scope) {
     $scope.user={};
     $scope.tryLogin = function() {
-        console.log($scope.user.pass);
+    serviceData.get('api/classes/info', { id : $route.current.params.classID })
 
     }
 }]);
 
-stCtrls.controller('ClassCtrl',['$scope', '$routeParams', 'courses', function($scope, $routeParams, courses){
+stControllers.controller('ClassCtrl',['$scope', '$routeParams', 'courses', function($scope, $routeParams, courses){
         console.log(courses.data);
     $scope.classID = $routeParams.classID;
     $scope.courses = courses;
 }]);
 
-stCtrls.controller('HeaderCtrl', ['$scope','srvcData', function ($scope, srvcData) {
-    srvcData.get('api/courses/all')
+stControllers.controller('HeaderCtrl', ['$scope','serviceData', function ($scope, serviceData) {
+    serviceData.get('api/courses/all')
         .then(function(data) {
             if (data.status == 1)
                 $scope.courses  = data.courses;
@@ -51,9 +52,9 @@ stCtrls.controller('HeaderCtrl', ['$scope','srvcData', function ($scope, srvcDat
         })
 }]);
 
-stCtrls.controller('NewsCtrl',['$scope','$http', 'srvcData',
-    function($scope,$http, srvcData) {
-            srvcData.get('api/news/all')
+stControllers.controller('NewsCtrl',['$scope','$http', 'serviceData',
+    function($scope,$http, serviceData) {
+            serviceData.get('api/news/all')
         .then(function(data) {
             if (data.status == 1)
                 $scope.news=data.news;

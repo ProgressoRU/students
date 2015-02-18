@@ -1,6 +1,6 @@
-var stSrvc = angular.module('stSrvc',[]);
+var stServices = angular.module('stServices',[]);
 
-stSrvc.service('srvcData', ['$http', '$q',function ($http, $q) {
+stServices.service('serviceData', ['$http', '$q',function ($http, $q) {
 return{
    get: function(url, param)
     {

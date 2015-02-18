@@ -1,4 +1,4 @@
-var app = angular.module('students', ['ngRoute','stSrvc', 'stCtrls', 'stDrctv','ui.bootstrap'])
+var app = angular.module('students', ['ngRoute','stServices', 'stControllers', 'stDirectives','ui.bootstrap'])
     .config(function($routeProvider) {
     $routeProvider.
         when('/', {controller: 'HomeCtrl', templateUrl:'public/views/home.html'}).
@@ -7,8 +7,8 @@ var app = angular.module('students', ['ngRoute','stSrvc', 'stCtrls', 'stDrctv','
             controller : 'ClassCtrl',
             templateUrl : 'public/views/class.html',
             resolve: {
-                courses: ['srvcData', '$route', function(srvcData, $route) {
-                    return srvcData.get('api/classes/info', { id : $route.current.params.classID }) //classesAPI call
+                courses: ['serviceData', '$route', function(serviceData, $route) {
+                    return serviceData.get('api/classes/info', { id : $route.current.params.classID }) //classesAPI call
                         .then(function(data) {
                             return data.status == 1 ? data.lectures : [];
                         });
