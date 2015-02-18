@@ -1,18 +1,18 @@
 <?php
 
 return array(
-	'classes' => array(
+	'classes_all' => array(
 		'/api/classes/all',
 		array(
 			'controller' => 'apiClasses',
 			'action' => 'index'
 		),
 	),
-	'classlectures' => array(
-        '/api/classes/<id>',
+	'classes_lectures' => array(
+        '/api/classes/info',
 		array(
 			'controller' => 'apiClasses',
-			'action' => 'getLectures'
+			'action' => 'info'
 		),
 	),
 	'news' => array(

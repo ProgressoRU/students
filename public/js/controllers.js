@@ -7,7 +7,7 @@ stCtrls.controller('WrapCtrl', ['$scope', 'srvcData', function ($scope, srvcData
                 $scope.classes = data.classes;
             //плохой случай
         })
-}])
+}]);
 
 stCtrls.controller('HomeCtrl',['$scope', function($scope){
 }
@@ -38,7 +38,7 @@ stCtrls.controller('LoginModalCtrl', ['$scope', function ($scope) {
 
 stCtrls.controller('ClassCtrl',['$scope', '$routeParams', 'srvcData', function($scope, $routeParams,srvcData){
     $scope.classID = $routeParams.classID;
-    srvcData.get('api/classes/'+$scope.classID) //classesAPI call
+    srvcData.get('api/classes/info', { id : $scope.classID }) //classesAPI call
         .then(function(data) {
             if (data.status == 1)
                 $scope.lectures = data.lectures;
@@ -54,7 +54,7 @@ stCtrls.controller('HeaderCtrl', ['$scope','srvcData', function ($scope, srvcDat
                 $scope.courses  = data.courses;
         //добавить херовый случай
         })
-}])
+}]);
 
 stCtrls.controller('NewsCtrl',['$scope','$http', 'srvcData',
     function($scope,$http, srvcData) {
@@ -67,18 +67,18 @@ stCtrls.controller('NewsCtrl',['$scope','$http', 'srvcData',
             $scope.totalPages = Math.ceil($scope.length / 3);
             $scope.lastNews = function(k)
             {
-                $scope.visNews = new Array();
+                $scope.visNews = [];
                 $scope.startPos = $scope.length - $scope.CurPage * k;
                 j = 0;
                     for(i=$scope.startPos;j<k;j++,i++)
                     $scope.visNews[j] = data.news[i];
                 return $scope.visNews.reverse();
-            }
+            };
             $scope.prevPage = function()
             {
                 if ($scope.CurPage < $scope.totalPages)
                 $scope.CurPage+=1;
-            }
+            };
             $scope.nextPage = function()
             {
                 if ($scope.CurPage > 1)
