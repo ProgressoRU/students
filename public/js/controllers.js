@@ -41,14 +41,9 @@ stControllers.controller('LoginModalCtrl', ['$scope', 'serviceData','$location',
     $scope.tryLogin = function() {
     serviceData.get('api/user/auth', { login : $scope.user.login, pass : $scope.user.pass}).
     then(function(data) {
-        return
-            if (data.status == 1)
-            {
-              $scope.loggedIn = true;
-              $location.path('/news');
-            }
-            else $scope.loggedIn=false;
+        return data.status == 1 ? $scope.loggedIn=true : $scope.loggedIn=false;
     })
+    if ($scope.loggedIn == true) $location.path('/news');
     }
     }]);
 
