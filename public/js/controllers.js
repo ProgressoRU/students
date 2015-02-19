@@ -58,8 +58,8 @@ stControllers.controller('NewsCtrl', ['$scope','$http', 'serviceData', function(
     $scope.lastNews = function(k) {
         $scope.visNews = [];
         $scope.startPos = $scope.length - $scope.CurPage * k;
-        j = 0;
-        for (i = $scope.startPos; j < k; j++, i++) {
+        var j = 0;
+        for (var i = $scope.startPos; j < k; j++, i++) {
             $scope.visNews[j] = $scope.news[i];
         }
         return $scope.visNews.reverse();
