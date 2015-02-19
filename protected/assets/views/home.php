@@ -18,7 +18,7 @@
     <script src="/public/js/controllers.js"></script>
     <script src="/public/js/directives.js"></script>
 </head>
-<body data-ng-controller="WrapCtrl">
+<body data-ng-controller="WrapCtrl" class="container-fluid">
 <div data-st-Header></div>
 <div data-ng-view></div>
 </body>
