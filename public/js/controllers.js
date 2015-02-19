@@ -20,17 +20,22 @@ stControllers.controller('HomeCtrl', ['$scope', function($scope) {
 
 }]);
 
-stControllers.controller('LoginModalCtrl', ['$scope', 'serviceData','$location', function ($scope, serviceData,$location) {
-        console.log($scope.$parent);
-    $scope.user={};
+stControllers.controller('LoginModalCtrl', ['$scope', 'serviceData','$location', function ($scope, serviceData, $location) {
+
+    $scope.user = {};
+
     $scope.tryLogin = function() {
-    serviceData.get('api/user/auth', { login : $scope.user.login, pass : $scope.user.pass}).
-    then(function(data) {
-        return data.status == 1 ? $scope.loggedIn=true : $scope.loggedIn=false;
-    })
-    //if ($scope.loggedIn == true) $location.path('/news');
-    }
-    }]);
+        serviceData.get('api/user/auth', { login : $scope.user.login, pass : $scope.user.pass}).then(function(data) {
+            $scope.loggedIn = data.status == 1;
+            if ($scope.loggedIn) {
+                $location.path('/news');
+            }
+        })
+    };
+
+    // execute on initialization
+    console.log($scope.$parent);
+}]);
 
 stControllers.controller('ClassCtrl',['$scope', '$routeParams', 'courses', function($scope, $routeParams, courses){
     $scope.classID = $routeParams.classID;
