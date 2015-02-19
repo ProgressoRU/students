@@ -1,7 +1,13 @@
 var stControllers = angular.module('stControllers',[]);
 
 //Wrap controller
-stControllers.controller('WrapCtrl', ['$scope', 'serviceData', function ($scope, serviceData) {
+stControllers.controller('WrapCtrl', ['$scope', 'serviceData','$location', function ($scope, serviceData, $location) {
+$scope.$watch(function() { return $location.path(); }, function(newValue, oldValue){
+    console.log($scope.loggedIn);
+    if ($scope.loggedIn == false && newValue != '/login'){
+            $location.path('/login');
+    }
+});
         serviceData.get('api/classes/all')
         .then(function(data) {
             if (data.status == 1)
@@ -29,19 +35,22 @@ stControllers.controller('LoginCtrl', ['$scope','$modal', function ($scope,$moda
     }
 }]);
 
-stControllers.controller('LoginModalCtrl', ['$scope', 'serviceData', function ($scope, serviceData) {
+stControllers.controller('LoginModalCtrl', ['$scope', 'serviceData','$location', function ($scope, serviceData,$location) {
         console.log($scope.$parent);
     $scope.user={};
-  $scope.closeAlert = function() {
-    $scope.alerts.splice(1,1);
-  };
     $scope.tryLogin = function() {
     serviceData.get('api/user/auth', { login : $scope.user.login, pass : $scope.user.pass}).
     then(function(data) {
-        return data.status == 1 ? $scope.loggedOn=1 : $scope.loggedOn=0;
+        return
+            if (data.status == 1)
+            {
+              $scope.loggedIn = true;
+              $location.path('/news');
+            }
+            else $scope.loggedIn=false;
     })
     }
-}]);
+    }]);
 
 stControllers.controller('ClassCtrl',['$scope', '$routeParams', 'courses', function($scope, $routeParams, courses){
         console.log(courses.data);
