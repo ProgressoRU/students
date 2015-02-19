@@ -37,7 +37,7 @@ class ApiUser extends \App\Page {
                 $this->pixie->db->query('update')->table('tblusers')
                     ->data(array('sessionHash' => $hash ))
                     ->data(array('lastIP'=>$_SERVER['REMOTE_ADDR']))
-                    //->where('id', $response['user'])
+                    ->where('id', $response['user'][0]->uID)
                     ->where('username',$login)
                     ->execute();
             }
@@ -46,7 +46,7 @@ class ApiUser extends \App\Page {
                 $response['status'] = 'User is found, but session update caused an error\nIt\'s might help:\n'.$e->getMessage();
             }
                 //Устанавливем куки (на час)
-                //setcookie("id", $response['user'][0], time()+3600);
+                setcookie("id", $response['user'][0]->uID, time()+3600);
                 setcookie("hash", $hash, time()+3600);
                 $response['status'] = 1;
                 $response['message'] = 'Success';
