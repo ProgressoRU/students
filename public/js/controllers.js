@@ -20,21 +20,6 @@ stControllers.controller('HomeCtrl', ['$scope', function($scope) {
 
 }]);
 
-stControllers.controller('LoginCtrl', ['$scope','$modal', function ($scope,$modal) {
-    $scope.open = function (size) {
-        var modalInstance = $modal.open({
-            templateUrl: 'public/views/login.html',
-            controller: 'LoginModalCtrl',
-            size: size,
-            resolve: {
-                /*items: function () {
-                 return $scope.items;
-                 }*/
-            }
-        });
-    }
-}]);
-
 stControllers.controller('LoginModalCtrl', ['$scope', 'serviceData','$location', function ($scope, serviceData,$location) {
         console.log($scope.$parent);
     $scope.user={};
@@ -43,7 +28,7 @@ stControllers.controller('LoginModalCtrl', ['$scope', 'serviceData','$location',
     then(function(data) {
         return data.status == 1 ? $scope.loggedIn=true : $scope.loggedIn=false;
     })
-    if ($scope.loggedIn == true) $location.path('/news');
+    //if ($scope.loggedIn == true) $location.path('/news');
     }
     }]);
 
