@@ -3,10 +3,10 @@ var stControllers = angular.module('stControllers', []);
 // Wrap controller
 stControllers.controller('WrapCtrl', ['$scope', 'serviceData','$location', function ($scope, serviceData, $location) {
 
-    $scope.$watch(function() { return $location.path(); }, function(newValue, oldValue){
+    $scope.$watch(function() { return $location.path(); }, function(newValue/*, oldValue*/){
         console.log($scope.loggedIn);
         if ($scope.loggedIn == false && newValue != '/login'){
-                $location.path('/login');
+            $location.path('/login');
         }
     });
 
