@@ -1,6 +1,13 @@
 <?php
 
 return array(
+    'user_auth' => array(
+        '/api/user/auth',
+        array(
+            'controller' => 'apiUser',
+            'action' => 'auth'
+        ),
+    ),
 	'classes_all' => array(
 		'/api/classes/all',
 		array(

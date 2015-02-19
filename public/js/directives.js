@@ -1,6 +1,6 @@
-var stDrctv = angular.module('stDrctv', []);
+var stDirectives = angular.module('stDirectives', []);
 
-stDrctv.directive('stHeader', function () {
+stDirectives.directive('stHeader', function () {
     return {
         templateUrl: 'public/views/header.html'
     };
