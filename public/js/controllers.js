@@ -30,6 +30,7 @@ stControllers.controller('LoginCtrl', ['$scope','$modal', function ($scope,$moda
 }]);
 
 stControllers.controller('LoginModalCtrl', ['$scope', 'serviceData', function ($scope, serviceData) {
+        console.log($scope.$parent);
     $scope.user={};
   $scope.closeAlert = function() {
     $scope.alerts.splice(1,1);

@@ -1,8 +1,8 @@
 var app = angular.module('students', ['ngRoute','stServices', 'stControllers', 'stDirectives','ui.bootstrap'])
     .config(function($routeProvider) {
     $routeProvider.
-        when('/', {controller: 'HomeCtrl', templateUrl:'public/views/home.html'}).
-        //when('/login', {controller: 'LoginCtrl', templateUrl:'public/views/login.html'}).
+        when('/news', {controller: 'HomeCtrl', templateUrl:'public/views/home.html'}).
+        when('/login', {controller: 'LoginCtrl', templateUrl:'public/views/login.html'}).
         when('/class/:classID', {
             controller : 'ClassCtrl',
             templateUrl : 'public/views/class.html',
@@ -15,5 +15,5 @@ var app = angular.module('students', ['ngRoute','stServices', 'stControllers', '
                 }]
             }
         }).
-        otherwise({redirectTo:'/'});
+        otherwise({redirectTo:'/login'});
 });
