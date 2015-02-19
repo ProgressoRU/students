@@ -1,24 +1,24 @@
-var stControllers = angular.module('stControllers',[]);
+var stControllers = angular.module('stControllers', []);
 
-//Wrap controller
+// Wrap controller
 stControllers.controller('WrapCtrl', ['$scope', 'serviceData','$location', function ($scope, serviceData, $location) {
-$scope.$watch(function() { return $location.path(); }, function(newValue, oldValue){
-    console.log($scope.loggedIn);
-    if ($scope.loggedIn == false && newValue != '/login'){
-            $location.path('/login');
-    }
-});
-        serviceData.get('api/classes/all')
-        .then(function(data) {
-            if (data.status == 1)
-                $scope.classes = data.classes;
-            //плохой случай
-        })
+
+    $scope.$watch(function() { return $location.path(); }, function(newValue, oldValue){
+        console.log($scope.loggedIn);
+        if ($scope.loggedIn == false && newValue != '/login'){
+                $location.path('/login');
+        }
+    });
+
+    serviceData.get('api/classes/all').then(function(data) {
+        $scope.classes = (data.status && data.status == 1) ? data.classes : [];
+    });
+
 }]);
 
-stControllers.controller('HomeCtrl',['$scope', function($scope){
-}
-]);
+stControllers.controller('HomeCtrl', ['$scope', function($scope) {
+
+}]);
 
 stControllers.controller('LoginCtrl', ['$scope','$modal', function ($scope,$modal) {
     $scope.open = function (size) {
@@ -48,51 +48,57 @@ stControllers.controller('LoginModalCtrl', ['$scope', 'serviceData','$location',
     }]);
 
 stControllers.controller('ClassCtrl',['$scope', '$routeParams', 'courses', function($scope, $routeParams, courses){
-        console.log(courses.data);
     $scope.classID = $routeParams.classID;
     $scope.courses = courses;
 }]);
 
 stControllers.controller('HeaderCtrl', ['$scope','serviceData', function ($scope, serviceData) {
-    serviceData.get('api/courses/all')
-        .then(function(data) {
-            if (data.status == 1)
-                $scope.courses  = data.courses;
-        //добавить херовый случай
-        })
+    $scope.courses = [];
+
+    serviceData.get('api/courses/all').then(function(data) {
+        $scope.courses  = (data.status && data.status == 1) ? data.courses : [];
+    })
 }]);
 
-stControllers.controller('NewsCtrl',['$scope','$http', 'serviceData',
-    function($scope,$http, serviceData) {
-            serviceData.get('api/news/all')
-        .then(function(data) {
-            if (data.status == 1)
-                $scope.news=data.news;
-                $scope.length = data.news.length;
-            $scope.CurPage = 1;
-            $scope.totalPages = Math.ceil($scope.length / 3);
-            $scope.lastNews = function(k)
-            {
-                $scope.visNews = [];
-                $scope.startPos = $scope.length - $scope.CurPage * k;
-                j = 0;
-                    for(i=$scope.startPos;j<k;j++,i++)
-                    $scope.visNews[j] = data.news[i];
-                return $scope.visNews.reverse();
-            };
-            $scope.prevPage = function()
-            {
-                if ($scope.CurPage < $scope.totalPages)
-                $scope.CurPage+=1;
-            };
-            $scope.nextPage = function()
-            {
-                if ($scope.CurPage > 1)
-                    $scope.CurPage-=1;
-            }
-        })
-        }]);
-/*
-function LoginCtrl($scope) {
+stControllers.controller('NewsCtrl', ['$scope','$http', 'serviceData', function($scope, $http, serviceData) {
 
-} */
+    $scope.news = [];
+    $scope.length = 0;
+
+    $scope.lastNews = function(k) {
+        $scope.visNews = [];
+        $scope.startPos = $scope.length - $scope.CurPage * k;
+        j = 0;
+        for (i = $scope.startPos; j < k; j++, i++) {
+            $scope.visNews[j] = $scope.news[i];
+        }
+        return $scope.visNews.reverse();
+    };
+
+    $scope.prevPage = function() {
+        if ($scope.CurPage < $scope.totalPages) {
+            $scope.CurPage += 1;
+        }
+    };
+
+    $scope.nextPage = function() {
+        if ($scope.CurPage > 1) {
+            $scope.CurPage -= 1;
+        }
+    };
+
+    // execute on initialization
+    serviceData.get('api/news/all').then(function(data) {
+        if (data.status == 1) {
+            $scope.news = data.news;
+            $scope.length = data.news.length;
+        } else {
+            $scope.news = [];
+            $scope.length = 0;
+        }
+
+        $scope.CurPage = 1;
+        $scope.totalPages = Math.ceil($scope.length / 3);
+    });
+
+}]);
