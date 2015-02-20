@@ -2,7 +2,7 @@ var app = angular.module('students', ['ngRoute','stServices', 'stControllers', '
     .config(function($routeProvider) {
     $routeProvider.
         when('/news', {controller: 'HomeCtrl', templateUrl:'public/views/home.html'}).
-        when('/login', {controller: 'LoginCtrl', templateUrl:'public/views/login.html'}).
+        when('/login', {controller: 'LoginModalCtrl', templateUrl:'public/views/login.html'}).
         when('/class/:classID', {
             controller : 'ClassCtrl',
             templateUrl : 'public/views/class.html',
