@@ -1,7 +1,7 @@
 var stControllers = angular.module('stControllers', []);
 
 // Wrap controller
-stControllers.controller('WrapCtrl', ['$scope', 'serviceData', 'USER_ROLES', 'AuthService',
+stControllers.controller('WrapCtrl', ['$scope', 'serviceData', 'AuthService', 'USER_ROLES',
     function ($scope, serviceData, AuthService, USER_ROLES) {
 
     serviceData.get('api/classes/all').then(function(data) {
