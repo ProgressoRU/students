@@ -1,15 +1,8 @@
 var stControllers = angular.module('stControllers', []);
 
 // Wrap controller
-stControllers.controller('WrapCtrl', ['$scope', 'serviceData','$location', 'USER_ROLES', 'AuthService',
-    function ($scope, serviceData, $location, AuthService, USER_ROLES) {
-
-    $scope.$watch(function() { return $location.path(); }, function(newValue/*, oldValue*/){
-        console.log($scope.loggedIn);
-        if ($scope.loggedIn == false && newValue != '/login'){
-            $location.path('/login');
-        }
-    });
+stControllers.controller('WrapCtrl', ['$scope', 'serviceData', 'USER_ROLES', 'AuthService',
+    function ($scope, serviceData, AuthService, USER_ROLES) {
 
     serviceData.get('api/classes/all').then(function(data) {
         $scope.classes = (data.status && data.status == 1) ? data.classes : [];
@@ -21,6 +14,7 @@ stControllers.controller('WrapCtrl', ['$scope', 'serviceData','$location', 'USER
 
     $scope.setCurrentUser = function (user) {
       $scope.currentUser = user;
+        console.log($scope.currentUser);
     };
 
 }]);

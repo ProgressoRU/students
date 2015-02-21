@@ -1,5 +1,5 @@
 <!-- HEADER -->
-<header ng-controller="HeaderCtrl" ng-cloak>
+<header data-ng-controller="HeaderCtrl" data-ng-cloak>
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
@@ -16,16 +16,25 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li class="dropdown" ng-repeat="course in courses" ng-cloak>
+        <li class="dropdown" data-ng-repeat="course in courses" data-ng-cloak>
           <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{course.intCourseNum}}{{course.txtSpeciality}} <span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu">
-            <li ng-if="course.CourseID==class.CourseID" ng-repeat="class in classes"><a href="#/class/{{class.ClassID}}">{{class.txtTitle}}</a></li>
+            <li data-ng-if="course.CourseID==class.CourseID" data-ng-repeat="class in classes"><a href="#/class/{{class.ClassID}}">{{class.txtTitle}}</a></li>
           </ul>
         </li>
       </ul>
-      <!--<ul class="nav navbar-nav navbar-right">
-        <li ng-controller="LoginCtrl" ng-click="open()"><a href="">Авторизация</a></li>
-      </ul> -->
+      <ul class="nav navbar-nav navbar-right">
+        <li data-ng-if="currentUser">Привет, {{currentUser[0].username}}<br>
+        </li>
+          <!--
+          <div data-ng-switch on="currentUser[0].txtRole">
+              <div data-ng-switch-when="userRoles.admin">You're admin.</div>
+              <div data-ng-switch-when="userRoles.editor">You're editor.</div>
+              <div data-ng-switch-default>You're something else.</div>
+          </div>
+          -->
+          <div ng-if="isAuthorized(userRoles.admin)">You're admin.</div>
+      </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>

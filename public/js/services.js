@@ -29,7 +29,7 @@ stServices.factory('AuthService', ['serviceData', '$location','Session', functio
         return serviceData
             .get('api/user/auth', credentials)
             .then(function(data) {
-                Session.create (data.user.uID, data.user.username, data.user.txtSurname, data.user.txtName, data.user.txtRole);
+                Session.create (data.user[0].sessionHash, data.user[0].uID, data.user[0].txtRole);
                 return data.user;
             })
     };
@@ -48,6 +48,7 @@ stServices.factory('AuthService', ['serviceData', '$location','Session', functio
 }]);
 
 stServices.service('Session', [function() {
+    //TODO: Внести корректные данные!
     this.create = function (sessionId, userId, userRole) {
         this.id = sessionId;
         this.userId = userId;
