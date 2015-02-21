@@ -1,7 +1,8 @@
 var stControllers = angular.module('stControllers', []);
 
 // Wrap controller
-stControllers.controller('WrapCtrl', ['$scope', 'serviceData','$location', function ($scope, serviceData, $location) {
+stControllers.controller('WrapCtrl', ['$scope', 'serviceData','$location', 'USER_ROLES', 'AuthService',
+    function ($scope, serviceData, $location, AuthService, USER_ROLES) {
 
     $scope.$watch(function() { return $location.path(); }, function(newValue/*, oldValue*/){
         console.log($scope.loggedIn);
@@ -14,27 +15,36 @@ stControllers.controller('WrapCtrl', ['$scope', 'serviceData','$location', funct
         $scope.classes = (data.status && data.status == 1) ? data.classes : [];
     });
 
+    $scope.currentUser = null;
+    $scope.userRoles = USER_ROLES;
+    $scope.isAuthorized = AuthService.isAuthorized;
+
+    $scope.setCurrentUser = function (user) {
+      $scope.currentUser = user;
+    };
+
 }]);
 
 stControllers.controller('HomeCtrl', ['$scope', function($scope) {
 
 }]);
 
-stControllers.controller('LoginModalCtrl', ['$scope', 'serviceData','$location', function ($scope, serviceData, $location) {
+stControllers.controller('LoginModalCtrl', ['$scope','AuthService', '$rootScope', 'AUTH_EVENTS',
+    function ($scope, AuthService, $rootScope, AUTH_EVENTS) {
 
-    $scope.user = {};
-
-    $scope.tryLogin = function() {
-        serviceData.get('api/user/auth', { login : $scope.user.login, pass : $scope.user.pass}).then(function(data) {
-            $scope.loggedIn = data.status == 1;
-            if ($scope.loggedIn) {
-                $location.path('/news');
-            }
-        })
-    };
-
+        $scope.login = function (credentials) {
+            AuthService.login(credentials).then(function (user) {
+                $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
+                $scope.setCurrentUser(user);
+            }, function () {
+                $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
+            });
+        };
     // execute on initialization
-    console.log($scope.$parent);
+        $scope.credentials = {
+            username: '',
+            pass: ''
+        };
 }]);
 
 stControllers.controller('ClassCtrl',['$scope', '$routeParams', 'courses', function($scope, $routeParams, courses){

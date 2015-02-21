@@ -1,4 +1,4 @@
-<div class="modal show" ng-controller="LoginModalCtrl">
+<div class="modal show" data-ng-controller="LoginModalCtrl">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header" >
@@ -7,14 +7,14 @@
             <div class="modal-body">
             <alert ng-if="loggedIn==true"  type="success">Вход выполнен. Типа.</alert>
             <alert ng-if="loggedIn==false" type="danger">Черт. Что-то пошло не так...</alert>
-            <form class="form-signin" method="post" name="loginForm" ng-Submit="tryLogin()">
+            <form class="form-signin" method="post" name="loginForm" data-ng-Submit="login(credentials)">
                 <div style="margin-bottom: 25px" class="input-group">
                     <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                    <input id="login-username" type="text" class="form-control" name="username" value="" placeholder="Логин" required autofocus ng-model="user.login">
+                    <input id="login-username" type="text" class="form-control" name="username" value="" placeholder="Логин" required autofocus data-ng-model="credentials.username">
                 </div>
                 <div style="margin-bottom: 25px" class="input-group">
                     <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                    <input id="login-password" type="password" class="form-control" name="password" placeholder="Пароль" required ng-model="user.pass">
+                    <input id="login-password" type="password" class="form-control" name="password" placeholder="Пароль" required data-ng-model="credentials.pass">
                 </div>
         <!--<div class="checkbox">
             <label>
@@ -22,9 +22,8 @@
             </label>
         </div>-->
                 <button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>
-        </div>
             </form>
+            </div>
         </div>
     </div>
-</div>
 </div>

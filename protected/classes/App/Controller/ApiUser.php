@@ -14,7 +14,7 @@ class ApiUser extends \App\Page {
             'message' => 'unsuccessfull',
             'user' => array()
         );
-        $login = Request::getString('login');
+        $login = Request::getString('username');
         $pass = Request::getString('pass');
         $passHash = md5(md5($pass));
         try
