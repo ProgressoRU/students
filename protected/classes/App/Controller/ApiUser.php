@@ -26,7 +26,7 @@ class ApiUser extends \App\Page {
         }
         catch (Exception $e)
         {
-            $response['status'] = 'SQL Error\nIt\'s might help:\n'.$e->getMessage();
+            $response['message'] = 'SQL Error\nIt\'s might help:\n'.$e->getMessage();
         }
         //echo ;
         if ($response['user'] != null)
@@ -43,7 +43,7 @@ class ApiUser extends \App\Page {
             }
             catch (Exception $e)
             {
-                $response['status'] = 'User is found, but session update caused an error\nIt\'s might help:\n'.$e->getMessage();
+                $response['message'] = 'User is found, but session update caused an error\nIt\'s might help:\n'.$e->getMessage();
             }
                 //Устанавливем куки (на час)
                 setcookie("id", $response['user'][0]->uID, time()+3600);
@@ -51,7 +51,7 @@ class ApiUser extends \App\Page {
                 $response['status'] = 1;
                 $response['message'] = 'Success';
         }
-        else $response['status'] = 'User not found';
+        else $response['message'] = 'User not found';
 
 
         $this->view->response = $response;

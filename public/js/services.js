@@ -29,8 +29,11 @@ stServices.factory('AuthService', ['serviceData', '$location','Session', functio
         return serviceData
             .get('api/user/auth', credentials)
             .then(function(data) {
-                Session.create (data.user[0].sessionHash, data.user[0].uID, data.user[0].txtRole);
-                return data.user;
+                if (data.status == 1) {
+                    Session.create(data.user[0].sessionHash, data.user[0].uID, data.user[0].txtRole);
+                    return data;
+                }
+                else return data;
             })
     };
 

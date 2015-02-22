@@ -21,5 +21,6 @@
 <body data-ng-controller="WrapCtrl" class="container-fluid">
 <div data-st-Header></div>
 <div data-ng-view></div>
+<div data-login-dialog data-ng-if="!isLoginPage"></div>
 </body>
 </html>

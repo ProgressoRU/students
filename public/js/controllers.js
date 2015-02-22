@@ -15,6 +15,7 @@ stControllers.controller('WrapCtrl', ['$scope', 'serviceData', 'AuthService', 'U
     $scope.setCurrentUser = function (user) {
       $scope.currentUser = user;
         console.log($scope.currentUser);
+        console.log($scope.isAuthorized);
     };
 
 }]);
@@ -23,13 +24,23 @@ stControllers.controller('HomeCtrl', ['$scope', function($scope) {
 
 }]);
 
-stControllers.controller('LoginModalCtrl', ['$scope','AuthService', '$rootScope', 'AUTH_EVENTS',
-    function ($scope, AuthService, $rootScope, AUTH_EVENTS) {
+stControllers.controller('LoginModalCtrl', ['$scope','AuthService', '$rootScope', 'AUTH_EVENTS', '$location',
+    function ($scope, AuthService, $rootScope, AUTH_EVENTS, $location) {
 
         $scope.login = function (credentials) {
             AuthService.login(credentials).then(function (user) {
+                if (user.status == 1) {
                 $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
                 $scope.setCurrentUser(user);
+                $scope.success = true;
+                if($location.path != '/login') //TODO: исправить
+                    $location.url('/news');
+                }
+                else
+                {
+                    $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
+                    $scope.loginFailed = true;
+                }
             }, function () {
                 $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
             });
@@ -39,6 +50,7 @@ stControllers.controller('LoginModalCtrl', ['$scope','AuthService', '$rootScope'
             username: '',
             pass: ''
         };
+        $scope.success = false;
 }]);
 
 stControllers.controller('ClassCtrl',['$scope', '$routeParams', 'courses', function($scope, $routeParams, courses){

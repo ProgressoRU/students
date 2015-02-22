@@ -7,15 +7,22 @@ var app = angular.module('students', ['ngRoute','stServices', 'stControllers', '
             controller: 'HomeCtrl',
             templateUrl:'public/views/home.html',
             data: {
-                authorizedRoles: [USER_ROLES.admin]
+                authorizedRoles: [USER_ROLES.admin, USER_ROLES.student]
                 }
         }).
-        when('/login', {controller: 'LoginModalCtrl', templateUrl:'public/views/login.html'}).
+        when('/login', {
+            controller: 'LoginModalCtrl',
+            templateUrl:'public/views/login.html',
+            data:
+            {
+                authorizedRoles: []
+            }
+        }).
         when('/class/:classID', {
             controller : 'ClassCtrl',
             templateUrl : 'public/views/class.html',
             data: {
-              authorizedRoles: [USER_ROLES.admin]
+              authorizedRoles: [USER_ROLES.admin, USER_ROLES.student]
             },
             resolve: {
                 courses: ['serviceData', '$route', function(serviceData, $route) {
@@ -26,20 +33,20 @@ var app = angular.module('students', ['ngRoute','stServices', 'stControllers', '
                 }]
             }
         }).
-        otherwise({redirectTo:'/login'});
+        otherwise({redirectTo:'/news'});
 })
 
-/*.config(function ($httpProvider) {
+.config(function ($httpProvider) {
     $httpProvider.interceptors.push([
         '$injector',
         function ($injector) {
             return $injector.get('AuthInterceptor');
         }
     ]);
-}) */
+})
 
     .run(function ($rootScope, AUTH_EVENTS, AuthService) {
-        $rootScope.$on('$stateChangeStart', function (event, next) {
+        $rootScope.$on('$routeChangeStart', function (event, next) {
             var authorizedRoles = next.data.authorizedRoles;
             if (!AuthService.isAuthorized(authorizedRoles)) {
                 event.preventDefault();
@@ -53,7 +60,7 @@ var app = angular.module('students', ['ngRoute','stServices', 'stControllers', '
             }
         });
     })
-/*
+
     .factory('AuthInterceptor', function ($rootScope, $q,
                                           AUTH_EVENTS) {
         return {
@@ -67,4 +74,4 @@ var app = angular.module('students', ['ngRoute','stServices', 'stControllers', '
                 return $q.reject(response);
             }
         };
-    }); */
+    });
