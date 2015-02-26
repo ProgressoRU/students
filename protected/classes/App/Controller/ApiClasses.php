@@ -2,8 +2,9 @@
 
 namespace App\Controller;
 
-use App\Libraries\Request;
-use Exception;
+use App\Libraries\Request,
+    App\Libraries\Auth,
+    Exception;
 
 class ApiClasses extends \App\Page {
 
@@ -14,6 +15,7 @@ class ApiClasses extends \App\Page {
             'message' => 'Class list is empty!',
             'classes' => array()
         );
+
         try
         {
             $response['classes'] = $this->pixie->db->query('select')->table('tblclasses')->execute()->as_array();

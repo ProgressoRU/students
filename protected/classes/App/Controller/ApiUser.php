@@ -28,7 +28,7 @@ class ApiUser extends \App\Page {
         catch (Exception $e)
         {
             $response['message'] = 'SQL Error\nIt\'s might help:\n'.$e->getMessage();
-            $this->view->response = $response;
+            $this->view->response = $response; //is this right?
         }
         //echo ;
         if ($response['user'] != null)
