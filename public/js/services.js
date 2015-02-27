@@ -66,17 +66,8 @@ stServices.service('Session', [function() {
 }]);
 
 stServices.constant('AUTH_EVENTS', {
-    loginSuccess: 'auth-login-success',
-    loginFailed: 'auth-login-failed',
-    logoutSuccess: 'auth-logout-success',
-    sessionTimeout: 'auth-session-timeout',
-    notAuthenticated: 'auth-not-authenticated',
-    notAuthorized: 'auth-not-authorized'
-});
-
-stServices.constant('USER_ROLES', {
-    all: '*',
-    admin: 'admin',
-    student: 'student',
-    guest: 'guest'
+    200: 'OK',
+    401: 'Unauthorized',
+    403: 'Forbidden',
+    e200: 'test'
 });

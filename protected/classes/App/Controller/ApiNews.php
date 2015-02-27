@@ -2,19 +2,29 @@
 
 namespace App\Controller;
 
+use App\Libraries\Auth as Auth,
+    Exception;
 class ApiNews extends \App\Page {
 
     public function action_index() {
         $this->view->subview = 'json';
         $response = array(
-            'status' => 0,
-            'message' => 'News list is empty!',
+            'status' => 403, //forbidden
             'news' => array()
         );
 
-        $response['status'] = 1;
-        $response['message'] = 'News list';
-        $response['news'] = $this->pixie->db->query('select')->table('tblNews')->execute()->as_array();
+        try {
+            $response['news'] = $this->pixie->db->query('select')->table('tblNews')->execute()->as_array();
+            $response['status'] = 200;
+            }
+        catch(Exception $e)
+        {
+            $response['status'] = 403; //forbidden
+        }
+
+        $auth = Auth::checkCookie(); //TODO: Non-static method should not be called statically
+        if(!$auth)
+            $response['status'] = 403;
 
         $this->view->response = $response;
     }

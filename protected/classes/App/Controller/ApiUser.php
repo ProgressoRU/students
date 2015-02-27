@@ -11,8 +11,7 @@ class ApiUser extends \App\Page {
     public function action_auth() {
         $this->view->subview = 'json';
         $response = array(
-            'status' => 0,
-            'message' => 'unsuccessfull',
+            'status' => 403, //403: Forbidden
             'user' => array()
         );
         $login = Request::getString('username');
@@ -21,20 +20,20 @@ class ApiUser extends \App\Page {
         try
         {
             $response['user'] = $this->pixie->db->query('select')->table('tblusers')
+                ->fields('uID','username','txtSurname','txtName','txtPatronymic','GroupID','txtRole')
                 ->where('username', $login)
                 ->where('passHash',$passHash)
             ->execute()->as_array();
         }
         catch (Exception $e)
         {
-            $response['message'] = 'SQL Error\nIt\'s might help:\n'.$e->getMessage();
+            echo('SQL Error\nIt\'s might help:\n'.$e->getMessage());
             $this->view->response = $response; //is this right?
         }
         //echo ;
         if ($response['user'] != null)
         {
-            $response['status'] = 1;
-            $response['message'] = 'Success';
+            $response['status'] = 200; //200: OK
             $hash = md5(uniqid(rand(),true));
             try
             {
@@ -48,13 +47,13 @@ class ApiUser extends \App\Page {
             }
             catch (Exception $e)
             {
-                $response['message'] = 'User is found, but session update caused an error\nIt\'s might help:\n'.$e->getMessage();
+                echo('User is found, but session update caused an error\nIt\'s might help:\n'.$e->getMessage());
             }
                 //Устанавливем куки (на час)
-                setcookie("id", $response['user'][0]->uID, time()+3600);
-                setcookie("hash", $hash, time()+3600);
+                setcookie("id", $response['user'][0]->uID, time()+3600,'/' );
+                setcookie("hash", $hash, time()+3600, '/');
         }
-        else $response['message'] = 'User not found';
+        else $response['status'] = 403; //403: Forbidden
 
 
         $this->view->response = $response;

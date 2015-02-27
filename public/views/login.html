@@ -5,8 +5,8 @@
                 <h4 class="modal-title">Вход</h4>
             </div>
             <div class="modal-body">
-            <alert ng-if="loggedIn==true"  type="success">Вход выполнен. Типа.</alert>
-            <alert ng-if="loginFailed" type="danger">Черт. Что-то пошло не так...</alert>
+            <alert data-ng-if="loggedIn==true"  type="success">Вход выполнен. Типа.</alert>
+            <alert data-ng-if="loginFailed" type="danger">Черт. Что-то пошло не так...</alert>
             <form class="form-signin" method="post" name="loginForm" data-ng-Submit="login(credentials)">
                 <div style="margin-bottom: 25px" class="input-group">
                     <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>

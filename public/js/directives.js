@@ -16,8 +16,8 @@ stDirectives.directive('loginDialog', function (AUTH_EVENTS) {
             };
 
             scope.visible = false;
-            scope.$on(AUTH_EVENTS.notAuthenticated, showDialog);
-            scope.$on(AUTH_EVENTS.sessionTimeout, showDialog)
+            scope.$on(AUTH_EVENTS['403'], showDialog);
+            //scope.$on(AUTH_EVENTS.sessionTimeout, showDialog)
         }
     };
 });

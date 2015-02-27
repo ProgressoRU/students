@@ -1,21 +1,18 @@
 var stControllers = angular.module('stControllers', []);
 
 // Wrap controller
-stControllers.controller('WrapCtrl', ['$scope', 'serviceData', 'AuthService', 'USER_ROLES',
-    function ($scope, serviceData, AuthService, USER_ROLES) {
+stControllers.controller('WrapCtrl', ['$scope',
+    function ($scope) {
 
-    serviceData.get('api/classes/all').then(function(data) {
+   /* serviceData.get('api/classes/all').then(function(data) {
         $scope.classes = (data.status && data.status == 1) ? data.classes : [];
-    });
+    }); */
 
     $scope.currentUser = null;
-    $scope.userRoles = USER_ROLES;
-    $scope.isAuthorized = AuthService.isAuthorized;
 
     $scope.setCurrentUser = function (user) {
       $scope.currentUser = user;
-        console.log($scope.currentUser);
-        console.log($scope.isAuthorized);
+        console.log($scope.currentUser); //debug
     };
 
 }]);
@@ -29,22 +26,29 @@ stControllers.controller('LoginModalCtrl', ['$scope','AuthService', '$rootScope'
 
         $scope.login = function (credentials) {
             AuthService.login(credentials).then(function (user) {
-                if (user.status == 1) {
-                $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
-                $scope.setCurrentUser(user);
-                $scope.success = true;
-                if($location.path != '/login') //TODO: исправить
-                    $location.url('/news');
-                }
-                else
+                $reply = user.status;
+                console.log($reply); //DEBUG
+                console.log(AUTH_EVENTS[$reply]); //DEBUG
+                $rootScope.$broadcast(AUTH_EVENTS[$reply]);
+                if ($reply == 200) //TODO разобраться почему не работает из под $on
                 {
-                    $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
-                    $scope.loginFailed = true;
+                    $scope.success = true;
+                    $scope.setCurrentUser(user);
                 }
-            }, function () {
-                $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
-            });
-        };
+                $scope.$on(AUTH_EVENTS['200'], function()
+                    {
+                        //$scope.setCurrentUser(user);
+                        //$scope.success = true; //Используется для вывода модального окна логина.
+                        if($location.path != '/login') //TODO: исправить. И научиться писать комментарии. Что исправить то надо?!
+                            $location.url('/news');
+                    });
+                $scope.$on(AUTH_EVENTS['403'], function()
+                    {
+                        $scope.loginFailed = true;
+                        $scope.success = false;
+                    });
+                });
+            };
     // execute on initialization
         $scope.credentials = {
             username: '',
@@ -61,12 +65,16 @@ stControllers.controller('ClassCtrl',['$scope', '$routeParams', 'courses', funct
 stControllers.controller('HeaderCtrl', ['$scope','serviceData', function ($scope, serviceData) {
     $scope.courses = [];
 
-    serviceData.get('api/courses/all').then(function(data) {
-        $scope.courses  = (data.status && data.status == 1) ? data.courses : [];
+    /*serviceData.get('api/courses/all').then(function(data) {
+     $scope.courses  = (data.status && data.status == 1) ? data.courses : [];
+     }) */
+    serviceData.get('api/classes/all').then(function (data) {
+        $scope.classes = (data.status && data.status == 1) ? data.classes : [];
     })
 }]);
 
-stControllers.controller('NewsCtrl', ['$scope','$http', 'serviceData', function($scope, $http, serviceData) {
+stControllers.controller('NewsCtrl', ['$scope', 'serviceData', 'AUTH_EVENTS', '$rootScope',
+    function($scope, serviceData, AUTH_EVENTS, $rootScope) {
 
     $scope.news = [];
     $scope.length = 0;
@@ -95,14 +103,12 @@ stControllers.controller('NewsCtrl', ['$scope','$http', 'serviceData', function(
 
     // execute on initialization
     serviceData.get('api/news/all').then(function(data) {
-        if (data.status == 1) {
-            $scope.news = data.news;
-            $scope.length = data.news.length;
-        } else {
-            $scope.news = [];
-            $scope.length = 0;
-        }
-
+        $reply = data.status;
+        console.log('News'+$reply); //DEBUG
+        console.log('News:'+AUTH_EVENTS[$reply]); //DEBUG
+        $rootScope.$broadcast(AUTH_EVENTS[$reply]);
+        $scope.news = data.news;
+        $scope.length = data.news.length;
         $scope.CurPage = 1;
         $scope.totalPages = Math.ceil($scope.length / 3);
     });
