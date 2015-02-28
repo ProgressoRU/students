@@ -18,10 +18,14 @@
       <ul class="nav navbar-nav">
             <li data-ng-repeat="class in classes"><a href="#/class/{{class.ClassID}}">{{class.txtTitle}}</a></li>
       </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <li data-ng-if="currentUser">Привет, {{currentUser.user[0].username}}<br> <!-- TODO: сохранение информации при рефреше -->
+      <ul class="nav navbar-nav navbar-right" data-ng-if="isAuthenticated()">
+        <li class="dropdown"><a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{currentUser.name}}<span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="">Профиль (NYI)</a></li>
+                <li class="divider"></li>
+                <li class="logout"><a href="" data-ng-click="logout()">Выход</a></li>
+            </ul>
         </li>
-          <div data-ng-if="isAuthorized(userRoles.admin)">You're admin.</div>
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->

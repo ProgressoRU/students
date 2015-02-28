@@ -1,20 +1,21 @@
 var stControllers = angular.module('stControllers', []);
 
 // Wrap controller
-stControllers.controller('WrapCtrl', ['$scope',
-    function ($scope) {
+stControllers.controller('WrapCtrl', ['$scope', 'Session', 'AuthService',
+    function ($scope, Session, AuthService) {
 
    /* serviceData.get('api/classes/all').then(function(data) {
         $scope.classes = (data.status && data.status == 1) ? data.classes : [];
     }); */
-
-    $scope.currentUser = null;
-
-    $scope.setCurrentUser = function (user) {
-      $scope.currentUser = user;
-        console.log($scope.currentUser); //debug
+    $scope.isAuthenticated = function () {
+        return AuthService.isAuthenticated(); //а попроще!?
     };
 
+     $scope.logout = function () {
+         return AuthService.logout();
+     };
+
+    $scope.currentUser = Session;
 }]);
 
 stControllers.controller('HomeCtrl', ['$scope', function($scope) {
@@ -33,20 +34,14 @@ stControllers.controller('LoginModalCtrl', ['$scope','AuthService', '$rootScope'
                 if ($reply == 200) //TODO разобраться почему не работает из под $on
                 {
                     $scope.success = true;
-                    $scope.setCurrentUser(user);
+                    if($location.path != '/login') //TODO: исправить. И научиться писать комментарии. Что исправить то надо?!
+                        $location.url('/news');
                 }
-                $scope.$on(AUTH_EVENTS['200'], function()
-                    {
-                        //$scope.setCurrentUser(user);
-                        //$scope.success = true; //Используется для вывода модального окна логина.
-                        if($location.path != '/login') //TODO: исправить. И научиться писать комментарии. Что исправить то надо?!
-                            $location.url('/news');
-                    });
-                $scope.$on(AUTH_EVENTS['403'], function()
-                    {
-                        $scope.loginFailed = true;
-                        $scope.success = false;
-                    });
+                else
+                {
+                    $scope.loginFailed = true;
+                    $scope.success = false;
+                }
                 });
             };
     // execute on initialization
@@ -65,9 +60,6 @@ stControllers.controller('ClassCtrl',['$scope', '$routeParams', 'courses', funct
 stControllers.controller('HeaderCtrl', ['$scope','serviceData', function ($scope, serviceData) {
     $scope.courses = [];
 
-    /*serviceData.get('api/courses/all').then(function(data) {
-     $scope.courses  = (data.status && data.status == 1) ? data.courses : [];
-     }) */
     serviceData.get('api/classes/all').then(function (data) {
         $scope.classes = (data.status && data.status == 1) ? data.classes : [];
     })
@@ -105,8 +97,6 @@ stControllers.controller('NewsCtrl', ['$scope', 'serviceData', 'AUTH_EVENTS', '$
     serviceData.get('api/news/all').then(function(data) {
         $reply = data.status;
         console.log('News'+$reply); //DEBUG
-        console.log('News:'+AUTH_EVENTS[$reply]); //DEBUG
-        $rootScope.$broadcast(AUTH_EVENTS[$reply]);
         $scope.news = data.news;
         $scope.length = data.news.length;
         $scope.CurPage = 1;

@@ -8,6 +8,13 @@ return array(
             'action' => 'auth'
         ),
     ),
+    'user_дщпщге' => array(
+        '/api/user/logout',
+        array(
+            'controller' => 'apiUser',
+            'action' => 'logout'
+        ),
+    ),
 	'classes_all' => array(
 		'/api/classes/all',
 		array(

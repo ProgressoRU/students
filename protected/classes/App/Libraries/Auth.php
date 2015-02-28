@@ -8,6 +8,7 @@ abstract class Auth
 
     public static function checkCookie(\App\Pixie $pixie)
     {
+        //TODO: XSRF Protection!
         $isOk = true;
         $user = array();
         //Проверяем наличие куки
@@ -31,7 +32,6 @@ abstract class Auth
             echo('SQL Error\nIt\'s might help:\n' . $e->getMessage());
             $isOk = false;
         }
-        //echo($user['uID']);
         //проверяем совпадают ли последний IP и браузер с текущими
         if (($user->lastIp != $_SERVER['REMOTE_ADDR']) || ($user->useragent != $_SERVER['HTTP_USER_AGENT']))
             $isOk = false;
@@ -79,8 +79,70 @@ abstract class Auth
         return $permissions;
     }
 
-    public function login($login, $pass)
+    public static function login(\App\Pixie $pixie, $login, $pass)
     {
-        //Перенести сюда авторизацию?
+        $reply = array(
+            'status' => 403, //403: Forbidden
+            'user' => array()
+        );
+        $passHash = md5(md5($pass)); //TODO: заменить на SHA
+        try {
+            $reply['user'] = $pixie->db->query('select')->table('tblusers')
+                ->fields('uID', 'username', 'txtSurname', 'txtName', 'txtPatronymic', 'GroupID', 'txtRole')
+                ->where('username', $login)
+                ->where('passHash', $passHash)
+                ->execute()->as_array();
+        } catch (Exception $e) {
+            echo('SQL Error\nIt\'s might help:\n' . $e->getMessage());
+            return $reply;
+        }
+        //echo ;
+        if ($reply['user'] != null) {
+            $reply['status'] = 200; //200: OK
+            $hash = md5(uniqid(rand(), true));
+            try {
+                $pixie->db->query('update')->table('tblusers')
+                    ->data(array(
+                        'sessionHash' => $hash,
+                        'lastIp' => $_SERVER['REMOTE_ADDR'],
+                        'useragent' => $_SERVER['HTTP_USER_AGENT']))
+                    ->where('uid', $reply['user'][0]->uID)
+                    ->execute();
+            } catch (Exception $e) {
+                echo('User is found, but session update caused an error\nIt\'s might help:\n' . $e->getMessage());
+            }
+            //Устанавливем куки (на час)
+            setcookie("id", $reply['user'][0]->uID, time() + 3600, '/');
+            setcookie("hash", $hash, time() + 3600, '/');
+        } else $reply['status'] = 403; //403: Forbidden
+
+        return $reply;
+    }
+
+    public static function logout(\App\Pixie $pixie)
+    {
+        //TODO: добавить проверки
+        if (isset($_COOKIE['id'])) $id = $_COOKIE['id'];
+        else return false;
+        try
+        {
+            $pixie->db->query('update')->table('tblusers')
+                ->data(array(
+                    'sessionHash' => '',
+                    'lastIp' => '127.0.0.1',
+                    'useragent' => ''
+                ))
+                ->where('uID', $id)
+                ->execute();
+        }
+        catch (Exception $e)
+        {
+            echo('SQL Error\nIt\'s might help:\n' . $e->getMessage());
+        }
+
+        setcookie("id", "", 0,  '/');
+        setcookie("hash", "", 0, '/');
+
+        return true;
     }
 }

@@ -6,6 +6,7 @@ return{
     {
         return $http.post(url, param)
             .then(function(response) {
+                    console.log(response);
 	               if (typeof response.data === 'object') {
 	                   return response.data;
 	               } else {
@@ -29,8 +30,10 @@ stServices.factory('AuthService', ['serviceData', '$location','Session', functio
         return serviceData
             .get('api/user/auth', credentials)
             .then(function(data) {
-                if (data.status == 1) {
-                    Session.create(data.user[0].sessionHash, data.user[0].uID, data.user[0].txtRole);
+                if (data.status == 200) {
+                    Session.create(data.user[0].uID, data.user[0].username, data.user[0].txtSurname, data.user[0].txtName,
+                        data.user[0].txtPatronymic, data.user[0].GroupID, data.user[0].txtRole);
+                    console.log(Session);
                     return data;
                 }
                 else return data;
@@ -40,26 +43,40 @@ stServices.factory('AuthService', ['serviceData', '$location','Session', functio
     authService.isAuthenticated = function () {
         return !!Session.userId;
     };
-    authService.isAuthorized = function (authorizedRoles) {
-        if (!angular.isArray(authorizedRoles)) {
-            authorizedRoles = [authorizedRoles];
-        }
-        return (authService.isAuthenticated() &&
-        authorizedRoles.indexOf(Session.userRole) !== -1);
+
+    authService.logout = function()
+    {
+      return serviceData
+          .get('api/user/logout')
+          .then(function(data){
+              console.log(data);
+              if(data == true) {
+                  Session.destroy();
+                  console.log(Session);
+              }
+          });
     };
+
     return authService;
 }]);
 
 stServices.service('Session', [function() {
-    //TODO: Внести корректные данные!
-    this.create = function (sessionId, userId, userRole) {
-        this.id = sessionId;
+    this.create = function (userId, userName, surname, name, patronymic, group, userRole) {
         this.userId = userId;
+        this.userName = userName;
+        this.surname = surname;
+        this.name = name;
+        this.patronymic = patronymic;
+        this.group = group;
         this.userRole = userRole;
     };
     this.destroy = function () {
-        this.id = null;
         this.userId = null;
+        this.userName = null;
+        this.surname = null;
+        this.name = name;
+        this.patronymic = null;
+        this.group = null;
         this.userRole = null;
     };
     return this;

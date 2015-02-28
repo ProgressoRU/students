@@ -2,8 +2,7 @@
 
 namespace App\Controller;
 
-use App\Libraries\Auth as Auth,
-    Exception;
+use Exception;
 
 class ApiNews extends \App\Page
 {
@@ -22,10 +21,6 @@ class ApiNews extends \App\Page
         } catch (Exception $e) {
             $response['status'] = 403; //forbidden
         }
-
-        $auth = Auth::checkCookie($this->pixie); //TODO: Non-static method should not be called statically
-        if (!$auth)
-            $response['status'] = 403;
 
         $this->view->response = $response;
     }

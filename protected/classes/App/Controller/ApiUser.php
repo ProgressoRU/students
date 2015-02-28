@@ -3,58 +3,47 @@
 namespace App\Controller;
 
 use App\Libraries\Request,
-    //App\Libraries\Auth,
-    Exception;
+    Exception,
+    App\Libraries\Auth;
 
-class ApiUser extends \App\Page {
+class ApiUser extends \App\Page
+{
 
-    public function action_auth() {
+    public function action_auth()
+    {
         $this->view->subview = 'json';
         $response = array(
-            'status' => 403, //403: Forbidden
+            'status' => 403,
             'user' => array()
         );
-        $login = Request::getString('username');
-        $pass = Request::getString('pass');
-        $passHash = md5(md5($pass));
-        try
-        {
-            $response['user'] = $this->pixie->db->query('select')->table('tblusers')
-                ->fields('uID','username','txtSurname','txtName','txtPatronymic','GroupID','txtRole')
-                ->where('username', $login)
-                ->where('passHash',$passHash)
-            ->execute()->as_array();
-        }
-        catch (Exception $e)
-        {
-            echo('SQL Error\nIt\'s might help:\n'.$e->getMessage());
-            $this->view->response = $response; //is this right?
-        }
-        //echo ;
-        if ($response['user'] != null)
-        {
-            $response['status'] = 200; //200: OK
-            $hash = md5(uniqid(rand(),true));
-            try
-            {
-                $this->pixie->db->query('update')->table('tblusers')
-                    ->data(array(
-                        'sessionHash' => $hash,
-                        'lastIp'=>$_SERVER['REMOTE_ADDR'],
-                        'useragent'=>$_SERVER['HTTP_USER_AGENT']))
-                    ->where('uid', $response['user'][0]->uID)
-                    ->execute();
+        if (Auth::checkCookie($this->pixie)) {
+            $id = $_COOKIE['id'];
+            try {
+                $response['user'] = $this->pixie->db->query('select')->table('tblusers')
+                    ->fields('uID', 'username', 'txtSurname', 'txtName', 'txtPatronymic', 'GroupID', 'txtRole')
+                    ->where('uID', $id)
+                    ->execute()->as_array();
+            } catch (Exception $e) {
+                echo('SQL Error\nIt\'s might help:\n' . $e->getMessage());
+                $this->pixie->view->response = $response; //is this right?
             }
-            catch (Exception $e)
-            {
-                echo('User is found, but session update caused an error\nIt\'s might help:\n'.$e->getMessage());
+            if ($response['user'] != null) {
+                $response['status'] = 200; //200: OK
             }
-                //Устанавливем куки (на час)
-                setcookie("id", $response['user'][0]->uID, time()+3600,'/' );
-                setcookie("hash", $hash, time()+3600, '/');
+        } else {
+            $login = Request::getString('username');
+            $pass = Request::getString('pass');
+            $response = Auth::login(($this->pixie),$login,$pass);
         }
-        else $response['status'] = 403; //403: Forbidden
+        $this->view->response = $response;
+    }
 
+    public function action_logout(){
+        $this->view->subview = 'json';
+        if (Auth::logout($this->pixie)) {
+            $response = true;
+        }
+        else $response = false;
 
         $this->view->response = $response;
     }
