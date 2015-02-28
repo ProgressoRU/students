@@ -2,21 +2,22 @@
 
 namespace App\Controller;
 
-class ApiCourses extends \App\Page {
+use Exception;
 
-    public function action_index() {
-        $this->view->subview = 'json';
-        $response = array(
-            'status' => 0,
-            'message' => 'Course list is empty!',
-            'courses' => array()
-        );
+class ApiCourses extends ApiController
+{
 
-        $response['status'] = 1;
-        $response['message'] = 'Course list';
-        $response['courses'] = $this->pixie->db->query('select')->table('tblcourses')->execute()->as_array();
-
-        $this->view->response = $response;
+    public function action_index()
+    {
+        $this->response('status', 0);
+        $this->response('courses', array());
+        try {
+            $this->response('status', 0);
+            $this->response('courses', $this->pixie->db->query('select')->table('tblcourses')->execute()->as_array());
+        } catch (Exception $e) {
+            $this->response('status', 0);
+            error_log($e->getMessage());
+        }
     }
 
 }

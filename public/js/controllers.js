@@ -4,25 +4,25 @@ var stControllers = angular.module('stControllers', []);
 stControllers.controller('WrapCtrl', ['$scope', 'Session', 'AuthService',
     function ($scope, Session, AuthService) {
 
-   /* serviceData.get('api/classes/all').then(function(data) {
-        $scope.classes = (data.status && data.status == 1) ? data.classes : [];
-    }); */
-    $scope.isAuthenticated = function () {
-        return AuthService.isAuthenticated(); //а попроще!?
-    };
+        /* serviceData.get('api/classes/all').then(function(data) {
+         $scope.classes = (data.status && data.status == 1) ? data.classes : [];
+         }); */
+        $scope.isAuthenticated = function () {
+            return AuthService.isAuthenticated(); //а попроще!?
+        };
 
-     $scope.logout = function () {
-         return AuthService.logout();
-     };
+        $scope.logout = function () {
+            return AuthService.logout();
+        };
 
-    $scope.currentUser = Session;
+        $scope.currentUser = Session;
+    }]);
+
+stControllers.controller('HomeCtrl', ['$scope', function ($scope) {
+
 }]);
 
-stControllers.controller('HomeCtrl', ['$scope', function($scope) {
-
-}]);
-
-stControllers.controller('LoginModalCtrl', ['$scope','AuthService', '$rootScope', 'AUTH_EVENTS', '$location',
+stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope', 'AUTH_EVENTS', '$location',
     function ($scope, AuthService, $rootScope, AUTH_EVENTS, $location) {
 
         $scope.login = function (credentials) {
@@ -34,30 +34,29 @@ stControllers.controller('LoginModalCtrl', ['$scope','AuthService', '$rootScope'
                 if ($reply == 200) //TODO разобраться почему не работает из под $on
                 {
                     $scope.success = true;
-                    if($location.path != '/login') //TODO: исправить. И научиться писать комментарии. Что исправить то надо?!
+                    if ($location.path != '/login') //TODO: исправить. И научиться писать комментарии. Что исправить то надо?!
                         $location.url('/news');
                 }
-                else
-                {
+                else {
                     $scope.loginFailed = true;
                     $scope.success = false;
                 }
-                });
-            };
-    // execute on initialization
+            });
+        };
+        // execute on initialization
         $scope.credentials = {
             username: '',
             pass: ''
         };
         $scope.success = false;
-}]);
+    }]);
 
-stControllers.controller('ClassCtrl',['$scope', '$routeParams', 'courses', function($scope, $routeParams, courses){
+stControllers.controller('ClassCtrl', ['$scope', '$routeParams', 'courses', function ($scope, $routeParams, courses) {
     $scope.classID = $routeParams.classID;
     $scope.courses = courses;
 }]);
 
-stControllers.controller('HeaderCtrl', ['$scope','serviceData', function ($scope, serviceData) {
+stControllers.controller('HeaderCtrl', ['$scope', 'serviceData', function ($scope, serviceData) {
     $scope.courses = [];
 
     serviceData.get('api/classes/all').then(function (data) {
@@ -66,41 +65,41 @@ stControllers.controller('HeaderCtrl', ['$scope','serviceData', function ($scope
 }]);
 
 stControllers.controller('NewsCtrl', ['$scope', 'serviceData', 'AUTH_EVENTS', '$rootScope',
-    function($scope, serviceData, AUTH_EVENTS, $rootScope) {
+    function ($scope, serviceData, AUTH_EVENTS, $rootScope) {
 
-    $scope.news = [];
-    $scope.length = 0;
+        $scope.news = [];
+        $scope.length = 0;
 
-    $scope.lastNews = function(k) {
-        $scope.visNews = [];
-        $scope.startPos = $scope.length - $scope.CurPage * k;
-        var j = 0;
-        for (var i = $scope.startPos; j < k; j++, i++) {
-            $scope.visNews[j] = $scope.news[i];
-        }
-        return $scope.visNews.reverse();
-    };
+        $scope.lastNews = function (k) {
+            $scope.visNews = [];
+            $scope.startPos = $scope.length - $scope.CurPage * k;
+            var j = 0;
+            for (var i = $scope.startPos; j < k; j++, i++) {
+                $scope.visNews[j] = $scope.news[i];
+            }
+            return $scope.visNews.reverse();
+        };
 
-    $scope.prevPage = function() {
-        if ($scope.CurPage < $scope.totalPages) {
-            $scope.CurPage += 1;
-        }
-    };
+        $scope.prevPage = function () {
+            if ($scope.CurPage < $scope.totalPages) {
+                $scope.CurPage += 1;
+            }
+        };
 
-    $scope.nextPage = function() {
-        if ($scope.CurPage > 1) {
-            $scope.CurPage -= 1;
-        }
-    };
+        $scope.nextPage = function () {
+            if ($scope.CurPage > 1) {
+                $scope.CurPage -= 1;
+            }
+        };
 
-    // execute on initialization
-    serviceData.get('api/news/all').then(function(data) {
-        $reply = data.status;
-        console.log('News'+$reply); //DEBUG
-        $scope.news = data.news;
-        $scope.length = data.news.length;
-        $scope.CurPage = 1;
-        $scope.totalPages = Math.ceil($scope.length / 3);
-    });
+        // execute on initialization
+        serviceData.get('api/news/all').then(function (data) {
+            $reply = data.status;
+            console.log('News' + $reply); //DEBUG
+            $scope.news = data.news;
+            $scope.length = data.news.length;
+            $scope.CurPage = 1;
+            $scope.totalPages = Math.ceil($scope.length / 3);
+        });
 
-}]);
+    }]);
