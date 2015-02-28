@@ -24,7 +24,7 @@ class ApiUser extends \App\Page
                     ->where('uID', $id)
                     ->execute()->as_array();
             } catch (Exception $e) {
-                echo('SQL Error\nIt\'s might help:\n' . $e->getMessage());
+                error_log($e->getMessage());
                 $this->pixie->view->response = $response; //is this right?
             }
             if ($response['user'] != null) {

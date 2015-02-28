@@ -10,7 +10,6 @@ abstract class Auth
     {
         //TODO: XSRF Protection!
         $isOk = true;
-        $user = array();
         //Проверяем наличие куки
         if (isset($_COOKIE['id'])) $id = $_COOKIE['id'];
         else {
@@ -28,13 +27,19 @@ abstract class Auth
                 ->where('uID', $id)
                 ->where('sessionHash', $hash)
                 ->execute()->current();
+
+            //проверяем совпадают ли последний IP и браузер с текущими
+            if (
+                (!property_exists($user, 'lastIp') || $user->lastIp != $_SERVER['REMOTE_ADDR'])
+                || (!property_exists($user, 'useragent') || $user->useragent != $_SERVER['HTTP_USER_AGENT'])
+            ) {
+                $isOk = false;
+            }
+
         } catch (Exception $e) {
-            echo('SQL Error\nIt\'s might help:\n' . $e->getMessage());
+            error_log($e->getMessage());
             $isOk = false;
         }
-        //проверяем совпадают ли последний IP и браузер с текущими
-        if (($user->lastIp != $_SERVER['REMOTE_ADDR']) || ($user->useragent != $_SERVER['HTTP_USER_AGENT']))
-            $isOk = false;
 
         //если что-то не совпало, то на всякий случай трем сессию пользователя
         if (!$isOk) {
@@ -48,7 +53,7 @@ abstract class Auth
                     ->where('uID', $id)
                     ->execute();
             } catch (Exception $e) {
-                echo($e->getMessage());
+                error_log($e->getMessage());
             }
         }
         return $isOk;
@@ -73,7 +78,7 @@ abstract class Auth
                 'course' => $user->tblcourseID
             );
         } catch (Exception $e) {
-            echo($e->getMessage());
+            error_log($e->getMessage());
         }
 
         return $permissions;
@@ -124,8 +129,7 @@ abstract class Auth
         //TODO: добавить проверки
         if (isset($_COOKIE['id'])) $id = $_COOKIE['id'];
         else return false;
-        try
-        {
+        try {
             $pixie->db->query('update')->table('tblusers')
                 ->data(array(
                     'sessionHash' => '',
@@ -134,13 +138,11 @@ abstract class Auth
                 ))
                 ->where('uID', $id)
                 ->execute();
-        }
-        catch (Exception $e)
-        {
-            echo('SQL Error\nIt\'s might help:\n' . $e->getMessage());
+        } catch (Exception $e) {
+            error_log($e->getMessage());
         }
 
-        setcookie("id", "", 0,  '/');
+        setcookie("id", "", 0, '/');
         setcookie("hash", "", 0, '/');
 
         return true;

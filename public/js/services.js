@@ -1,35 +1,34 @@
-var stServices = angular.module('stServices',[]);
+var stServices = angular.module('stServices', []);
 
-stServices.service('serviceData', ['$http', '$q',function ($http, $q) {
-return{
-   get: function(url, param)
-    {
-        return $http.post(url, param)
-            .then(function(response) {
+stServices.service('serviceData', ['$http', '$q', function ($http, $q) {
+    return {
+        get: function (url, param) {
+            return $http.post(url, param)
+                .then(function (response) {
                     console.log(response);
-	               if (typeof response.data === 'object') {
-	                   return response.data;
-	               } else {
-	               // invalid response
-	               return $q.reject(response.data);
-	                }
-	                }, function(response) {
-	                    // something went wrong
-	                    return $q.reject(response.data);
-	            	});
+                    if (typeof response.data === 'object') {
+                        return response.data;
+                    } else {
+                        // invalid response
+                        return $q.reject(response.data);
+                    }
+                }, function (response) {
+                    // something went wrong
+                    return $q.reject(response.data);
+                });
+        }
     }
-}
 
 }]);
 
-stServices.factory('AuthService', ['serviceData', '$location','Session', function (serviceData, $location, Session) {
+stServices.factory('AuthService', ['serviceData', '$location', 'Session', function (serviceData, $location, Session) {
 
     var authService = {};
 
-    authService.login = function(credentials) {
+    authService.login = function (credentials) {
         return serviceData
             .get('api/user/auth', credentials)
-            .then(function(data) {
+            .then(function (data) {
                 if (data.status == 200) {
                     Session.create(data.user[0].uID, data.user[0].username, data.user[0].txtSurname, data.user[0].txtName,
                         data.user[0].txtPatronymic, data.user[0].GroupID, data.user[0].txtRole);
@@ -44,23 +43,22 @@ stServices.factory('AuthService', ['serviceData', '$location','Session', functio
         return !!Session.userId;
     };
 
-    authService.logout = function()
-    {
-      return serviceData
-          .get('api/user/logout')
-          .then(function(data){
-              console.log(data);
-              if(data == true) {
-                  Session.destroy();
-                  console.log(Session);
-              }
-          });
+    authService.logout = function () {
+        return serviceData
+            .get('api/user/logout')
+            .then(function (data) {
+                console.log(data);
+                if (data == true) {
+                    Session.destroy();
+                    console.log(Session);
+                }
+            });
     };
 
     return authService;
 }]);
 
-stServices.service('Session', [function() {
+stServices.service('Session', [function () {
     this.create = function (userId, userName, surname, name, patronymic, group, userRole) {
         this.userId = userId;
         this.userName = userName;

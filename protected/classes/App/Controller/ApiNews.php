@@ -4,25 +4,23 @@ namespace App\Controller;
 
 use Exception;
 
-class ApiNews extends \App\Page
+class ApiNews extends ApiController
 {
 
     public function action_index()
     {
-        $this->view->subview = 'json';
-        $response = array(
-            'status' => 403, //forbidden
-            'news' => array()
-        );
+        $this->response('status', 403);
+        $this->response('news', array());
 
         try {
-            $response['news'] = $this->pixie->db->query('select')->table('tblNews')->execute()->as_array();
-            $response['status'] = 200;
+            $this->response('status', 200);
+            $this->response('news', $this->pixie->db->query('select')->table('tblNews')->execute()->as_array());
         } catch (Exception $e) {
-            $response['status'] = 403; //forbidden
+            error_log($e->getMessage());
+            $this->response('status', 400);
         }
 
-        $this->view->response = $response;
+        //$this->badRequest();
     }
 
 }
