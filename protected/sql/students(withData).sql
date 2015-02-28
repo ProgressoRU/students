@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50523
 File Encoding         : 65001
 
-Date: 2015-02-18 00:12:51
+Date: 2015-02-28 18:59:29
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -107,6 +107,7 @@ CREATE TABLE `tblcourses` (
 INSERT INTO `tblcourses` VALUES ('1', 'ИС', '2');
 INSERT INTO `tblcourses` VALUES ('2', 'ИС', '3');
 INSERT INTO `tblcourses` VALUES ('3', 'ИС', '4');
+INSERT INTO `tblcourses` VALUES ('4', 'Admins', '0');
 
 -- ----------------------------
 -- Table structure for tblgroups
@@ -123,6 +124,8 @@ CREATE TABLE `tblgroups` (
 -- ----------------------------
 -- Records of tblgroups
 -- ----------------------------
+INSERT INTO `tblgroups` VALUES ('2', '3');
+INSERT INTO `tblgroups` VALUES ('1', '4');
 
 -- ----------------------------
 -- Table structure for tblnews
@@ -171,6 +174,8 @@ CREATE TABLE `tblusers` (
   `GroupID` int(11) DEFAULT NULL,
   `sessionHash` char(32) DEFAULT NULL,
   `lastIp` varchar(16) DEFAULT NULL,
+  `txtRole` varchar(8) DEFAULT NULL,
+  `useragent` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`uID`),
   KEY `GroupID` (`GroupID`),
   CONSTRAINT `tblusers_ibfk_1` FOREIGN KEY (`GroupID`) REFERENCES `tblgroups` (`GroupID`)
@@ -179,4 +184,4 @@ CREATE TABLE `tblusers` (
 -- ----------------------------
 -- Records of tblusers
 -- ----------------------------
-INSERT INTO `tblusers` VALUES ('1', 'login', '35f504164d5a963d6a820e71614a4009', 'sad', null, null, null, '8e27f7e2164d641902d0261acf702b95', '127.0.0.1');
+INSERT INTO `tblusers` VALUES ('1', 'login', '35f504164d5a963d6a820e71614a4009', 'sad', 'Виктор', null, '2', '840188c7cb9aef75262cf490c51dc032', '127.0.0.1', 'student', 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:35.0) Gecko/20100101 Firefox/35.0');

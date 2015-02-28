@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50523
 File Encoding         : 65001
 
-Date: 2015-02-18 00:12:58
+Date: 2015-02-28 18:59:22
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -115,6 +115,8 @@ CREATE TABLE `tblusers` (
   `GroupID` int(11) DEFAULT NULL,
   `sessionHash` char(32) DEFAULT NULL,
   `lastIp` varchar(16) DEFAULT NULL,
+  `txtRole` varchar(8) DEFAULT NULL,
+  `useragent` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`uID`),
   KEY `GroupID` (`GroupID`),
   CONSTRAINT `tblusers_ibfk_1` FOREIGN KEY (`GroupID`) REFERENCES `tblgroups` (`GroupID`)
