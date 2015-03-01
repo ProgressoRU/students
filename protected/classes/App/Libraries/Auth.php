@@ -68,7 +68,6 @@ abstract class Auth
             $id = $_COOKIE['id'];
         else
             return $accessGranted;
-        //$permissions = array();
         try {
             //выясняем роль и курс
             $permissions = $pixie->db->query('select')->table('tblusers')
@@ -76,13 +75,10 @@ abstract class Auth
                 ->where('uID', $id)
                 ->join('tblgroups', array('tblgroups.GroupID', 'tblusers.GroupID'), 'inner')
                 ->execute()->current();
-            //error_log(print_r($permissions));
         } catch (Exception $e) {
             error_log($e->getMessage());
         }
         if ($permissions->CourseID != $param) {
-            error_log('Course:'.$permissions->CourseID);
-            //error_log('param: '.$param);
             return $accessGranted;
         }
         else $accessGranted = true;
@@ -97,6 +93,7 @@ abstract class Auth
             'user' => array()
         );
         $passHash = md5(md5($pass)); //TODO: заменить на SHA
+        //пытаемся получить информацию о пользователе
         try {
             $reply['user'] = $pixie->db->query('select')->table('tblusers')
                 ->fields('uID', 'username', 'txtSurname', 'txtName', 'txtPatronymic', 'GroupID', 'txtRole', 'tblgroups.courseID')
@@ -108,10 +105,11 @@ abstract class Auth
             error_log('SQL Error\nIt\'s might help:\n' . $e->getMessage());
             return $reply;
         }
-        //echo ;
+        //если пользователь найден, то создаем хэш сессии
         if ($reply['user'] != null) {
             $reply['status'] = 200; //200: OK
             $hash = md5(uniqid(rand(), true));
+            //заносим в БД сессию, IP и useragent
             try {
                 $pixie->db->query('update')->table('tblusers')
                     ->data(array(

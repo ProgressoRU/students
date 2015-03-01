@@ -26,6 +26,7 @@ class ApiClasses extends ApiController
     {
         $id = Request::getInt('id'); //id предмета
         $this->response('status', 0);
+        //Получаем ID курса, для которого преподается предмет
         try {
             $courseId = $this->pixie->db->query('select')->table('tblclasses')
                 ->fields('CourseID')
@@ -36,7 +37,9 @@ class ApiClasses extends ApiController
             $this->response('status', 0);
             error_log($e->getMessage());
         }
+        //Если прошлый блок выполнился
         if (isset($courseId)) {
+            //проверяем совпадает ли курс пользователя с курсом предмета
             if (Auth::checkPermissions($this->pixie, $courseId->CourseID)) {
                 $this->response('lectures', array());
                 try {
