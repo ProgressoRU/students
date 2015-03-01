@@ -59,6 +59,37 @@ abstract class Auth
         return $isOk;
     }
 
+    public static function checkPermissions(\App\Pixie $pixie, $param)
+    {
+//перед вызовом этой функции куки должны бьть проверены.
+//Можно ли в этом убедиться?
+        $accessGranted = false;
+        if (isset($_COOKIE['id']))
+            $id = $_COOKIE['id'];
+        else
+            return $accessGranted;
+        //$permissions = array();
+        try {
+            //выясняем роль и курс
+            $permissions = $pixie->db->query('select')->table('tblusers')
+                ->fields('uID', 'GroupID', 'txtRole', 'tblgroups.CourseID')
+                ->where('uID', $id)
+                ->join('tblgroups', array('tblgroups.GroupID', 'tblusers.GroupID'), 'inner')
+                ->execute()->current();
+            //error_log(print_r($permissions));
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+        }
+        if ($permissions->CourseID != $param) {
+            error_log('Course:'.$permissions->CourseID);
+            //error_log('param: '.$param);
+            return $accessGranted;
+        }
+        else $accessGranted = true;
+
+        return $accessGranted;
+    }
+
     public static function login(\App\Pixie $pixie, $login, $pass)
     {
         $reply = array(
@@ -68,7 +99,7 @@ abstract class Auth
         $passHash = md5(md5($pass)); //TODO: заменить на SHA
         try {
             $reply['user'] = $pixie->db->query('select')->table('tblusers')
-                ->fields('uID', 'username', 'txtSurname', 'txtName', 'txtPatronymic', 'GroupID', 'txtRole','tblgroups.courseID')
+                ->fields('uID', 'username', 'txtSurname', 'txtName', 'txtPatronymic', 'GroupID', 'txtRole', 'tblgroups.courseID')
                 ->where('username', $login)
                 ->where('passHash', $passHash)
                 ->join('tblgroups', array('tblgroups.GroupID', 'tblusers.GroupID'), 'inner')

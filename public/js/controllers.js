@@ -21,7 +21,7 @@ stControllers.controller('HomeCtrl', ['$scope', function ($scope) {
 
 stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope', 'AUTH_EVENTS', '$location',
     function ($scope, AuthService, $rootScope, AUTH_EVENTS, $location) {
-
+        //todo: вывод ошибок
         $scope.login = function (credentials) {
             AuthService.login(credentials).then(function (user) {
                 $reply = user.status;
@@ -48,9 +48,11 @@ stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope
         $scope.success = false;
     }]);
 
-stControllers.controller('ClassCtrl', ['$scope', '$routeParams', 'courses', function ($scope, $routeParams, courses) {
+stControllers.controller('ClassCtrl', ['$scope', '$routeParams', 'serviceData', function ($scope, $routeParams, serviceData) {
     $scope.classID = $routeParams.classID;
-    $scope.courses = courses;
+    serviceData.get('api/classes/info', {id: $scope.classID}).then(function (data) {
+        $scope.classes = (data.status && data.status == 1) ? data.classes : [];
+    })
 }]);
 
 stControllers.controller('HeaderCtrl', ['$scope', 'serviceData', function ($scope, serviceData) {

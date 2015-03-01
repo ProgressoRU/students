@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Libraries\Request,
+    App\Libraries\Auth as Auth,
     Exception;
 
 class ApiClasses extends ApiController
@@ -23,19 +24,36 @@ class ApiClasses extends ApiController
 
     public function action_info()
     {
-        $id = Request::getInt('id');
+        $id = Request::getInt('id'); //id предмета
         $this->response('status', 0);
-        $this->response('lectures', array());
         try {
-            $this->response('lectures',
-                $this->pixie->db->query('select')->table('tblArticles')
-                    ->where('intClass', $id)
-                    ->where('isVisible', 1)
-                    ->execute()->as_array());
-            $this->response('status', 1);
+            $courseId = $this->pixie->db->query('select')->table('tblclasses')
+                ->fields('CourseID')
+                ->where('ClassID', $id)
+                ->limit(1)
+                ->execute()->current();
         } catch (Exception $e) {
             $this->response('status', 0);
             error_log($e->getMessage());
+        }
+        if (isset($courseId)) {
+            if (Auth::checkPermissions($this->pixie, $courseId->CourseID)) {
+                $this->response('lectures', array());
+                try {
+                    $this->response('lectures',
+                        $this->pixie->db->query('select')->table('tblArticles')
+                            ->where('intClass', $id)
+                            ->where('isVisible', 1)
+                            ->execute()->as_array());
+                    $this->response('status', 1);
+                } catch (Exception $e) {
+                    $this->response('status', 0);
+                    error_log($e->getMessage());
+                }
+            } else
+                $this->response('status', 403);
+        } else {
+            $this->response('status', 403);
         }
     }
 

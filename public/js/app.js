@@ -13,15 +13,7 @@ var app = angular.module('students', ['ngRoute', 'stServices', 'stControllers', 
             }).
             when('/class/:classID', {
                 controller: 'ClassCtrl',
-                templateUrl: 'public/views/class.html',
-                resolve: {
-                    courses: ['serviceData', '$route', function (serviceData, $route) {
-                        return serviceData.get('api/classes/info', {id: $route.current.params.classID}) //classesAPI call
-                            .then(function (data) {
-                                return data.status == 1 ? data.lectures : [];
-                            });
-                    }]
-                }
+                templateUrl: 'public/views/class.html'
             }).
             otherwise({redirectTo: '/news'});
 
