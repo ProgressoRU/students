@@ -1,5 +1,5 @@
 var stServices = angular.module('stServices', []);
-
+//обертка для всех запросов
 stServices.service('serviceData', ['$http', '$q', function ($http, $q) {
     return {
         get: function (url, param) {
@@ -29,6 +29,7 @@ stServices.factory('AuthService', ['serviceData', '$location', 'Session', functi
         return serviceData
             .get('api/user/auth', credentials)
             .then(function (data) {
+                //создаем сессии, если ответ от сервера положительный
                 if (data.status == 200) {
                     Session.create(data.user[0].uID, data.user[0].username, data.user[0].txtSurname, data.user[0].txtName,
                         data.user[0].txtPatronymic, data.user[0].GroupID, data.user[0].txtRole, data.user[0].courseID);
@@ -40,6 +41,7 @@ stServices.factory('AuthService', ['serviceData', '$location', 'Session', functi
     };
 
     authService.isAuthenticated = function () {
+        //приводим Session.UserId к bool, чтобы проверить существует ли сессия
         return !!Session.userId;
     };
 
@@ -48,7 +50,7 @@ stServices.factory('AuthService', ['serviceData', '$location', 'Session', functi
             .get('api/user/logout')
             .then(function (data) {
                 console.log(data);
-                if (data.status === true) {
+                if (data.status == true) {
                     Session.destroy();
                     console.log('Session' + Session);
                 }
@@ -59,6 +61,7 @@ stServices.factory('AuthService', ['serviceData', '$location', 'Session', functi
 }]);
 
 stServices.service('Session', [function () {
+    //создание сессии
     this.create = function (userId, userName, surname, name, patronymic, group, userRole, course) {
         this.userId = userId;
         this.userName = userName;
@@ -69,6 +72,7 @@ stServices.service('Session', [function () {
         this.userRole = userRole;
         this.course = course;
     };
+    //уничтожение сессии
     this.destroy = function () {
         this.userId = null;
         this.userName = null;
@@ -83,8 +87,8 @@ stServices.service('Session', [function () {
 }]);
 
 stServices.constant('AUTH_EVENTS', {
+    //возможные события авторищации
     200: 'OK',
     401: 'Unauthorized',
-    403: 'Forbidden',
-    e200: 'test'
+    403: 'Forbidden'
 });

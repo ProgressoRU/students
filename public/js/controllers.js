@@ -1,9 +1,9 @@
 var stControllers = angular.module('stControllers', []);
 
-// Wrap controller
+// Обертка (wrap)
 stControllers.controller('WrapCtrl', ['$scope', 'Session', 'AuthService', 'serviceData',
     function ($scope, Session, AuthService, serviceData) {
-
+        //объявляем функции, обращающиеся при вызове к AuthService
         $scope.isAuthenticated = function () {
             return AuthService.isAuthenticated(); //а попроще!?
         };
@@ -11,9 +11,9 @@ stControllers.controller('WrapCtrl', ['$scope', 'Session', 'AuthService', 'servi
         $scope.logout = function () {
             return AuthService.logout();
         };
-
+        //текущий пользователь берется из сервиса сессий
         $scope.currentUser = Session;
-
+        //получаем список всех предметов через вызов к API
         serviceData.get('api/classes/all').then(function (data) {
             $scope.classes = (data.status && data.status == 1) ? data.classes : [];
         })
@@ -27,13 +27,15 @@ stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope
     function ($scope, AuthService, $rootScope, AUTH_EVENTS, $location) {
         //todo: вывод ошибок
         $scope.login = function (credentials) {
+            //отправляем сервису Авторизации необходимые данные
             AuthService.login(credentials).then(function (user) {
                 $reply = user.status;
                 console.log($reply); //DEBUG
                 console.log(AUTH_EVENTS[$reply]); //DEBUG
+                //оповещаем все нижестоящие контроллеры об ответе сервера
                 $rootScope.$broadcast(AUTH_EVENTS[$reply]);
-                if ($reply == 200)
-                {
+                //если ответ 200:OK
+                if ($reply == 200) {
                     $scope.success = true;
                     if ($location.path != '/login') //TODO: исправить. И научиться писать комментарии. Что исправить то надо?!
                         $location.url('/news');
@@ -53,9 +55,11 @@ stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope
     }]);
 
 stControllers.controller('ClassCtrl', ['$scope', '$routeParams', 'serviceData', function ($scope, $routeParams, serviceData) {
+    //из параметров маршрута берем ID предмета
     $scope.classID = $routeParams.classID;
+    //вызываем API, чтобы получить все лекции по предмету
     serviceData.get('api/classes/info', {id: $scope.classID}).then(function (data) {
-        $scope.articles = (data.status && data.status == 1) ? data.articles : [];
+        $scope.articles = (data.status && data.status == 1) ? data.lectures : [];
     })
 }]);
 
@@ -63,8 +67,8 @@ stControllers.controller('HeaderCtrl', ['$scope', function ($scope) {
 
 }]);
 
-stControllers.controller('NewsCtrl', ['$scope', 'serviceData', 'AUTH_EVENTS', '$rootScope',
-    function ($scope, serviceData, AUTH_EVENTS, $rootScope) {
+stControllers.controller('NewsCtrl', ['$scope', 'serviceData',
+    function ($scope, serviceData) {
 
         $scope.news = [];
         $scope.length = 0;
