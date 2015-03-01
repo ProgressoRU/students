@@ -9,7 +9,7 @@ stDirectives.directive('stHeader', function () {
 stDirectives.directive('loginDialog', function (AUTH_EVENTS) {
     return {
         restrict: 'A',
-        template: '<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginLabel" aria-hidden="true" data-ng-if="visible" data-ng-include="\'public/views/login.html\'">',
+        templateUrl: 'public/views/login.html',
         controller: 'LoginModalCtrl',
         link: function (scope) {
             var showDialog = function () {
@@ -22,7 +22,7 @@ stDirectives.directive('loginDialog', function (AUTH_EVENTS) {
             };
             var hideDialog = function () {
                 scope.visible = false;
-                $('loginModal').hide();
+                $('#loginModal').modal('hide');
             };
 
             scope.visible = false;
