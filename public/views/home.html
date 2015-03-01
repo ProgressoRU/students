@@ -2,26 +2,29 @@
     <div class="page-header">
         <h1>Пульс</h1>
     </div>
-<!-- NEWS BLOCK -->
-<!--  -->
-<div class="panel panel-info" data-ng-repeat="n in lastNews(3) track by $index" data-ng-if="n.txtTitle!=null">
-  <div class="panel-heading">
-    <h3 class="panel-title">{{n.txtTitle}}</h3>
-  </div>
-  <div class="panel-body">
-      {{n.txtNews}}
-  </div>
-    <!-- ng-class="{'panel-warning': n.intImpotrance==1, 'panel-danger': ==2}" -->
-    <div data-ng-switch="n.intImpotrance" class="panel-footer"><small><em>{{n.dateCreated||'Дата не указана'}}</em></small>
-        <span data-ng-switch-when="1" class="label label-warning" style="float:right;">Обратите внимание</span>
-        <span data-ng-switch-when="2" class="label label-danger" style="float:right;">Важно</span>
+    <!-- NEWS BLOCK -->
+    <!--  -->
+    <div class="panel panel-info" data-ng-repeat="n in lastNews(3) track by $index" data-ng-if="n.txtTitle!=null">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{n.txtTitle}}</h3>
+        </div>
+        <div class="panel-body">
+            {{n.txtNews}}
+        </div>
+        <!-- ng-class="{'panel-warning': n.intImpotrance==1, 'panel-danger': ==2}" -->
+        <div data-ng-switch="n.intImpotrance" class="panel-footer">
+            <small><em>{{n.dateCreated||'Дата не указана'}}</em></small>
+            <span data-ng-switch-when="1" class="label label-warning" style="float:right;">Обратите внимание</span>
+            <span data-ng-switch-when="2" class="label label-danger" style="float:right;">Важно</span>
+        </div>
     </div>
-</div>
-<!-- PAGER -->
-<nav>
-  <ul class="pager">
-    <li class="previous" data-ng-click="prevPage()" data-ng-class="{'disabled': CurPage == totalPages}"><a href=""><span aria-hidden="true">&larr;</span> Older</a></li>
-    <li class="next" data-ng-click="nextPage()" data-ng-class="{'disabled': CurPage == 1}"><a href="">Newer <span aria-hidden="true">&rarr;</span></a></li>
-  </ul>
-</nav>
+    <!-- PAGER -->
+    <nav>
+        <ul class="pager">
+            <li class="previous" data-ng-click="prevPage()" data-ng-class="{'disabled': CurPage == totalPages}"><a
+                    href=""><span aria-hidden="true">&larr;</span> Старые</a></li>
+            <li class="next" data-ng-click="nextPage()" data-ng-class="{'disabled': CurPage == 1}"><a href="">Новые
+                <span aria-hidden="true">&rarr;</span></a></li>
+        </ul>
+    </nav>
 </article>

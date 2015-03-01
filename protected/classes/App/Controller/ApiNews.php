@@ -9,7 +9,7 @@ class ApiNews extends ApiController
 
     public function action_index()
     {
-        $this->response('status', 403);
+        $this->response('status', 400);
         $this->response('news', array());
 
         try {
@@ -20,7 +20,7 @@ class ApiNews extends ApiController
             $this->response('status', 400);
         }
 
-        //$this->badRequest();
+        //$this->notFound();
     }
 
 }

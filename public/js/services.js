@@ -31,7 +31,7 @@ stServices.factory('AuthService', ['serviceData', '$location', 'Session', functi
             .then(function (data) {
                 if (data.status == 200) {
                     Session.create(data.user[0].uID, data.user[0].username, data.user[0].txtSurname, data.user[0].txtName,
-                        data.user[0].txtPatronymic, data.user[0].GroupID, data.user[0].txtRole);
+                        data.user[0].txtPatronymic, data.user[0].GroupID, data.user[0].txtRole, data.user[0].courseID);
                     console.log(Session);
                     return data;
                 }
@@ -59,7 +59,7 @@ stServices.factory('AuthService', ['serviceData', '$location', 'Session', functi
 }]);
 
 stServices.service('Session', [function () {
-    this.create = function (userId, userName, surname, name, patronymic, group, userRole) {
+    this.create = function (userId, userName, surname, name, patronymic, group, userRole, course) {
         this.userId = userId;
         this.userName = userName;
         this.surname = surname;
@@ -67,6 +67,7 @@ stServices.service('Session', [function () {
         this.patronymic = patronymic;
         this.group = group;
         this.userRole = userRole;
+        this.course = course;
     };
     this.destroy = function () {
         this.userId = null;
@@ -76,6 +77,7 @@ stServices.service('Session', [function () {
         this.patronymic = null;
         this.group = null;
         this.userRole = null;
+        this.course = null;
     };
     return this;
 }]);

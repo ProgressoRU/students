@@ -59,31 +59,6 @@ abstract class Auth
         return $isOk;
     }
 
-    public static function checkPermissions(\App\Pixie $pixie)
-    {
-        //перед вызовом этой функции куки должны бьть проверены.
-        //Можно ли в этом убедиться?
-        $id = $_COOKIE['id'];
-        $permissions = array();
-        try {
-            //выясняем роль и курс
-            $user = $pixie->db->query('select')->table('tblusers')
-                ->fields('uID', 'GroupID', 'txtRole')
-                ->where('uID', $id)
-                ->join('tblgroups
-                ', array('tblgroups.GroupID', 'tblusers.GroupID'), 'inner')
-                ->execute()->as_array();
-            $permissions = array( //скорее всего не работает
-                'role' => $user->txtRole,
-                'course' => $user->tblcourseID
-            );
-        } catch (Exception $e) {
-            error_log($e->getMessage());
-        }
-
-        return $permissions;
-    }
-
     public static function login(\App\Pixie $pixie, $login, $pass)
     {
         $reply = array(
@@ -93,12 +68,13 @@ abstract class Auth
         $passHash = md5(md5($pass)); //TODO: заменить на SHA
         try {
             $reply['user'] = $pixie->db->query('select')->table('tblusers')
-                ->fields('uID', 'username', 'txtSurname', 'txtName', 'txtPatronymic', 'GroupID', 'txtRole')
+                ->fields('uID', 'username', 'txtSurname', 'txtName', 'txtPatronymic', 'GroupID', 'txtRole','tblgroups.courseID')
                 ->where('username', $login)
                 ->where('passHash', $passHash)
+                ->join('tblgroups', array('tblgroups.GroupID', 'tblusers.GroupID'), 'inner')
                 ->execute()->as_array();
         } catch (Exception $e) {
-            echo('SQL Error\nIt\'s might help:\n' . $e->getMessage());
+            error_log('SQL Error\nIt\'s might help:\n' . $e->getMessage());
             return $reply;
         }
         //echo ;
@@ -114,7 +90,7 @@ abstract class Auth
                     ->where('uid', $reply['user'][0]->uID)
                     ->execute();
             } catch (Exception $e) {
-                echo('User is found, but session update caused an error\nIt\'s might help:\n' . $e->getMessage());
+                error_log('User is found, but session update caused an error\nIt\'s might help:\n' . $e->getMessage());
             }
             //Устанавливем куки (на час)
             setcookie("id", $reply['user'][0]->uID, time() + 3600, '/');

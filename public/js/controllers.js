@@ -4,9 +4,6 @@ var stControllers = angular.module('stControllers', []);
 stControllers.controller('WrapCtrl', ['$scope', 'Session', 'AuthService',
     function ($scope, Session, AuthService) {
 
-        /* serviceData.get('api/classes/all').then(function(data) {
-         $scope.classes = (data.status && data.status == 1) ? data.classes : [];
-         }); */
         $scope.isAuthenticated = function () {
             return AuthService.isAuthenticated(); //а попроще!?
         };
@@ -31,7 +28,7 @@ stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope
                 console.log($reply); //DEBUG
                 console.log(AUTH_EVENTS[$reply]); //DEBUG
                 $rootScope.$broadcast(AUTH_EVENTS[$reply]);
-                if ($reply == 200) //TODO разобраться почему не работает из под $on
+                if ($reply == 200)
                 {
                     $scope.success = true;
                     if ($location.path != '/login') //TODO: исправить. И научиться писать комментарии. Что исправить то надо?!
@@ -69,7 +66,8 @@ stControllers.controller('NewsCtrl', ['$scope', 'serviceData', 'AUTH_EVENTS', '$
 
         $scope.news = [];
         $scope.length = 0;
-
+        //возможно стоит ограничить количество получаемых новостей на серверной стороне
+        //TODO: приведение даты к нормальному виду
         $scope.lastNews = function (k) {
             $scope.visNews = [];
             $scope.startPos = $scope.length - $scope.CurPage * k;
