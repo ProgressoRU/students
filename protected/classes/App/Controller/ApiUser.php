@@ -30,17 +30,14 @@ class ApiUser extends ApiController
             $login = Request::getString('username');
             $pass = Request::getString('pass');
             $this->response(null, Auth::login(($this->pixie), $login, $pass));
-            //Auth::login(($this->pixie),$login,$pass);
         }
     }
 
     public function action_logout()
     {
         if (Auth::logout($this->pixie)) {
-            $response = true;
-        } else $response = false;
-
-        //$this->view->response = $response;
+            $this->response('status', true);
+        } else $this->response('status', false);
     }
 
 }

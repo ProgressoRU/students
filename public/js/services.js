@@ -48,9 +48,9 @@ stServices.factory('AuthService', ['serviceData', '$location', 'Session', functi
             .get('api/user/logout')
             .then(function (data) {
                 console.log(data);
-                if (data == true) {
+                if (data.status === true) {
                     Session.destroy();
-                    console.log(Session);
+                    console.log('Session' + Session);
                 }
             });
     };

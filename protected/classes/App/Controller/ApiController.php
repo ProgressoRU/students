@@ -6,9 +6,10 @@ class ApiController extends \App\Page
 {
 
     private $_response = array(),
-            $_timer = null;
+        $_timer = null;
 
-    public function before() {
+    public function before()
+    {
         $this->response->add_header('Content-type: application/json; charset=UTF-8');
 
         $this->_timer = microtime(true);
@@ -17,7 +18,8 @@ class ApiController extends \App\Page
         $this->view->subview = 'json';
     }
 
-    public function response($param = null, $value = null) {
+    public function response($param = null, $value = null)
+    {
         if (is_null($value)) {
             if ($this->isExistsParam($param)) {
                 return $this->_response[$param];
@@ -42,29 +44,35 @@ class ApiController extends \App\Page
         return true;
     }
 
-    public function isExistsParam($param) {
+    public function isExistsParam($param)
+    {
         return isset($this->_response[$param]);
     }
 
-    public function after() {
-        $this->_response['_time_execute'] = round(microtime(true) -$this->_timer, 3);
+    public function after()
+    {
+        $this->_response['_time_execute'] = round(microtime(true) - $this->_timer, 3);
         $this->view->response = $this->_response;
         parent::after();
     }
 
-    public function badRequest() {
+    public function badRequest()
+    {
         header('HTTP/1.1 400 Bad Request');
     }
 
-    public function unauthorized() {
+    public function unauthorized()
+    {
         header('HTTP/1.1 401 Unauthorized');
     }
 
-    public function forbidden() {
+    public function forbidden()
+    {
         header('HTTP/1.1 403 Forbidden');
     }
 
-    public function notFound() {
+    public function notFound()
+    {
         header('HTTP/1.1 404 Not found');
     }
 
