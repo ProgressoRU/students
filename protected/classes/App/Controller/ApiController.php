@@ -17,6 +17,10 @@ class ApiController extends \App\Page
         $this->_response[$param] = $value;
     }
 
+    public function claim($param){
+        return $this->_response[$param];
+    }
+
     public function after() {
         $this->view->response = $this->_response;
         parent::after();

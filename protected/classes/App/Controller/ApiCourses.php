@@ -12,7 +12,7 @@ class ApiCourses extends ApiController
         $this->response('status', 0);
         $this->response('courses', array());
         try {
-            $this->response('status', 0);
+            $this->response('status', 1);
             $this->response('courses', $this->pixie->db->query('select')->table('tblcourses')->execute()->as_array());
         } catch (Exception $e) {
             $this->response('status', 0);

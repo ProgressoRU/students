@@ -6,46 +6,41 @@ use App\Libraries\Request,
     Exception,
     App\Libraries\Auth;
 
-class ApiUser extends \App\Page
+class ApiUser extends ApiController
 {
 
     public function action_auth()
     {
-        $this->view->subview = 'json';
-        $response = array(
-            'status' => 403,
-            'user' => array()
-        );
+        $this->response('status', 403);
+        $this->response('user', array());
         if (Auth::checkCookie($this->pixie)) {
             $id = $_COOKIE['id'];
             try {
-                $response['user'] = $this->pixie->db->query('select')->table('tblusers')
+                $this->response('user', $this->pixie->db->query('select')->table('tblusers')
                     ->fields('uID', 'username', 'txtSurname', 'txtName', 'txtPatronymic', 'GroupID', 'txtRole')
                     ->where('uID', $id)
-                    ->execute()->as_array();
+                    ->execute()->as_array());
             } catch (Exception $e) {
                 error_log($e->getMessage());
-                $this->pixie->view->response = $response; //is this right?
             }
-            if ($response['user'] != null) {
-                $response['status'] = 200; //200: OK
+            if ($this->claim('user') != null) {
+                $this->response('status', 200); //200: OK
             }
         } else {
             $login = Request::getString('username');
             $pass = Request::getString('pass');
-            $response = Auth::login(($this->pixie),$login,$pass);
+            $response = Auth::login(($this->pixie), $login, $pass);
+            //Auth::login(($this->pixie),$login,$pass);
         }
-        $this->view->response = $response;
     }
 
-    public function action_logout(){
-        $this->view->subview = 'json';
+    public function action_logout()
+    {
         if (Auth::logout($this->pixie)) {
             $response = true;
-        }
-        else $response = false;
+        } else $response = false;
 
-        $this->view->response = $response;
+        //$this->view->response = $response;
     }
 
 }
