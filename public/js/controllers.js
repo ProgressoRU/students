@@ -1,8 +1,8 @@
 var stControllers = angular.module('stControllers', []);
 
 // Обертка (wrap)
-stControllers.controller('WrapCtrl', ['$scope', 'Session', 'AuthService', 'serviceData',
-    function ($scope, Session, AuthService, serviceData) {
+stControllers.controller('WrapCtrl', ['$scope', 'Session', 'AuthService', 'serviceData', 'alertService',
+    function ($scope, Session, AuthService, serviceData, alertService) {
         //объявляем функции, обращающиеся при вызове к AuthService
         $scope.isAuthenticated = function () {
             return AuthService.isAuthenticated(); //а попроще!?
@@ -11,6 +11,7 @@ stControllers.controller('WrapCtrl', ['$scope', 'Session', 'AuthService', 'servi
         $scope.logout = function () {
             return AuthService.logout();
         };
+        $scope.closeAlert = alertService.closeAlert;
         //текущий пользователь берется из сервиса сессий
         $scope.currentUser = Session;
         //получаем список всех предметов через вызов к API
@@ -54,14 +55,16 @@ stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope
         $scope.success = false;
     }]);
 
-stControllers.controller('ClassCtrl', ['$scope', '$routeParams', 'serviceData', function ($scope, $routeParams, serviceData) {
-    //из параметров маршрута берем ID предмета
-    $scope.classID = $routeParams.classID;
-    //вызываем API, чтобы получить все лекции по предмету
-    serviceData.get('api/classes/info', {id: $scope.classID}).then(function (data) {
-        $scope.articles = (data.status && data.status == 1) ? data.lectures : [];
-    })
-}]);
+stControllers.controller('ClassCtrl', ['$scope', '$routeParams', 'serviceData', 'alertService',
+    function ($scope, $routeParams, serviceData, alertService) {
+        //из параметров маршрута берем ID предмета
+        $scope.classID = $routeParams.classID;
+        //вызываем API, чтобы получить все лекции по предмету
+        serviceData.get('api/classes/info', {id: $scope.classID}).then(function (data) {
+            if (data.status == 403) alertService.add("danger", "403: Доступ запрещен!");
+            $scope.articles = (data.status && data.status == 1) ? data.lectures : [];
+        })
+    }]);
 
 stControllers.controller('HeaderCtrl', ['$scope', function ($scope) {
 

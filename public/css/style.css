@@ -59,3 +59,10 @@ body
    background: #DBE4ED;
    border-color: #98B2CB;
 }
+
+.alert
+{
+    margin: 6px auto;
+    width: 50%;
+    /*position: absolute; */
+}
