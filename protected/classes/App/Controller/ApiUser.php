@@ -23,13 +23,13 @@ class ApiUser extends ApiController
             } catch (Exception $e) {
                 error_log($e->getMessage());
             }
-            if ($this->claim('user') != null) {
+            if ($this->response('user') != null) {
                 $this->response('status', 200); //200: OK
             }
         } else {
             $login = Request::getString('username');
             $pass = Request::getString('pass');
-            $this->response(Auth::login(($this->pixie), $login, $pass));
+            $this->response(null, Auth::login(($this->pixie), $login, $pass));
             //Auth::login(($this->pixie),$login,$pass);
         }
     }
