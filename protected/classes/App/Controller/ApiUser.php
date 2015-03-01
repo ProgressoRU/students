@@ -29,7 +29,7 @@ class ApiUser extends ApiController
         } else {
             $login = Request::getString('username');
             $pass = Request::getString('pass');
-            $response = Auth::login(($this->pixie), $login, $pass);
+            $this->response(Auth::login(($this->pixie), $login, $pass));
             //Auth::login(($this->pixie),$login,$pass);
         }
     }
