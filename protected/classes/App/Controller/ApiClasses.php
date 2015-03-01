@@ -42,6 +42,7 @@ class ApiClasses extends ApiController
             //проверяем совпадает ли курс пользователя с курсом предмета
             if (Auth::checkPermissions($this->pixie, $courseId->CourseID)) {
                 $this->response('lectures', array());
+                //получаем список лекций
                 try {
                     $this->response('lectures',
                         $this->pixie->db->query('select')->table('tblArticles')

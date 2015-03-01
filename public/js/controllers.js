@@ -1,8 +1,8 @@
 var stControllers = angular.module('stControllers', []);
 
 // Wrap controller
-stControllers.controller('WrapCtrl', ['$scope', 'Session', 'AuthService',
-    function ($scope, Session, AuthService) {
+stControllers.controller('WrapCtrl', ['$scope', 'Session', 'AuthService', 'serviceData',
+    function ($scope, Session, AuthService, serviceData) {
 
         $scope.isAuthenticated = function () {
             return AuthService.isAuthenticated(); //а попроще!?
@@ -13,6 +13,10 @@ stControllers.controller('WrapCtrl', ['$scope', 'Session', 'AuthService',
         };
 
         $scope.currentUser = Session;
+
+        serviceData.get('api/classes/all').then(function (data) {
+            $scope.classes = (data.status && data.status == 1) ? data.classes : [];
+        })
     }]);
 
 stControllers.controller('HomeCtrl', ['$scope', function ($scope) {
@@ -51,16 +55,12 @@ stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope
 stControllers.controller('ClassCtrl', ['$scope', '$routeParams', 'serviceData', function ($scope, $routeParams, serviceData) {
     $scope.classID = $routeParams.classID;
     serviceData.get('api/classes/info', {id: $scope.classID}).then(function (data) {
-        $scope.classes = (data.status && data.status == 1) ? data.classes : [];
+        $scope.articles = (data.status && data.status == 1) ? data.articles : [];
     })
 }]);
 
-stControllers.controller('HeaderCtrl', ['$scope', 'serviceData', function ($scope, serviceData) {
-    $scope.courses = [];
+stControllers.controller('HeaderCtrl', ['$scope', function ($scope) {
 
-    serviceData.get('api/classes/all').then(function (data) {
-        $scope.classes = (data.status && data.status == 1) ? data.classes : [];
-    })
 }]);
 
 stControllers.controller('NewsCtrl', ['$scope', 'serviceData', 'AUTH_EVENTS', '$rootScope',
