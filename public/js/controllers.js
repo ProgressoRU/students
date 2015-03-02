@@ -63,7 +63,9 @@ stControllers.controller('ClassCtrl', ['$scope', '$routeParams', 'serviceData', 
         serviceData.get('api/classes/info', {id: $scope.classID}).then(function (data) {
             if (data.status == 403) alertService.add("danger", "403: Доступ запрещен!");
             $scope.articles = (data.status && data.status == 1) ? data.lectures : [];
-        })
+        });
+
+        $scope.oneAtATime = true;
     }]);
 
 stControllers.controller('HeaderCtrl', ['$scope', function ($scope) {

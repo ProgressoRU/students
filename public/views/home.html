@@ -11,7 +11,6 @@
         <div class="panel-body">
             {{n.txtNews}}
         </div>
-        <!-- ng-class="{'panel-warning': n.intImpotrance==1, 'panel-danger': ==2}" -->
         <div data-ng-switch="n.intImpotrance" class="panel-footer">
             <small><em>{{n.dateCreated||'Дата не указана'}}</em></small>
             <span data-ng-switch-when="1" class="label label-warning" style="float:right;">Обратите внимание</span>
