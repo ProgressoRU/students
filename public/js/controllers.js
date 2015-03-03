@@ -65,8 +65,29 @@ stControllers.controller('ClassCtrl', ['$scope', '$routeParams', 'serviceData', 
             $scope.articles = (data.status && data.status == 1) ? data.lectures : [];
         });
 
+        $scope.uiConfig = {
+            calendar:{
+                editable: false,
+                height: "auto",
+                firstDay: 1,
+                header:{
+                    right: 'today prev,next'
+                },
+                dayClick: $scope.alertEventOnClick,
+                eventDrop: $scope.alertOnDrop,
+                eventResize: $scope.alertOnResize
+            }
+        };
+
+        $scope.eventSources = [];
+
         $scope.oneAtATime = true;
     }]);
+
+stControllers.controller('calendarCtrl',['$scope'],
+function($scope){
+
+});
 
 stControllers.controller('HeaderCtrl', ['$scope', function ($scope) {
 

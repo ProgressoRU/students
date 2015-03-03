@@ -19,8 +19,7 @@
                 </blockquote>
             </accordion-group>
         </accordion>
-        <div class="col-md-3 col-xs-4">
-            <datepicker ng-model="dt" min-date="minDate" show-weeks="true" class="well well-sm row col-md-12"></datepicker>
-        </div>
+        <div ui-calendar="uiConfig.calendar" class="col-md-3 col-xs-12" data-ng-model="eventSources"></div>
     </div>
+
 </article>
