@@ -18,12 +18,12 @@
     <script src="/public/js/controllers.js"></script>
     <script src="/public/js/directives.js"></script>
 </head>
-<body data-ng-controller="WrapCtrl" class="container-fluid">
+<body data-ng-controller="WrapCtrl">
 <div>
     <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{ alert.msg }}</alert>
 </div>
 <div data-st-Header></div>
-<div data-ng-view></div>
+<div data-ng-view class="container-fluid"></div>
 <div data-login-dialog></div>
 </body>
 </html>
