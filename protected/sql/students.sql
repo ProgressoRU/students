@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50523
 File Encoding         : 65001
 
-Date: 2015-02-28 18:59:22
+Date: 2015-03-04 02:51:04
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -22,8 +22,7 @@ DROP TABLE IF EXISTS `tblarticles`;
 CREATE TABLE `tblarticles` (
   `artID` int(11) NOT NULL,
   `txtTitle` varchar(255) NOT NULL,
-  `txtShortDesc` varchar(255) DEFAULT NULL,
-  `txtDetails` longtext,
+  `txtdesc` longtext,
   `isVisible` tinyint(255) DEFAULT NULL,
   `dateCreated` timestamp NULL DEFAULT NULL,
   `dateUpdated` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
