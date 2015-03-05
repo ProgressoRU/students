@@ -55,12 +55,12 @@ stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope
         $scope.success = false;
     }]);
 
-stControllers.controller('ClassCtrl', ['$scope', '$routeParams', 'serviceData', 'alertService',
-    function ($scope, $routeParams, serviceData, alertService) {
+stControllers.controller('ClassCtrl', ['$scope', '$routeParams', 'serviceData', 'alertService', 'uiCalendarConfig',
+    function ($scope, $routeParams, serviceData, alertService, uiCalendarConfig) {
         //из параметров маршрута берем ID предмета
         $scope.classID = $routeParams.classID;
         $scope.eventSources = {
-            events: [],
+            events: [{id: 1, title: 'test', start: '2015-03-03'}],
             color: 'yellow',   // an option!
             textColor: 'black' // an option!
         };
@@ -69,20 +69,24 @@ stControllers.controller('ClassCtrl', ['$scope', '$routeParams', 'serviceData', 
             if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
             else if (data.status == 403) alertService.add("danger", "403: Доступ запрещен!");
             else if (data.status == 1) {
+                $scope.eventSources.events.push({title: 'asdas', start: '2015-03-03'});
+                $scope.addEvent();
+                //$scope.renderCalender();
                 $scope.articles = data.lectures;
-                for (var i = 0; i < data.lectures.length; i++) {
+                /*for (var i = 0; i < 2; i++) {
                     var event = {};
                     event = {
+                        id: i+2,
                         title: 'title1',
                         start: '2015-03-03'
                     };
                     $scope.eventSources.events.push(event);
                     console.log($scope.eventSources);
-                }
+                }*/
             }
             else alertService.add("danger","Неизвестная ощибка. Обратитесь к администратору.")
         });
-        $scope.oneAtATime = true;
+        //$scope.oneAtATime = true;
         console.log($scope.eventSources);
         $scope.uiConfig = {
             calendar: {
@@ -94,8 +98,20 @@ stControllers.controller('ClassCtrl', ['$scope', '$routeParams', 'serviceData', 
                 },
                 dayClick: $scope.alertEventOnClick,
                 eventDrop: $scope.alertOnDrop,
-                eventResize: $scope.alertOnResize
+                eventResize: $scope.alertOnResize,
+                eventRender: $scope.eventRender
             }
+        };
+        $scope.renderCalender = function(calendar) {
+            if(uiCalendarConfig.calendars[calendar]){
+                uiCalendarConfig.calendars[calendar].fullCalendar('render');
+            }
+        };
+        $scope.addEvent = function() {
+            $scope.eventSources.events.push({
+                title: 'Open Sesame',
+                start: '2015-03-03'
+            });
         };
     }]);
 
