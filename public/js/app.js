@@ -24,8 +24,8 @@ var app = angular.module('students', ['ngRoute', 'stServices', 'stControllers', 
             //проверяем авторизацию при каждом переходе
             AuthService.login().then(function (user) {
                 $reply = user.status;
-                console.log('Run: ' + $reply); //DEBUG
-                console.log('Run: ' + AUTH_EVENTS[$reply]); //DEBUG
+                //console.log('Run: ' + $reply); //DEBUG
+                //console.log('Run: ' + AUTH_EVENTS[$reply]); //DEBUG
                 //отправляем оповещение
                 $rootScope.$broadcast(AUTH_EVENTS[$reply]);
                 //если полномочия не подтверждены, делаем принудительный выход

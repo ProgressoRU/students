@@ -5,7 +5,7 @@ stServices.service('serviceData', ['$http', '$q', function ($http, $q) {
         get: function (url, param) {
             return $http.post(url, param)
                 .then(function (response) {
-                    console.log(response);
+                    //console.log(response);
                     if (typeof response.data === 'object') {
                         return response.data;
                     } else {
@@ -33,7 +33,7 @@ stServices.factory('AuthService', ['serviceData', '$location', 'Session', functi
                 if (data.status == 200) {
                     Session.create(data.user[0].uID, data.user[0].username, data.user[0].txtSurname, data.user[0].txtName,
                         data.user[0].txtPatronymic, data.user[0].GroupID, data.user[0].txtRole, data.user[0].courseID);
-                    console.log(Session);
+                    //console.log(Session);
                     return data;
                 }
                 else return data;
@@ -49,10 +49,10 @@ stServices.factory('AuthService', ['serviceData', '$location', 'Session', functi
         return serviceData
             .get('api/user/logout')
             .then(function (data) {
-                console.log(data);
+                //console.log(data);
                 if (data.status == true) {
                     Session.destroy();
-                    console.log('Session' + Session);
+                    //console.log('Session' + Session);
                 }
             });
     };

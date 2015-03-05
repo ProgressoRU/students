@@ -31,8 +31,8 @@ stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope
             //отправляем сервису Авторизации необходимые данные
             AuthService.login(credentials).then(function (user) {
                 $reply = user.status;
-                console.log($reply); //DEBUG
-                console.log(AUTH_EVENTS[$reply]); //DEBUG
+                //console.log($reply); //DEBUG
+                //console.log(AUTH_EVENTS[$reply]); //DEBUG
                 //оповещаем все нижестоящие контроллеры об ответе сервера
                 $rootScope.$broadcast(AUTH_EVENTS[$reply]);
                 //если ответ 200:OK
@@ -55,38 +55,36 @@ stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope
         $scope.success = false;
     }]);
 
-stControllers.controller('ClassCtrl', ['$scope', '$routeParams', 'serviceData', 'alertService', 'uiCalendarConfig',
-    function ($scope, $routeParams, serviceData, alertService, uiCalendarConfig) {
+stControllers.controller('ClassCtrl', ['$scope', '$routeParams', 'serviceData', 'alertService',
+    function ($scope, $routeParams, serviceData, alertService) {
         //из параметров маршрута берем ID предмета
         $scope.classID = $routeParams.classID;
-        $scope.eventSources = {
-            events: [{id: 1, title: 'test', start: '2015-03-03'}],
+        $scope.events = [{id: 1, title: 'test', start: '2015-03-03'}];
+        $scope.eventSources = [{
+            events: $scope.events,
             color: 'yellow',   // an option!
             textColor: 'black' // an option!
-        };
+        }];
+
         //вызываем API, чтобы получить все лекции по предмету
         serviceData.get('api/classes/info', {id: $scope.classID}).then(function (data) {
             if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
             else if (data.status == 403) alertService.add("danger", "403: Доступ запрещен!");
             else if (data.status == 1) {
-                $scope.eventSources.events.push({title: 'asdas', start: '2015-03-03'});
-                $scope.addEvent();
-                //$scope.renderCalender();
-                $scope.articles = data.lectures;
-                /*for (var i = 0; i < 2; i++) {
+                $scope.articles = data['lectures'] || [];
+                for (var i = 0; i < 2; i++) {
                     var event = {};
                     event = {
-                        id: i+2,
                         title: 'title1',
                         start: '2015-03-03'
                     };
-                    $scope.eventSources.events.push(event);
+                    $scope.events.push(event);
                     console.log($scope.eventSources);
-                }*/
+                }
             }
             else alertService.add("danger","Неизвестная ощибка. Обратитесь к администратору.")
         });
-        //$scope.oneAtATime = true;
+
         console.log($scope.eventSources);
         $scope.uiConfig = {
             calendar: {
@@ -95,23 +93,8 @@ stControllers.controller('ClassCtrl', ['$scope', '$routeParams', 'serviceData', 
                 firstDay: 1,
                 header: {
                     right: 'today prev,next'
-                },
-                dayClick: $scope.alertEventOnClick,
-                eventDrop: $scope.alertOnDrop,
-                eventResize: $scope.alertOnResize,
-                eventRender: $scope.eventRender
+                }
             }
-        };
-        $scope.renderCalender = function(calendar) {
-            if(uiCalendarConfig.calendars[calendar]){
-                uiCalendarConfig.calendars[calendar].fullCalendar('render');
-            }
-        };
-        $scope.addEvent = function() {
-            $scope.eventSources.events.push({
-                title: 'Open Sesame',
-                start: '2015-03-03'
-            });
         };
     }]);
 
