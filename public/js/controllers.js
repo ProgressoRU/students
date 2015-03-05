@@ -59,18 +59,37 @@ stControllers.controller('ClassCtrl', ['$scope', '$routeParams', 'serviceData', 
     function ($scope, $routeParams, serviceData, alertService) {
         //из параметров маршрута берем ID предмета
         $scope.classID = $routeParams.classID;
+        $scope.eventSources = {
+            events: [],
+            color: 'yellow',   // an option!
+            textColor: 'black' // an option!
+        };
         //вызываем API, чтобы получить все лекции по предмету
         serviceData.get('api/classes/info', {id: $scope.classID}).then(function (data) {
-            if (data.status == 403) alertService.add("danger", "403: Доступ запрещен!");
-            $scope.articles = (data.status && data.status == 1) ? data.lectures : [];
+            if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
+            else if (data.status == 403) alertService.add("danger", "403: Доступ запрещен!");
+            else if (data.status == 1) {
+                $scope.articles = data.lectures;
+                for (var i = 0; i < data.lectures.length; i++) {
+                    var event = {};
+                    event = {
+                        title: 'title1',
+                        start: '2015-03-03'
+                    };
+                    $scope.eventSources.events.push(event);
+                    console.log($scope.eventSources);
+                }
+            }
+            else alertService.add("danger","Неизвестная ощибка. Обратитесь к администратору.")
         });
-
+        $scope.oneAtATime = true;
+        console.log($scope.eventSources);
         $scope.uiConfig = {
-            calendar:{
-                editable: false,
+            calendar: {
+                editable: true,
                 height: "auto",
                 firstDay: 1,
-                header:{
+                header: {
                     right: 'today prev,next'
                 },
                 dayClick: $scope.alertEventOnClick,
@@ -78,16 +97,12 @@ stControllers.controller('ClassCtrl', ['$scope', '$routeParams', 'serviceData', 
                 eventResize: $scope.alertOnResize
             }
         };
-
-        $scope.eventSources = [];
-
-        $scope.oneAtATime = true;
     }]);
 
-stControllers.controller('calendarCtrl',['$scope'],
-function($scope){
+stControllers.controller('calendarCtrl', ['$scope'],
+    function ($scope) {
 
-});
+    });
 
 stControllers.controller('HeaderCtrl', ['$scope', function ($scope) {
 
