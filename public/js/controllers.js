@@ -55,45 +55,75 @@ stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope
         $scope.success = false;
     }]);
 
-stControllers.controller('ClassCtrl', ['$scope', '$routeParams', 'serviceData', 'alertService',
-    function ($scope, $routeParams, serviceData, alertService) {
+stControllers.controller('ClassCtrl', ['$scope', '$routeParams', 'serviceData', 'alertService', '$compile',
+    function ($scope, $routeParams, serviceData, alertService, $compile) {
         //из параметров маршрута берем ID предмета
         $scope.classID = $routeParams.classID;
-        $scope.events = [{id: 1, title: 'test', start: '2015-03-03'}];
+        $scope.events = [];
+        //eventSources — массив объектов, используемый плагином FullCalendar как источник событий
         $scope.eventSources = [{
-            events: $scope.events,
-            color: 'yellow',   // an option!
-            textColor: 'black' // an option!
-        }];
+                events: $scope.events //первый источник — массив, инициализируемый при инициализации скоупа.
+                                      //будет использоваться при первичной отрисовке календаря
+            },
+            {
+                events: function (start, end, timezone, callback) { //второй источник — массив, генерируемый функцией, при переходе на другой месяц
+                    var events = [];
+                    if ($scope.articles) //убедимся, что массив лекций уже существует
+                        for (var i = 0; i < $scope.articles.length; i++)
+                            events.push({
+                                title: $scope.articles[i].txtTitle,
+                                start: $scope.articles[i].dateDeadLine,
+                                allDay: true
+                            });
+                    callback(events);
+                }
+            }];
 
         //вызываем API, чтобы получить все лекции по предмету
         serviceData.get('api/classes/info', {id: $scope.classID}).then(function (data) {
+            //если ответ не пришел
             if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
+            //если пришел ответ с запретом
             else if (data.status == 403) alertService.add("danger", "403: Доступ запрещен!");
+            //Если доступ разрешен
             else if (data.status == 1) {
+                //пытаемся передать в articles, полученные данные
                 $scope.articles = data['lectures'] || [];
-                for (var i = 0; i < 2; i++) {
+                for (var i = 0; i < $scope.articles.length; i++) {
                     var event = {};
                     event = {
-                        title: 'title1',
-                        start: '2015-03-03'
+                        title: $scope.articles[i].txtTitle,
+                        start: $scope.articles[i].dateDeadLine,
+                        allDay: true
                     };
-                    $scope.events.push(event);
-                    console.log($scope.eventSources);
+                    $scope.events[i] = event;
                 }
             }
-            else alertService.add("danger","Неизвестная ощибка. Обратитесь к администратору.")
+            else alertService.add("danger", "Неизвестная ощибка. Обратитесь к администратору.")
         });
-
-        console.log($scope.eventSources);
+        //Тултипы
+        $scope.eventRender = function( event, element, view ) {
+            element.attr({'tooltip': event.title,
+                'tooltip-append-to-body': true});
+            $compile(element)($scope);
+        };
+        $scope.eventClick = function( date, jsEvent, view){
+            $scope.alertMessage = (date.title + ' was clicked ');
+        };
+        //настройки плагина FullCalendar
         $scope.uiConfig = {
             calendar: {
-                editable: true,
+                editable: false,
                 height: "auto",
                 firstDay: 1,
                 header: {
                     right: 'today prev,next'
-                }
+                },
+                monthNames: ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль',
+                    'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь'],
+                titleFormat: 'Задания на MMMM',
+                eventRender: $scope.eventRender,
+                eventClick: $scope.eventClick
             }
         };
     }]);

@@ -5,7 +5,7 @@
         </h1>
     </div>
     <div class="row">
-        <accordion close-others="oneAtATime" class="col-md-9">
+        <accordion close-others="oneAtATime" class="col-md-7">
             <accordion-group data-ng-repeat="art in articles" class="panel panel-info" is-open="status.open">
                 <accordion-heading><strong>{{$index+1}}.</strong> {{art.txtTitle}}
                     <i class="pull-right glyphicon"
@@ -19,7 +19,8 @@
                 </blockquote>
             </accordion-group>
         </accordion>
-        <div ui-calendar="uiConfig.calendar" class="col-md-3 col-xs-12" data-ng-model="eventSources" calendar="lecturesCalendar"></div>
+        <div data-ui-calendar="uiConfig.calendar" class="col-md-5 col-xs-12" data-ng-model="eventSources"
+             data-calendar="lecturesCalendar"></div>
     </div>
 
 </article>
