@@ -46,9 +46,20 @@ class ApiClasses extends ApiController
                 try {
                     $this->response('lectures',
                         $this->pixie->db->query('select')->table('tblArticles')
+                            ->fields('artID', 'dateDeadLine', 'intClass', 'txtTitle', 'txtdesc')
                             ->where('intClass', $id)
                             ->where('isVisible', 1)
                             ->execute()->as_array());
+                    //получаем связанные вложения
+                    if ($this->response('lectures')) {
+                        $this->response('attachments',
+                            $this->pixie->db->query('select')->table('tblAttachments')
+                                ->where('artID', 'IN',
+                                    $this->pixie->db->query('select')->table('tblArticles')
+                                        ->fields('artID')
+                                        ->where('intClass',$id))
+                                ->execute()->as_array());
+                    }
                     $this->response('status', 1);
                 } catch (Exception $e) {
                     $this->response('status', 0);

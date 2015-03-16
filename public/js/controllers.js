@@ -89,6 +89,7 @@ stControllers.controller('ClassCtrl', ['$scope', '$routeParams', 'serviceData', 
             else if (data.status == 1) {
                 //пытаемся передать в articles, полученные данные
                 $scope.articles = data['lectures'] || [];
+                $scope.attachments = data['attachments'] || [];
                 for (var i = 0; i < $scope.articles.length; i++) {
                     var event = {};
                     event = {

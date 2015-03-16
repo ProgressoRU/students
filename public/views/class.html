@@ -12,10 +12,9 @@
                        ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
                 </accordion-heading>
                 {{art.txtdesc}}
-                <blockquote>
-                    <p>Вложение 1</p>
-
-                    <p>Вложение 2</p>
+                <blockquote data-ng-repeat="atc in attachments" data-ng-if="art.artID==atc.artID">
+                    <p><a href="{{atc.txtURL}}">{{atc.txtTitle}}</a>
+                    <footer>{{atc.txtDesc}}</footer></p>
                 </blockquote>
             </accordion-group>
         </accordion>

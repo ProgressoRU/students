@@ -37,7 +37,7 @@ class ApiController extends \App\Page
                 $this->_response[$param] = $value;
             } else {
                 // incorrect
-                error_log('ApiController incorrect calling $param is not string or numeric');
+                error_log('ApiController incorrect calling'. $param .'is not string or numeric');
             }
         }
 
