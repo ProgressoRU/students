@@ -12,10 +12,14 @@
                        ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
                 </accordion-heading>
                 {{art.txtdesc}}
-                <blockquote data-ng-repeat="atc in attachments" data-ng-if="art.artID==atc.artID">
-                    <p><a href="{{atc.txtURL}}">{{atc.txtTitle}}</a>
-                    <footer>{{atc.txtDesc}}</footer></p>
-                </blockquote>
+                <div class="bs-callout bs-callout-primary" data-ng-repeat="atc in attachments"
+                     data-ng-if="art.artID==atc.artID">
+                    <h4><a href="{{atc.txtURL}}"><span class="glyphicon glyphicon-cloud-download"
+                                                       aria-hidden="true"></span> {{atc.txtTitle}}</a></h4>
+                    {{atc.txtDesc}}
+                </div>
+                <br>
+                <div class="accordion-footer">Сдать до: {{art.dateDeadLine | moment: 'format': 'MMM DD, YYYY' }}</div>
             </accordion-group>
         </accordion>
         <div data-ui-calendar="uiConfig.calendar" class="col-md-5 col-xs-12" data-ng-model="eventSources"

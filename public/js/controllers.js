@@ -78,7 +78,6 @@ stControllers.controller('ClassCtrl', ['$scope', '$routeParams', 'serviceData', 
                     callback(events);
                 }
             }];
-
         //вызываем API, чтобы получить все лекции по предмету
         serviceData.get('api/classes/info', {id: $scope.classID}).then(function (data) {
             //если ответ не пришел
@@ -111,6 +110,8 @@ stControllers.controller('ClassCtrl', ['$scope', '$routeParams', 'serviceData', 
         $scope.eventClick = function( date, jsEvent, view){
             $scope.alertMessage = (date.title + ' was clicked ');
         };
+
+        $scope.oneAtATime = true;
         //настройки плагина FullCalendar
         $scope.uiConfig = {
             calendar: {

@@ -1,3 +1,15 @@
-/**
- * Created by Виктор on 09.02.2015.
- */
+var stFilters = angular.module('stFilters', []);
+
+stFilters.filter('moment', function () {
+    // USAGE:
+    // {{ someDate | moment: [any moment function] : [param1] : [param2] : [param n]
+
+    // EXAMPLES:
+    // {{ someDate | moment: 'format': 'MMM DD, YYYY' }}
+    // {{ someDate | moment: 'fromNow' }}
+    return function (input, momentFn /*, param1, param2, etc... */) {
+        var args = Array.prototype.slice.call(arguments, 2),
+            momentObj = moment(input);
+        return momentObj[momentFn].apply(momentObj, args);
+    };
+});

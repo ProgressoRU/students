@@ -22,6 +22,7 @@
     <script src="/public/js/services.js"></script>
     <script src="/public/js/controllers.js"></script>
     <script src="/public/js/directives.js"></script>
+    <script src="/public/js/filters.js"></script>
 </head>
 <body data-ng-controller="WrapCtrl">
 <div>
