@@ -12,7 +12,7 @@
             {{n.txtNews}}
         </div>
         <div data-ng-switch="n.intImpotrance" class="panel-footer">
-            <small><em>{{n.dateCreated||'Дата не указана'}}</em></small>
+            <small><em>{{n.dateCreated|moment: 'lang': 'ru' | moment: 'format': 'LL'}}</em></small>
             <span data-ng-switch-when="1" class="label label-warning" style="float:right;">Обратите внимание</span>
             <span data-ng-switch-when="2" class="label label-danger" style="float:right;">Важно</span>
         </div>

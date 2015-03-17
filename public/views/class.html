@@ -19,7 +19,7 @@
                     {{atc.txtDesc}}
                 </div>
                 <br>
-                <div class="accordion-footer">Сдать до: {{art.dateDeadLine | moment: 'format': 'MMM DD, YYYY' }}</div>
+                <div class="accordion-footer">Сдать до {{art.dateDeadLine | moment: 'lang': 'ru' | moment: 'format': 'LL' }}</div>
             </accordion-group>
         </accordion>
         <div data-ui-calendar="uiConfig.calendar" class="col-md-5 col-xs-12" data-ng-model="eventSources"

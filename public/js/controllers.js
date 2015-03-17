@@ -145,7 +145,6 @@ stControllers.controller('NewsCtrl', ['$scope', 'serviceData',
         $scope.news = [];
         $scope.length = 0;
         //возможно стоит ограничить количество получаемых новостей на серверной стороне
-        //TODO: приведение даты к нормальному виду
         $scope.lastNews = function (k) {
             $scope.visNews = [];
             $scope.startPos = $scope.length - $scope.CurPage * k;
