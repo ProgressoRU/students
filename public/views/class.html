@@ -9,9 +9,9 @@
             <accordion-group data-ng-repeat="art in articles" class="panel panel-info" is-open="status.open">
                 <accordion-heading><strong>{{$index+1}}.</strong> {{art.txtTitle}}
                     <i class="pull-right glyphicon"
-                       ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+                       data-ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
                 </accordion-heading>
-                {{art.txtdesc}}
+                <p>{{art.txtdesc}}</p>
                 <div class="bs-callout bs-callout-primary" data-ng-repeat="atc in attachments"
                      data-ng-if="art.artID==atc.artID">
                     <h4><a href="{{atc.txtURL}}"><span class="glyphicon glyphicon-cloud-download"
