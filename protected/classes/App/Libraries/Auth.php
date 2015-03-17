@@ -23,14 +23,14 @@ abstract class Auth
         }
         try {
             //находим пользователя, соответствующего кукам
-            $user = $pixie->db->query('select')->table('tblusers')
-                ->where('uID', $id)
-                ->where('sessionHash', $hash)
+            $user = $pixie->db->query('select')->table('users')
+                ->where('user_id', $id)
+                ->where('session_hash', $hash)
                 ->execute()->current();
 
             //проверяем совпадают ли последний IP и браузер с текущими
             if (
-                (!property_exists($user, 'lastIp') || $user->lastIp != $_SERVER['REMOTE_ADDR'])
+                (!property_exists($user, 'last_ip') || $user->last_ip != $_SERVER['REMOTE_ADDR'])
                 || (!property_exists($user, 'useragent') || $user->useragent != $_SERVER['HTTP_USER_AGENT'])
             ) {
                 $isOk = false;
@@ -44,13 +44,13 @@ abstract class Auth
         //если что-то не совпало, то на всякий случай трем сессию пользователя
         if (!$isOk) {
             try {
-                $pixie->db->query('update')->table('tblusers')
+                $pixie->db->query('update')->table('users')
                     ->data(array(
-                        'sessionHash' => '',
-                        'lastIp' => '127.0.0.1',
+                        'session_hash' => '',
+                        'last_ip' => '127.0.0.1',
                         'useragent' => ''
                     ))
-                    ->where('uID', $id)
+                    ->where('user_id', $id)
                     ->execute();
             } catch (Exception $e) {
                 error_log($e->getMessage());
@@ -70,15 +70,15 @@ abstract class Auth
             return $accessGranted;
         try {
             //выясняем роль и курс
-            $permissions = $pixie->db->query('select')->table('tblusers')
-                ->fields('uID', 'GroupID', 'txtRole', 'tblgroups.CourseID')
-                ->where('uID', $id)
-                ->join('tblgroups', array('tblgroups.GroupID', 'tblusers.GroupID'), 'inner')
+            $permissions = $pixie->db->query('select')->table('users')
+                ->fields('user_id', 'group_id', 'role', 'groups.course_id')
+                ->where('user_id', $id)
+                ->join('groups', array('groups.group_id', 'users.group_id'), 'inner')
                 ->execute()->current();
         } catch (Exception $e) {
             error_log($e->getMessage());
         }
-        if ($permissions->CourseID != $param) {
+        if ($permissions->course_id != $param) {
             return $accessGranted;
         }
         else $accessGranted = true;
@@ -95,11 +95,11 @@ abstract class Auth
         $passHash = md5(md5($pass)); //TODO: заменить на SHA
         //пытаемся получить информацию о пользователе
         try {
-            $reply['user'] = $pixie->db->query('select')->table('tblusers')
-                ->fields('uID', 'username', 'txtSurname', 'txtName', 'txtPatronymic', 'GroupID', 'txtRole', 'tblgroups.courseID')
+            $reply['user'] = $pixie->db->query('select')->table('users')
+                ->fields('user_id', 'username', 'surname', 'name', 'patronymic', 'group_id', 'role', 'groups.course_id')
                 ->where('username', $login)
-                ->where('passHash', $passHash)
-                ->join('tblgroups', array('tblgroups.GroupID', 'tblusers.GroupID'), 'inner')
+                ->where('pass_hash', $passHash)
+                ->join('groups', array('groups.group_id', 'users.group_id'), 'inner')
                 ->execute()->as_array();
         } catch (Exception $e) {
             error_log('SQL Error\nIt\'s might help:\n' . $e->getMessage());
@@ -111,18 +111,18 @@ abstract class Auth
             $hash = md5(uniqid(rand(), true));
             //заносим в БД сессию, IP и useragent
             try {
-                $pixie->db->query('update')->table('tblusers')
+                $pixie->db->query('update')->table('users')
                     ->data(array(
-                        'sessionHash' => $hash,
-                        'lastIp' => $_SERVER['REMOTE_ADDR'],
+                        'session_hash' => $hash,
+                        'last_ip' => $_SERVER['REMOTE_ADDR'],
                         'useragent' => $_SERVER['HTTP_USER_AGENT']))
-                    ->where('uid', $reply['user'][0]->uID)
+                    ->where('user_id', $reply['user'][0]->user_id)
                     ->execute();
             } catch (Exception $e) {
                 error_log('User is found, but session update caused an error\nIt\'s might help:\n' . $e->getMessage());
             }
             //Устанавливем куки (на час)
-            setcookie("id", $reply['user'][0]->uID, time() + 3600, '/');
+            setcookie("id", $reply['user'][0]->user_id, time() + 3600, '/');
             setcookie("hash", $hash, time() + 3600, '/');
         } else $reply['status'] = 403; //403: Forbidden
 
@@ -135,13 +135,13 @@ abstract class Auth
         if (isset($_COOKIE['id'])) $id = $_COOKIE['id'];
         else return false;
         try {
-            $pixie->db->query('update')->table('tblusers')
+            $pixie->db->query('update')->table('users')
                 ->data(array(
-                    'sessionHash' => '',
-                    'lastIp' => '127.0.0.1',
+                    'session_hash' => '',
+                    'last_ip' => '127.0.0.1',
                     'useragent' => ''
                 ))
-                ->where('uID', $id)
+                ->where('user_id', $id)
                 ->execute();
         } catch (Exception $e) {
             error_log($e->getMessage());

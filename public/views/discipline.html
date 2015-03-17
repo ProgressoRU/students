@@ -1,0 +1,29 @@
+<article class="myWrap col-md-10 col-xs-12 col-sm-12">
+    <div class="page-header">
+        <h1>{{disciplines[disciplineID-1].title}}
+            <small><em>{{disciplines[disciplineID-1].txtShortDesc}}</em></small>
+        </h1>
+    </div>
+    <div class="row">
+        <accordion close-others="oneAtATime" class="col-md-7">
+            <accordion-group data-ng-repeat="lesson in lectures" class="panel panel-info" is-open="status.open">
+                <accordion-heading><strong>{{$index+1}}.</strong> {{lesson.title}}
+                    <i class="pull-right glyphicon"
+                       data-ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+                </accordion-heading>
+                <p>{{lesson.description}}</p>
+                <div class="bs-callout bs-callout-primary" data-ng-repeat="atc in attachments"
+                     data-ng-if="lesson.lecture_id==atc.lecture_id">
+                    <h4><a href="{{atc.url}}"><span class="glyphicon glyphicon-cloud-download"
+                                                       aria-hidden="true"></span> {{atc.title}}</a></h4>
+                    {{atc.description}}
+                </div>
+                <br>
+                <div class="accordion-footer">Сдать до {{lesson.date_dead_line | moment: 'lang': 'ru' | moment: 'format': 'LL' }}</div>
+            </accordion-group>
+        </accordion>
+        <div data-ui-calendar="uiConfig.calendar" class="col-md-5 col-xs-12" data-ng-model="eventSources"
+             data-calendar="lecturesCalendar"></div>
+    </div>
+
+</article>

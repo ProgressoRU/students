@@ -11,9 +11,9 @@ var app = angular.module('students', ['ngRoute', 'stServices', 'stControllers', 
                 controller: 'LoginModalCtrl',
                 templateUrl: 'public/views/login.html'
             }).
-            when('/class/:classID', {
-                controller: 'ClassCtrl',
-                templateUrl: 'public/views/class.html'
+            when('/class/:disciplineID', {
+                controller: 'DisciplineCtrl',
+                templateUrl: 'public/views/discipline.html'
             }).
             otherwise({redirectTo: '/news'});
 

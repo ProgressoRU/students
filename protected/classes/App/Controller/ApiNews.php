@@ -14,7 +14,7 @@ class ApiNews extends ApiController
 
         try {
             $this->response('status', 200);
-            $this->response('news', $this->pixie->db->query('select')->table('tblNews')->execute()->as_array());
+            $this->response('news', $this->pixie->db->query('select')->table('news')->execute()->as_array());
         } catch (Exception $e) {
             error_log($e->getMessage());
             $this->response('status', 400);

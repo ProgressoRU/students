@@ -16,16 +16,16 @@ return array(
         ),
     ),
 	'classes_all' => array(
-		'/api/classes/all',
+		'/api/disciplines/all',
 		array(
-			'controller' => 'apiClasses',
+			'controller' => 'apiDisciplines',
 			'action' => 'index'
 		),
 	),
 	'classes_lectures' => array(
-        '/api/classes/info',
+        '/api/disciplines/info',
 		array(
-			'controller' => 'apiClasses',
+			'controller' => 'apiDisciplines',
 			'action' => 'info'
 		),
 	),

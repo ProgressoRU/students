@@ -6,16 +6,16 @@ use App\Libraries\Request,
     App\Libraries\Auth as Auth,
     Exception;
 
-class ApiClasses extends ApiController
+class ApiDisciplines extends ApiController
 {
 
     public function action_index()
     {
         $this->response('status', 0);
-        $this->response('classes', array());
+        $this->response('disciplines', array());
         try {
             $this->response('status', 1);
-            $this->response('classes', $this->pixie->db->query('select')->table('tblclasses')->execute()->as_array());
+            $this->response('disciplines', $this->pixie->db->query('select')->table('disciplines')->execute()->as_array());
         } catch (Exception $e) {
             $this->response('status', 0);
             error_log($e->getMessage());
@@ -28,9 +28,9 @@ class ApiClasses extends ApiController
         $this->response('status', 0);
         //Получаем ID курса, для которого преподается предмет
         try {
-            $courseId = $this->pixie->db->query('select')->table('tblclasses')
-                ->fields('CourseID')
-                ->where('ClassID', $id)
+            $courseId = $this->pixie->db->query('select')->table('disciplines')
+                ->fields('course_id')
+                ->where('discipline_id', $id)
                 ->limit(1)
                 ->execute()->current();
         } catch (Exception $e) {
@@ -40,24 +40,24 @@ class ApiClasses extends ApiController
         //Если прошлый блок выполнился
         if (isset($courseId)) {
             //проверяем совпадает ли курс пользователя с курсом предмета
-            if (Auth::checkPermissions($this->pixie, $courseId->CourseID)) {
+            if (Auth::checkPermissions($this->pixie, $courseId->course_id)) {
                 $this->response('lectures', array());
                 //получаем список лекций
                 try {
                     $this->response('lectures',
-                        $this->pixie->db->query('select')->table('tblArticles')
-                            ->fields('artID', 'dateDeadLine', 'intClass', 'txtTitle', 'txtdesc')
-                            ->where('intClass', $id)
-                            ->where('isVisible', 1)
+                        $this->pixie->db->query('select')->table('lectures')
+                            ->fields('lecture_id', 'date_dead_line', 'discipline_id', 'title', 'description')
+                            ->where('discipline_id', $id)
+                            ->where('is_visible', 1)
                             ->execute()->as_array());
                     //получаем связанные вложения
                     if ($this->response('lectures')) {
                         $this->response('attachments',
-                            $this->pixie->db->query('select')->table('tblAttachments')
-                                ->where('artID', 'IN',
-                                    $this->pixie->db->query('select')->table('tblArticles')
-                                        ->fields('artID')
-                                        ->where('intClass',$id))
+                            $this->pixie->db->query('select')->table('attachments')
+                                ->where('lecture_id', 'IN',
+                                    $this->pixie->db->query('select')->table('lectures')
+                                        ->fields('lecture_id')
+                                        ->where('discipline_id',$id))
                                 ->execute()->as_array());
                     }
                     $this->response('status', 1);

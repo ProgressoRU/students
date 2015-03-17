@@ -31,8 +31,8 @@ stServices.factory('AuthService', ['serviceData', '$location', 'Session', functi
             .then(function (data) {
                 //создаем сессии, если ответ от сервера положительный
                 if (data.status == 200) {
-                    Session.create(data.user[0].uID, data.user[0].username, data.user[0].txtSurname, data.user[0].txtName,
-                        data.user[0].txtPatronymic, data.user[0].GroupID, data.user[0].txtRole, data.user[0].courseID);
+                    Session.create(data.user[0].user_id, data.user[0].username, data.user[0].surname, data.user[0].name,
+                        data.user[0].patronymic, data.user[0].group_id, data.user[0].role, data.user[0].course_id);
                     //console.log(Session);
                     return data;
                 }

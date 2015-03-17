@@ -15,8 +15,8 @@ stControllers.controller('WrapCtrl', ['$scope', 'Session', 'AuthService', 'servi
         //текущий пользователь берется из сервиса сессий
         $scope.currentUser = Session;
         //получаем список всех предметов через вызов к API
-        serviceData.get('api/classes/all').then(function (data) {
-            $scope.classes = (data.status && data.status == 1) ? data.classes : [];
+        serviceData.get('api/disciplines/all').then(function (data) {
+            $scope.disciplines = (data.status && data.status == 1) ? data.disciplines : [];
         })
     }]);
 
@@ -55,10 +55,10 @@ stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope
         $scope.success = false;
     }]);
 
-stControllers.controller('ClassCtrl', ['$scope', '$routeParams', 'serviceData', 'alertService', '$compile',
+stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceData', 'alertService', '$compile',
     function ($scope, $routeParams, serviceData, alertService, $compile) {
         //из параметров маршрута берем ID предмета
-        $scope.classID = $routeParams.classID;
+        $scope.disciplineID = $routeParams.disciplineID;
         $scope.events = [];
         //eventSources — массив объектов, используемый плагином FullCalendar как источник событий
         $scope.eventSources = [{
@@ -68,32 +68,32 @@ stControllers.controller('ClassCtrl', ['$scope', '$routeParams', 'serviceData', 
             {
                 events: function (start, end, timezone, callback) { //второй источник — массив, генерируемый функцией, при переходе на другой месяц
                     var events = [];
-                    if ($scope.articles) //убедимся, что массив лекций уже существует
-                        for (var i = 0; i < $scope.articles.length; i++)
+                    if ($scope.lectures) //убедимся, что массив лекций уже существует
+                        for (var i = 0; i < $scope.lectures.length; i++)
                             events.push({
-                                title: $scope.articles[i].txtTitle,
-                                start: $scope.articles[i].dateDeadLine,
+                                title: $scope.lectures[i].title,
+                                start: $scope.lectures[i].date_dead_line,
                                 allDay: true
                             });
                     callback(events);
                 }
             }];
         //вызываем API, чтобы получить все лекции по предмету
-        serviceData.get('api/classes/info', {id: $scope.classID}).then(function (data) {
+        serviceData.get('api/disciplines/info', {id: $scope.disciplineID}).then(function (data) {
             //если ответ не пришел
             if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
             //если пришел ответ с запретом
             else if (data.status == 403) alertService.add("danger", "403: Доступ запрещен!");
             //Если доступ разрешен
             else if (data.status == 1) {
-                //пытаемся передать в articles, полученные данные
-                $scope.articles = data['lectures'] || [];
+                //пытаемся передать в lectures, полученные данные
+                $scope.lectures = data['lectures'] || [];
                 $scope.attachments = data['attachments'] || [];
-                for (var i = 0; i < $scope.articles.length; i++) {
+                for (var i = 0; i < $scope.lectures.length; i++) {
                     var event = {};
                     event = {
-                        title: $scope.articles[i].txtTitle,
-                        start: $scope.articles[i].dateDeadLine,
+                        title: $scope.lectures[i].title,
+                        start: $scope.lectures[i].date_dead_line,
                         allDay: true
                     };
                     $scope.events[i] = event;
