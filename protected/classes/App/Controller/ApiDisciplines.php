@@ -52,13 +52,25 @@ class ApiDisciplines extends ApiController
                             ->execute()->as_array());
                     //получаем связанные вложения
                     if ($this->response('lectures')) {
+                        //для того, чтобы выбрать вложения только для передаваемых лекций заберем их из уже
+                        //сформированной части респонса
+                        $lecturesList = array();
+                        foreach ($this->response('lectures') as $lecture)
+                            $lecturesList[] = $lecture->lecture_id;
+                        $lecturesString = implode(",", $lecturesList); //превращаем массив в строку, разделяемую ','
                         $this->response('attachments',
                             $this->pixie->db->query('select')->table('attachments')
-                                ->where('lecture_id', 'IN',
-                                    $this->pixie->db->query('select')->table('lectures')
-                                        ->fields('lecture_id')
-                                        ->where('discipline_id',$id))
+                                //условие: where lecture_id IN <номера лекций>
+                                ->where('lecture_id', 'IN', $this->pixie->db->expr('(' . $lecturesString . ')'))
                                 ->execute()->as_array());
+                        //и результаты для текущего студента
+                        if (isset ($_COOKIE['id'])) {
+                            $this->response('results',
+                                $this->pixie->db->query('select')->table('lecture_results')
+                                    ->where('lecture_id', 'IN', $this->pixie->db->expr('(' . $lecturesString . ')'))
+                                    ->where('user_id', $_COOKIE['id'])
+                                    ->execute()->as_array());
+                        }
                     }
                     $this->response('status', 1);
                 } catch (Exception $e) {

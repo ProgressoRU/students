@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50523
 File Encoding         : 65001
 
-Date: 2015-03-18 01:17:28
+Date: 2015-03-18 18:07:42
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -81,6 +81,18 @@ CREATE TABLE `lectures` (
   `discipline_id` int(4) unsigned DEFAULT NULL,
   PRIMARY KEY (`lecture_id`),
   KEY `intClass` (`discipline_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for lecture_results
+-- ----------------------------
+DROP TABLE IF EXISTS `lecture_results`;
+CREATE TABLE `lecture_results` (
+  `result_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `lecture_id` int(10) unsigned NOT NULL,
+  `user_id` int(10) unsigned NOT NULL,
+  `result` tinyint(1) unsigned NOT NULL,
+  PRIMARY KEY (`result_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 
 -- ----------------------------

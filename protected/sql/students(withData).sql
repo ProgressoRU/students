@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50523
 File Encoding         : 65001
 
-Date: 2015-03-18 01:17:34
+Date: 2015-03-18 18:07:48
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -138,6 +138,34 @@ INSERT INTO `lectures` VALUES ('14', 'HTML: Блоки', 'Раньше испо�
 INSERT INTO `lectures` VALUES ('15', 'HTML: Формы', ' Форма предназначена для обмена данными между пользователем и сервером. Область применения форм не ограничена отправкой данных на сервер, с помощью клиентских скриптов можно получить доступ к любому элементу формы, изменять его и применять по своему усмотрению.\r\n\r\nДокумент может содержать любое количество форм, но одновременно на сервер может быть отправлена только одна форма. По этой причине данные форм должны быть независимы друг от друга.', '1', '2015-03-03 18:36:04', '2015-03-03 18:36:07', '2015-03-03 18:36:09', '8');
 
 -- ----------------------------
+-- Table structure for lecture_results
+-- ----------------------------
+DROP TABLE IF EXISTS `lecture_results`;
+CREATE TABLE `lecture_results` (
+  `result_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `lecture_id` int(10) unsigned NOT NULL,
+  `user_id` int(10) unsigned NOT NULL,
+  `result` tinyint(1) unsigned NOT NULL,
+  PRIMARY KEY (`result_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of lecture_results
+-- ----------------------------
+INSERT INTO `lecture_results` VALUES ('4', '4', '1', '0');
+INSERT INTO `lecture_results` VALUES ('5', '5', '1', '0');
+INSERT INTO `lecture_results` VALUES ('6', '6', '1', '1');
+INSERT INTO `lecture_results` VALUES ('7', '7', '1', '4');
+INSERT INTO `lecture_results` VALUES ('8', '8', '1', '3');
+INSERT INTO `lecture_results` VALUES ('9', '9', '1', '5');
+INSERT INTO `lecture_results` VALUES ('10', '10', '1', '2');
+INSERT INTO `lecture_results` VALUES ('11', '11', '1', '0');
+INSERT INTO `lecture_results` VALUES ('12', '12', '1', '0');
+INSERT INTO `lecture_results` VALUES ('13', '13', '1', '0');
+INSERT INTO `lecture_results` VALUES ('14', '14', '1', '0');
+INSERT INTO `lecture_results` VALUES ('15', '15', '1', '0');
+
+-- ----------------------------
 -- Table structure for news
 -- ----------------------------
 DROP TABLE IF EXISTS `news`;
@@ -193,4 +221,4 @@ CREATE TABLE `users` (
 -- ----------------------------
 -- Records of users
 -- ----------------------------
-INSERT INTO `users` VALUES ('1', 'login', '35f504164d5a963d6a820e71614a4009', 'sad', 'Виктор', null, '2', 'cc1c45b5e0cef0751fae8d83bf005347', '127.0.0.1', 'student', 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:36.0) Gecko/20100101 Firefox/36.0');
+INSERT INTO `users` VALUES ('1', 'login', '35f504164d5a963d6a820e71614a4009', 'sad', 'Виктор', null, '2', '8087ff3c734484ed19765c92fe906f46', '127.0.0.1', 'student', 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:36.0) Gecko/20100101 Firefox/36.0');

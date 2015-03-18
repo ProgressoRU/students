@@ -89,6 +89,7 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceDa
                 //пытаемся передать в lectures, полученные данные
                 $scope.lectures = data['lectures'] || [];
                 $scope.attachments = data['attachments'] || [];
+                $scope.results = data['results'] || [];
                 for (var i = 0; i < $scope.lectures.length; i++) {
                     var event = {};
                     event = {
