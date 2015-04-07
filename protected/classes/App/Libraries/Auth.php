@@ -59,7 +59,7 @@ abstract class Auth
         return $isOk;
     }
 
-    public static function checkPermissions(\App\Pixie $pixie, $param)
+    public static function checkPermissions(\App\Pixie $pixie, $course = null, $role = null)
     {
 //перед вызовом этой функции куки должны бьть проверены.
 //Можно ли в этом убедиться?
@@ -78,10 +78,18 @@ abstract class Auth
         } catch (Exception $e) {
             error_log($e->getMessage());
         }
-        if ($permissions->course_id != $param) {
-            return $accessGranted;
+        if ($course != null) {
+            if ($permissions->course_id != $course) {
+                $accessGranted = false;
+                return $accessGranted;
+            } else $accessGranted = true;
         }
-        else $accessGranted = true;
+        if ($role != null) {
+            if ($permissions->role != $role) {
+                $accessGranted = false;
+                return $accessGranted;
+            } else $accessGranted = true;
+        }
 
         return $accessGranted;
     }
