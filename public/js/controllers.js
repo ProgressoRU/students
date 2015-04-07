@@ -59,12 +59,18 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceDa
     function ($scope, $routeParams, serviceData, alertService, $compile) {
         //из параметров маршрута берем ID предмета
         $scope.disciplineID = $routeParams.disciplineID;
+        for (var i = 0; i < $scope.$parent.disciplines.length; i++)
+            if ($scope.$parent.disciplines[i].discipline_id == $scope.disciplineID) {
+                //TODO: Temp fix. Not working with page refresh!
+                $scope.disciplineTitle = $scope.$parent.disciplines[i].title;
+                $scope.disciplineDescription = $scope.$parent.disciplines[i].description;
+            }
         $scope.events = [];
         //eventSources — массив объектов, используемый плагином FullCalendar как источник событий
         $scope.eventSources = [{
-                events: $scope.events //первый источник — массив, инициализируемый при инициализации скоупа.
-                                      //будет использоваться при первичной отрисовке календаря
-            },
+            events: $scope.events //первый источник — массив, инициализируемый при инициализации скоупа.
+                                  //будет использоваться при первичной отрисовке календаря
+        },
             {
                 events: function (start, end, timezone, callback) { //второй источник — массив, генерируемый функцией, при переходе на другой месяц
                     var events = [];
@@ -103,12 +109,14 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceDa
             else alertService.add("danger", "Неизвестная ощибка. Обратитесь к администратору.")
         });
         //Тултипы
-        $scope.eventRender = function( event, element, view ) {
-            element.attr({'tooltip': event.title,
-                'tooltip-append-to-body': true});
+        $scope.eventRender = function (event, element, view) {
+            element.attr({
+                'tooltip': event.title,
+                'tooltip-append-to-body': true
+            });
             $compile(element)($scope);
         };
-        $scope.eventClick = function( date, jsEvent, view){
+        $scope.eventClick = function (date, jsEvent, view) {
             $scope.alertMessage = (date.title + ' was clicked ');
         };
 

@@ -13,12 +13,37 @@ class ApiDisciplines extends ApiController
     {
         $this->response('status', 0);
         $this->response('disciplines', array());
-        try {
-            $this->response('status', 1);
-            $this->response('disciplines', $this->pixie->db->query('select')->table('disciplines')->execute()->as_array());
-        } catch (Exception $e) {
-            $this->response('status', 0);
-            error_log($e->getMessage());
+        if (Auth::checkCookie($this->pixie)) {
+            $role = Auth::getRole($this->pixie);
+            $course = Auth::getCourse($this->pixie);
+            $uID = isset($_COOKIE['id']) ? $_COOKIE['id'] : 0;
+            if ($role != null) {
+                if ($role == 'student') {
+                    if ($course != null) {
+                        try {
+                            $this->response('status', 1);
+                            $this->response('disciplines',
+                                $this->pixie->db->query('select')->table('disciplines')->
+                                where('course_id', $course)->
+                                execute()->as_array());
+                        } catch (Exception $e) {
+                            $this->response('status', 0);
+                            error_log($e->getMessage());
+                        }
+                    }
+                } elseif ($role = 'admin') {
+                    try {
+                        $this->response('status', 1);
+                        $this->response('disciplines',
+                            $this->pixie->db->query('select')->table('disciplines')->
+                            where('teacher_id', $uID)->
+                            execute()->as_array());
+                    } catch (Exception $e) {
+                        $this->response('status', 0);
+                        error_log($e->getMessage());
+                    }
+                }
+            }
         }
     }
 

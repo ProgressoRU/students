@@ -90,8 +90,50 @@ abstract class Auth
                 return $accessGranted;
             } else $accessGranted = true;
         }
-
         return $accessGranted;
+    }
+
+    public static function getRole(\App\Pixie $pixie)
+    {
+        $role = null;
+        if (isset($_COOKIE['id']))
+            $id = $_COOKIE['id'];
+        else
+            return $role;
+        try {
+            $query = $pixie->db->query('select')->table('users')
+                ->fields('role')
+                ->where('user_id', $id)
+                ->execute()->current();
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+        }
+        if (isset($query))
+            $role = $query->role;
+        else $role = null;
+        return $role;
+    }
+
+    public static function getCourse(\App\Pixie $pixie)
+    {
+        $course = null;
+        if (isset($_COOKIE['id']))
+            $id = $_COOKIE['id'];
+        else
+            return $course;
+        try {
+            $query = $pixie->db->query('select')->table('users')
+                ->fields('group_id', 'groups.course_id')
+                ->where('user_id', $id)
+                ->join('groups', array('groups.group_id', 'users.group_id'), 'inner')
+                ->execute()->current();
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+        }
+        if (isset($query))
+            $course = $query->course_id;
+        else $course = null;
+        return $course;
     }
 
     public static function login(\App\Pixie $pixie, $login, $pass)
