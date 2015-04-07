@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50523
 File Encoding         : 65001
 
-Date: 2015-03-18 18:07:42
+Date: 2015-04-08 01:26:14
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -51,6 +51,7 @@ CREATE TABLE `disciplines` (
   `title` varchar(64) NOT NULL,
   `description` varchar(144) DEFAULT NULL,
   `course_id` int(11) unsigned DEFAULT NULL,
+  `teacher_id` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`discipline_id`),
   KEY `GroupID` (`course_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
@@ -126,4 +127,4 @@ CREATE TABLE `users` (
   `useragent` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   KEY `GroupID` (`group_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;

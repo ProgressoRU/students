@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50523
 File Encoding         : 65001
 
-Date: 2015-03-18 18:07:48
+Date: 2015-04-08 01:26:20
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -66,6 +66,7 @@ CREATE TABLE `disciplines` (
   `title` varchar(64) NOT NULL,
   `description` varchar(144) DEFAULT NULL,
   `course_id` int(11) unsigned DEFAULT NULL,
+  `teacher_id` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`discipline_id`),
   KEY `GroupID` (`course_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
@@ -73,16 +74,16 @@ CREATE TABLE `disciplines` (
 -- ----------------------------
 -- Records of disciplines
 -- ----------------------------
-INSERT INTO `disciplines` VALUES ('1', 'Очень интересный предмет', 'Очень интересное описание', '1');
-INSERT INTO `disciplines` VALUES ('2', 'Еще интересный предмет', '333', '2');
-INSERT INTO `disciplines` VALUES ('3', 'Больше предметов', null, '1');
-INSERT INTO `disciplines` VALUES ('4', 'Архитектура ЭВМ', 'Предмет, который запомнится надолго', '1');
-INSERT INTO `disciplines` VALUES ('5', 'Базы Данных', null, '1');
-INSERT INTO `disciplines` VALUES ('6', 'фывфывыфв', null, '2');
-INSERT INTO `disciplines` VALUES ('7', 'ывыфввы', null, '2');
-INSERT INTO `disciplines` VALUES ('8', 'Информационные технологии', null, '3');
-INSERT INTO `disciplines` VALUES ('9', 'Диплом', null, '3');
-INSERT INTO `disciplines` VALUES ('10', 'вфыывф', null, '3');
+INSERT INTO `disciplines` VALUES ('1', 'Очень интересный предмет', 'Очень интересное описание', '1', '2');
+INSERT INTO `disciplines` VALUES ('2', 'Еще интересный предмет', '333', '2', '2');
+INSERT INTO `disciplines` VALUES ('3', 'Больше предметов', null, '1', '2');
+INSERT INTO `disciplines` VALUES ('4', 'Архитектура ЭВМ', 'Предмет, который запомнится надолго', '1', '2');
+INSERT INTO `disciplines` VALUES ('5', 'Базы Данных', null, '1', '2');
+INSERT INTO `disciplines` VALUES ('6', 'фывфывыфв', null, '2', '2');
+INSERT INTO `disciplines` VALUES ('7', 'ывыфввы', null, '2', '2');
+INSERT INTO `disciplines` VALUES ('8', 'Информационные технологии', null, '3', '2');
+INSERT INTO `disciplines` VALUES ('9', 'Диплом', 'Diploma', '3', '2');
+INSERT INTO `disciplines` VALUES ('10', 'вфыывф', null, '3', '2');
 
 -- ----------------------------
 -- Table structure for groups
@@ -216,9 +217,10 @@ CREATE TABLE `users` (
   `useragent` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   KEY `GroupID` (`group_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of users
 -- ----------------------------
-INSERT INTO `users` VALUES ('1', 'login', '35f504164d5a963d6a820e71614a4009', 'sad', 'Виктор', null, '2', '8087ff3c734484ed19765c92fe906f46', '127.0.0.1', 'student', 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:36.0) Gecko/20100101 Firefox/36.0');
+INSERT INTO `users` VALUES ('1', 'user', '35f504164d5a963d6a820e71614a4009', 'sad', 'Виктор', null, '2', '23adb99a6f1f664c6ac0edf20bb9ffb1', '127.0.0.1', 'student', 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:37.0) Gecko/20100101 Firefox/37.0');
+INSERT INTO `users` VALUES ('2', 'admin', '35f504164d5a963d6a820e71614a4009', 'dddd', 'Админ', null, '1', '', '127.0.0.1', 'admin', '');
