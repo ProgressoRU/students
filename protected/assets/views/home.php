@@ -7,16 +7,22 @@
     <title></title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/public/css/style.css">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.min.css"></script>
-    <script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-resource.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-route.min.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.min.css">
+    <link rel="stylesheet" href="/public/css/textAngular.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <script data-require="jquery@2.1.3" data-semver="2.1.3" src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script src="/public/lib/rangy/rangy-core.js"></script>
+    <script src="/public/lib/rangy/rangy-selectionsaverestore.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-resource.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-route.min.js"></script>
     <script src="http://code.angularjs.org/1.0.8/i18n/angular-locale_ru-ru.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
     <script src="/public/lib/bootstrap/ui-bootstrap-tpls-0.12.0.min.js"></script>
     <script src="//momentjs.com/downloads/moment-with-locales.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.min.js"></script>
+    <script src="/public/lib/angular/textAngular-sanitize.min.js"></script>
+    <script src="/public/lib/angular/textAngular.min.js"></script>
     <script src="/public/lib/angular/calendar.js"></script>
     <script src="/public/js/app.js"></script>
     <script src="/public/js/services.js"></script>

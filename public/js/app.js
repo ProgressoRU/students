@@ -1,4 +1,4 @@
-var app = angular.module('students', ['ngRoute', 'stServices', 'stControllers', 'stDirectives','stFilters', 'ui.bootstrap','ui.calendar'])
+var app = angular.module('students', ['ngRoute', 'stServices', 'stControllers', 'stDirectives', 'stFilters', 'textAngular', 'ui.bootstrap', 'ui.calendar'])
 //роутинг
     .config(function ($routeProvider) {
         $routeProvider.
