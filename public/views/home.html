@@ -1,15 +1,24 @@
 <article class="myWrap col-md-10 col-xs-12 col-sm-12" data-ng-controller="NewsCtrl" >
     <div class="page-header">
-        <h1>Пульс</h1>
+        <h1>Новости</h1>
     </div>
     <!-- NEWS BLOCK -->
     <!--  -->
+
     <div class="panel panel-info" data-ng-repeat="n in lastNews(3) track by $index" data-ng-if="n.title!=null">
         <div class="panel-heading">
-            <h3 class="panel-title">{{n.title}}</h3>
+            <h3 class="panel-title" data-ng-if="!editMode || (editMode && n.news_id != idInDB)">{{n.title}}</h3>
+            <input type="text" class="form-control" data-ng-if="editMode && n.news_id == idInDB " required value="{{editableTitle}}">
         </div>
-        <div class="panel-body">
+        <div class="panel-body" data-ng-if="!editMode || (editMode && n.news_id != idInDB)">
             {{n.news}}
+            <br>
+            <a data-ng-click="turnEditMode(n.news_id)" data-ng-if="currentUser.userRole == 'admin'">Edit {{n.news_id}}</a>
+        </div>
+        <div class="panel-body" data-ng-if="editMode && n.news_id == idInDB">
+            <div data-text-angular="" data-ng-model="editableNews"></div>
+            <button type="button" class="btn btn-success" data-ng-click="performEdit()">Сохранить</button>
+            <button type="button" class="btn btn-default" data-ng-click="cancelEdit()">Отменить</button>
         </div>
         <div data-ng-switch="n.importance" class="panel-footer">
             <small><em>{{n.date_created|moment: 'lang': 'ru' | moment: 'format': 'LL'}}</em></small>

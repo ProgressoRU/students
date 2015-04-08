@@ -150,7 +150,7 @@ stControllers.controller('HeaderCtrl', ['$scope', function ($scope) {
 
 stControllers.controller('NewsCtrl', ['$scope', 'serviceData',
     function ($scope, serviceData) {
-
+        $scope.htmlVariable = '<h1>Title</h1><b>test</b>';
         $scope.news = [];
         $scope.length = 0;
         //возможно стоит ограничить количество получаемых новостей на серверной стороне
@@ -176,6 +176,36 @@ stControllers.controller('NewsCtrl', ['$scope', 'serviceData',
             }
         };
 
+        $scope.turnEditMode = function (id) {
+            for (i = 0; i < $scope.length; i++)
+                if ($scope.news[i].news_id == id) {
+                    $scope.idInDB = $scope.news[i].news_id;
+                    $scope.idInJSON = i;
+                }
+            $scope.editableNews = $scope.news[$scope.idInJSON].news;
+            $scope.editableTitle = $scope.news[$scope.idInJSON].title;
+            $scope.editMode = true;
+        };
+
+        $scope.cancelEdit = function () {
+            $scope.editMode = false;
+            $scope.editableNews = null;
+            $scope.editableTitle = null;
+            $scope.idInDB = null;
+            $scope.idInJSON = null;
+        };
+
+        $scope.performEdit = function () {
+            //TODO: проверки на пустые переменные
+            serviceData.get('api/news/edit', {
+                id: $scope.idInDB,
+                title: $scope.editableTitle,
+                news: $scope.editableNews
+            }).then(function (data) {
+                console.log('dad')
+            })
+        };
+
         // execute on initialization
         serviceData.get('api/news/all').then(function (data) {
             $reply = data.status;
@@ -184,6 +214,7 @@ stControllers.controller('NewsCtrl', ['$scope', 'serviceData',
             $scope.length = data.news.length;
             $scope.CurPage = 1;
             $scope.totalPages = Math.ceil($scope.length / 3);
+            $scope.editMode = false;
         });
 
     }]);
