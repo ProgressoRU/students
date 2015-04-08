@@ -8,7 +8,7 @@ return array(
             'action' => 'auth'
         ),
     ),
-    'user_дщпщге' => array(
+    'user_logout' => array(
         '/api/user/logout',
         array(
             'controller' => 'apiUser',
