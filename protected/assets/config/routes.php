@@ -36,6 +36,13 @@ return array(
 			'action' => 'index'
 		)
 	),
+    'news_edit' => array(
+        '/api/news/edit',
+        array(
+            'controller' => 'apiNews',
+            'action' => 'edit'
+        )
+    ),
 	'courses' => array(
 		'/api/courses/all',
 		array(

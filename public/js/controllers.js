@@ -148,8 +148,8 @@ stControllers.controller('HeaderCtrl', ['$scope', function ($scope) {
 
 }]);
 
-stControllers.controller('NewsCtrl', ['$scope', 'serviceData',
-    function ($scope, serviceData) {
+stControllers.controller('NewsCtrl', ['$scope', 'serviceData', 'alertService',
+    function ($scope, serviceData, alertService) {
         $scope.htmlVariable = '<h1>Title</h1><b>test</b>';
         $scope.news = [];
         $scope.length = 0;
@@ -182,15 +182,16 @@ stControllers.controller('NewsCtrl', ['$scope', 'serviceData',
                     $scope.idInDB = $scope.news[i].news_id;
                     $scope.idInJSON = i;
                 }
-            $scope.editableNews = $scope.news[$scope.idInJSON].news;
-            $scope.editableTitle = $scope.news[$scope.idInJSON].title;
+            $scope.editable = {
+                news: $scope.news[$scope.idInJSON].news,
+                title: $scope.news[$scope.idInJSON].title
+            };
             $scope.editMode = true;
         };
 
         $scope.cancelEdit = function () {
             $scope.editMode = false;
-            $scope.editableNews = null;
-            $scope.editableTitle = null;
+            $scope.editable = null;
             $scope.idInDB = null;
             $scope.idInJSON = null;
         };
@@ -199,22 +200,37 @@ stControllers.controller('NewsCtrl', ['$scope', 'serviceData',
             //TODO: проверки на пустые переменные
             serviceData.get('api/news/edit', {
                 id: $scope.idInDB,
-                title: $scope.editableTitle,
-                news: $scope.editableNews
+                title: $scope.editable.title,
+                news: $scope.editable.news
             }).then(function (data) {
-                console.log('dad')
+                if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
+                //если пришел ответ с запретом
+                else if (data.status == 403) alertService.add("danger", "403: Доступ запрещен!");
+                //Если доступ разрешен
+                else if (data.status == 200) {
+                    alertService.add("success", "Новость изменена!");
+                    $scope.editMode = false;
+                    $scope.editable = null;
+                    $scope.idInDB = null;
+                    $scope.idInJSON = null;
+                    $scope.getNews();
+                }
             })
         };
 
         // execute on initialization
-        serviceData.get('api/news/all').then(function (data) {
-            $reply = data.status;
-            console.log('News' + $reply); //DEBUG
-            $scope.news = data.news;
-            $scope.length = data.news.length;
-            $scope.CurPage = 1;
-            $scope.totalPages = Math.ceil($scope.length / 3);
-            $scope.editMode = false;
-        });
+        $scope.getNews = function () {
+            serviceData.get('api/news/all').then(function (data) {
+                $reply = data.status;
+                console.log('News' + $reply); //DEBUG
+                $scope.news = data.news;
+                $scope.length = data.news.length;
+                $scope.CurPage = 1;
+                $scope.totalPages = Math.ceil($scope.length / 3);
+                $scope.editMode = false;
+            });
+        };
+        $scope.getNews();
+        $scope.editable = null;
 
     }]);

@@ -1,22 +1,22 @@
-<article class="myWrap col-md-10 col-xs-12 col-sm-12" data-ng-controller="NewsCtrl" >
+<article class="myWrap col-md-10 col-xs-12 col-sm-12" data-ng-controller="NewsCtrl">
     <div class="page-header">
         <h1>Новости</h1>
     </div>
     <!-- NEWS BLOCK -->
     <!--  -->
-
+    <p>{{editableTitle}}</p>
     <div class="panel panel-info" data-ng-repeat="n in lastNews(3) track by $index" data-ng-if="n.title!=null">
         <div class="panel-heading">
             <h3 class="panel-title" data-ng-if="!editMode || (editMode && n.news_id != idInDB)">{{n.title}}</h3>
-            <input type="text" class="form-control" data-ng-if="editMode && n.news_id == idInDB " required value="{{editableTitle}}">
+            <input type="text" class="form-control" data-ng-model="editable.title"
+                   data-ng-if="editMode && n.news_id == idInDB " required>
         </div>
-        <div class="panel-body" data-ng-if="!editMode || (editMode && n.news_id != idInDB)">
-            {{n.news}}
-            <br>
-            <a data-ng-click="turnEditMode(n.news_id)" data-ng-if="currentUser.userRole == 'admin'">Edit {{n.news_id}}</a>
+        <div class="panel-body" data-ng-if="!editMode || (editMode && n.news_id != idInDB)" data-ta-bind data-ng-model="n.news">
         </div>
+        <a data-ng-click="turnEditMode(n.news_id)" data-ng-if="currentUser.userRole == 'admin'">Edit
+            {{n.news_id}}</a>
         <div class="panel-body" data-ng-if="editMode && n.news_id == idInDB">
-            <div data-text-angular="" data-ng-model="editableNews"></div>
+            <div data-text-angular="" data-ng-model="editable.news"></div>
             <button type="button" class="btn btn-success" data-ng-click="performEdit()">Сохранить</button>
             <button type="button" class="btn btn-default" data-ng-click="cancelEdit()">Отменить</button>
         </div>
