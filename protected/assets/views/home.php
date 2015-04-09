@@ -14,7 +14,7 @@
     <script src="/public/lib/rangy/rangy-core.js"></script>
     <script src="/public/lib/rangy/rangy-selectionsaverestore.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-resource.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-resource.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-route.min.js"></script>
     <script src="http://code.angularjs.org/1.0.8/i18n/angular-locale_ru-ru.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
@@ -31,8 +31,8 @@
     <script src="/public/js/filters.js"></script>
 </head>
 <body data-ng-controller="WrapCtrl">
-<div>
-    <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{ alert.msg }}</alert>
+<div class="modalAlert">
+    <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg }}</alert>
 </div>
 <div data-st-Header></div>
 <div data-ng-view class="container-fluid"></div>

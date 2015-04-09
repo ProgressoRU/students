@@ -134,3 +134,17 @@ body
 .bs-callout-info h4 {
     color: #5bc0de;
 }
+.modalAlert{
+    display: block;
+    position: fixed;
+    top: 80px;
+    margin: 0 auto;
+    z-index: 6;
+    width: 100%;
+}
+
+.alert{
+    -webkit-box-shadow: 0 10px 6px -6px #777;
+    -moz-box-shadow: 0 10px 6px -6px #777;
+    box-shadow: 0 10px 6px -6px #777;
+}

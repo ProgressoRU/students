@@ -60,17 +60,20 @@ stServices.factory('AuthService', ['serviceData', '$location', 'Session', functi
     return authService;
 }]);
 
-stServices.factory('alertService', function($rootScope) {
+stServices.factory('alertService', function ($rootScope, $timeout) {
     var alertService = {};
 
     // create an array of alerts available globally
     $rootScope.alerts = [];
 
-    alertService.add = function(type, msg) {
+    alertService.add = function (type, msg) {
         $rootScope.alerts.push({'type': type, 'msg': msg});
+        $timeout(function () {
+            $rootScope.alerts.splice(0, 1);
+        }, 6000);
     };
 
-    alertService.closeAlert = function(index) {
+    alertService.closeAlert = function (index) {
         $rootScope.alerts.splice(index, 1);
     };
 
