@@ -5,7 +5,7 @@ stControllers.controller('WrapCtrl', ['$scope', 'Session', 'AuthService', 'servi
     function ($scope, Session, AuthService, serviceData, alertService) {
         //объявляем функции, обращающиеся при вызове к AuthService
         $scope.isAuthenticated = function () {
-            return AuthService.isAuthenticated(); //а попроще!?
+            return AuthService.isAuthenticated();
         };
 
         $scope.logout = function () {
@@ -24,9 +24,8 @@ stControllers.controller('HomeCtrl', ['$scope', function ($scope) {
 
 }]);
 
-stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope', 'AUTH_EVENTS', '$route',
-    function ($scope, AuthService, $rootScope, AUTH_EVENTS, $route) {
-        //todo: вывод ошибок
+stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope', 'AUTH_EVENTS', '$route', 'alertService',
+    function ($scope, AuthService, $rootScope, AUTH_EVENTS, $route, alertService) {
         $scope.login = function (credentials) {
             //отправляем сервису Авторизации необходимые данные
             AuthService.login(credentials).then(function (user) {
@@ -37,12 +36,11 @@ stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope
                 $rootScope.$broadcast(AUTH_EVENTS[$reply]);
                 //если ответ 200:OK
                 if ($reply == 200) {
-                    $scope.success = true;
                     $route.reload();
+                    alertService.add("success", "Вход выполнен");
                 }
                 else {
-                    $scope.loginFailed = true;
-                    $scope.success = false;
+                    alertService.add("danger", "Имя и/или пароль введены неверно.");
                 }
             });
         };
@@ -51,7 +49,6 @@ stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope
             username: '',
             pass: ''
         };
-        $scope.success = false;
     }]);
 
 stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceData', 'alertService', '$compile',
@@ -149,7 +146,6 @@ stControllers.controller('HeaderCtrl', ['$scope', function ($scope) {
 
 stControllers.controller('NewsCtrl', ['$scope', 'serviceData', 'alertService',
     function ($scope, serviceData, alertService) {
-        $scope.htmlVariable = '<h1>Title</h1><b>test</b>';
         $scope.news = [];
         $scope.length = 0;
         //возможно стоит ограничить количество получаемых новостей на серверной стороне

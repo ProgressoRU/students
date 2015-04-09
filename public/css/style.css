@@ -137,9 +137,9 @@ body
 .modalAlert{
     display: block;
     position: fixed;
-    top: 80px;
+    top: 35px;
     margin: 0 auto;
-    z-index: 6;
+    z-index: 1050;
     width: 100%;
 }
 

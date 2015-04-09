@@ -52,7 +52,7 @@ stServices.factory('AuthService', ['serviceData', '$location', 'Session', functi
                 //console.log(data);
                 if (data.status == true) {
                     Session.destroy();
-                    $location.path('/news');
+                    $location.path('/');
                     //console.log('Session' + Session);
                 }
             });
