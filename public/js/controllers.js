@@ -24,8 +24,8 @@ stControllers.controller('HomeCtrl', ['$scope', function ($scope) {
 
 }]);
 
-stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope', 'AUTH_EVENTS', '$location',
-    function ($scope, AuthService, $rootScope, AUTH_EVENTS, $location) {
+stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope', 'AUTH_EVENTS', '$route',
+    function ($scope, AuthService, $rootScope, AUTH_EVENTS, $route) {
         //todo: вывод ошибок
         $scope.login = function (credentials) {
             //отправляем сервису Авторизации необходимые данные
@@ -38,8 +38,7 @@ stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope
                 //если ответ 200:OK
                 if ($reply == 200) {
                     $scope.success = true;
-                    if ($location.path != '/login') //TODO: исправить. И научиться писать комментарии. Что исправить то надо?!
-                        $location.url('/news');
+                    $route.reload();
                 }
                 else {
                     $scope.loginFailed = true;
