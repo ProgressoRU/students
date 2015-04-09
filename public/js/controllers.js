@@ -9,15 +9,24 @@ stControllers.controller('WrapCtrl', ['$scope', 'Session', 'AuthService', 'servi
         };
 
         $scope.logout = function () {
+            $scope.clearDisciplineList();
             return AuthService.logout();
         };
         $scope.closeAlert = alertService.closeAlert;
         //текущий пользователь берется из сервиса сессий
         $scope.currentUser = Session;
-        //получаем список всех предметов через вызов к API
-        serviceData.get('api/disciplines/all').then(function (data) {
-            $scope.disciplines = (data.status && data.status == 1) ? data.disciplines : [];
-        })
+        //получение доступных предметов
+        $scope.getDisciplines = function () {
+            serviceData.get('api/disciplines/all').then(function (data) {
+                $scope.disciplines = (data.status && data.status == 1) ? data.disciplines : [];
+            })
+        };
+        $scope.clearDisciplineList = function()
+        {
+            $scope.disciplines = [];
+        }
+        //on init
+        $scope.getDisciplines();
     }]);
 
 stControllers.controller('HomeCtrl', ['$scope', function ($scope) {
@@ -36,8 +45,9 @@ stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope
                 $rootScope.$broadcast(AUTH_EVENTS[$reply]);
                 //если ответ 200:OK
                 if ($reply == 200) {
-                    $route.reload();
                     alertService.add("success", "Вход выполнен");
+                    $route.reload();
+                    $scope.getDisciplines();
                 }
                 else {
                     alertService.add("danger", "Имя и/или пароль введены неверно.");
