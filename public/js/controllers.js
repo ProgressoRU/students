@@ -21,8 +21,7 @@ stControllers.controller('WrapCtrl', ['$scope', 'Session', 'AuthService', 'servi
                 $scope.disciplines = (data.status && data.status == 1) ? data.disciplines : [];
             })
         };
-        $scope.clearDisciplineList = function()
-        {
+        $scope.clearDisciplineList = function () {
             $scope.disciplines = [];
         }
         //on init
@@ -202,25 +201,31 @@ stControllers.controller('NewsCtrl', ['$scope', 'serviceData', 'alertService',
         };
 
         $scope.performEdit = function () {
-            //TODO: проверки на пустые переменные
-            serviceData.get('api/news/edit', {
-                id: $scope.idInDB,
-                title: $scope.editable.title,
-                news: $scope.editable.news
-            }).then(function (data) {
-                if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
-                //если пришел ответ с запретом
-                else if (data.status == 403) alertService.add("danger", "403: Доступ запрещен!");
-                //Если доступ разрешен
-                else if (data.status == 200) {
-                    alertService.add("success", "Новость изменена!");
-                    $scope.editMode = false;
-                    $scope.editable = null;
-                    $scope.idInDB = null;
-                    $scope.idInJSON = null;
-                    $scope.getNews();
-                }
-            })
+            if ($scope.editable.title == null || $scope.editable.news == null)
+                alertService.add("danger", 'Новость должна содержать заголовок и текст!');
+            else if ($scope.editable.title.length <= 3)
+                alertService.add("danger", 'Заголовок должен содержать более 3 символов');
+            else {
+                serviceData.get('api/news/edit', {
+                    id: $scope.idInDB,
+                    title: $scope.editable.title,
+                    news: $scope.editable.news
+                }).then(function (data) {
+                    if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
+                    //если пришел ответ с запретом
+                    else if (data.status == 403) alertService.add("danger", "403: Доступ запрещен!");
+                    else if (data.status == 25) alertService.add("danger", "Новость должна содержать заголовок и текст!");
+                    //Если доступ разрешен
+                    else if (data.status == 200) {
+                        alertService.add("success", "Новость изменена!");
+                        $scope.editMode = false;
+                        $scope.editable = null;
+                        $scope.idInDB = null;
+                        $scope.idInJSON = null;
+                        $scope.getNews();
+                    }
+                })
+            }
         };
 
         // execute on initialization

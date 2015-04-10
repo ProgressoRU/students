@@ -31,7 +31,9 @@ class ApiNews extends ApiController
         $newsId = Request::getInt('id');
         $newsTitle = Request::getString('title');
         $newsText = Request::getString('news');
-        if (Auth::checkCookie($this->pixie)) {
+        if ($newsTitle == null || $newsText == null)
+            $this->response('status', 25);
+        elseif (Auth::checkCookie($this->pixie)) {
             $role = Auth::getRole($this->pixie);
             if ($role != null) {
                 if ($role == 'admin') {
