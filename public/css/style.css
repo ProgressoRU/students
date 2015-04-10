@@ -148,3 +148,16 @@ body
     -moz-box-shadow: 0 10px 6px -6px #777;
     box-shadow: 0 10px 6px -6px #777;
 }
+
+.ta-news-label
+{
+    cursor: pointer;
+    opacity: 0.4;
+    filter: alpha(opacity=40);
+}
+
+.ta-news-label.active
+{
+    opacity: 1;
+    filter: alpha(opacity=100);
+}

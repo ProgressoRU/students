@@ -31,6 +31,9 @@ class ApiNews extends ApiController
         $newsId = Request::getInt('id');
         $newsTitle = Request::getString('title');
         $newsText = Request::getString('news');
+        $newsLabel = Request::getInt('label');
+        if ($newsLabel == null || ($newsLabel!=0 && $newsLabel!=1 && $newsLabel!=2))
+            $newsLabel = 0;
         if ($newsTitle == null || $newsText == null)
             $this->response('status', 25);
         elseif (Auth::checkCookie($this->pixie)) {
@@ -40,7 +43,7 @@ class ApiNews extends ApiController
                     try {
                         $this->response('status', 200);
                         $this->pixie->db->query('update')->table('news')->
-                        data(array('title' => $newsTitle, 'news' => $newsText))->
+                        data(array('title' => $newsTitle, 'news' => $newsText, 'importance'=>$newsLabel))->
                         where('news_id', $newsId)->
                         execute();
                     } catch (Exception $e) {

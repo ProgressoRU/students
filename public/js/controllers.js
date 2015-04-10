@@ -188,7 +188,8 @@ stControllers.controller('NewsCtrl', ['$scope', 'serviceData', 'alertService',
                 }
             $scope.editable = {
                 news: $scope.news[$scope.idInJSON].news,
-                title: $scope.news[$scope.idInJSON].title
+                title: $scope.news[$scope.idInJSON].title,
+                label: $scope.news[$scope.idInJSON].importance
             };
             $scope.editMode = true;
         };
@@ -209,7 +210,8 @@ stControllers.controller('NewsCtrl', ['$scope', 'serviceData', 'alertService',
                 serviceData.get('api/news/edit', {
                     id: $scope.idInDB,
                     title: $scope.editable.title,
-                    news: $scope.editable.news
+                    news: $scope.editable.news,
+                    label: $scope.editable.label
                 }).then(function (data) {
                     if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
                     //если пришел ответ с запретом
@@ -242,5 +244,4 @@ stControllers.controller('NewsCtrl', ['$scope', 'serviceData', 'alertService',
         };
         $scope.getNews();
         $scope.editable = null;
-
     }]);
