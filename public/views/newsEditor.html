@@ -1,0 +1,24 @@
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <input type="text" class="form-control" data-ng-model="editable.title" required>
+    </div>
+    <div class="panel-body">
+        <div data-text-angular="" data-ng-model="editable.news"></div>
+        <br>
+
+        <div class="pull-right">
+            <button type="button" class="btn btn-default" data-ng-click="cancelEdit()">Отменить</button>
+            <button type="button" class="btn btn-success" data-ng-click="performEdit()">Сохранить</button>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <small><em>{{n.date_created|moment: 'lang': 'ru' | moment: 'format': 'LL'}}</em></small>
+
+        <div class="btn-group pull-right">
+            <label class="ta-news-label" data-ng-model="editable.label" data-btn-radio="'1'" data-uncheckable><span
+                    class="label label-warning pull-right">Обратите внимание</span></label>
+            <label class="ta-news-label" data-ng-model="editable.label" data-btn-radio="'2'" data-uncheckable><span
+                    class="label label-danger pull-right">Важно</span></label>
+        </div>
+    </div>
+</div>

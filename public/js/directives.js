@@ -35,3 +35,10 @@ stDirectives.directive('loginDialog', function (AUTH_EVENTS) {
         }
     };
 });
+
+//редактор новостей
+stDirectives.directive('newsEditor', function() {
+    return{
+        templateUrl: 'public/views/newsEditor.html'
+    }
+});
