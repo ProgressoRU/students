@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.min.css">
     <link rel="stylesheet" href="/public/css/textAngular.css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/public/css/loading-bar.css">
     <script data-require="jquery@2.1.3" data-semver="2.1.3" src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
     <script src="/public/lib/rangy/rangy-core.js"></script>
     <script src="/public/lib/rangy/rangy-selectionsaverestore.js"></script>
@@ -24,6 +25,7 @@
     <script src="/public/lib/angular/textAngular-sanitize.min.js"></script>
     <script src="/public/lib/angular/textAngular.min.js"></script>
     <script src="/public/lib/angular/calendar.js"></script>
+    <script src="/public/lib/angular/loading-bar.js"></script>
     <script src="/public/js/app.js"></script>
     <script src="/public/js/services.js"></script>
     <script src="/public/js/controllers.js"></script>
