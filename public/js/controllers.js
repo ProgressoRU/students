@@ -155,33 +155,19 @@ stControllers.controller('HeaderCtrl', ['$scope', function ($scope) {
 
 stControllers.controller('NewsCtrl', ['$scope', 'serviceData', 'alertService',
     function ($scope, serviceData, alertService) {
-        $scope.news = [];
-        $scope.length = 0;
-        //возможно стоит ограничить количество получаемых новостей на серверной стороне
-        $scope.lastNews = function (k) {
-            $scope.visNews = [];
-            $scope.startPos = $scope.length - $scope.CurPage * k;
+        $scope.currentPageNews = function (k) {
+            $scope.visibleNews = [];
+            startPosition = $scope.totalItems - $scope.currentPage * k;
             var j = 0;
-            for (var i = $scope.startPos; j < k; j++, i++) {
-                $scope.visNews[j] = $scope.news[i];
+            for (var i = startPosition; j < k; j++, i++) {
+                $scope.visibleNews[j] = $scope.news[i];
             }
-            return $scope.visNews.reverse();
+            return $scope.visibleNews.reverse();
         };
 
-        $scope.prevPage = function () {
-            if ($scope.CurPage < $scope.totalPages) {
-                $scope.CurPage += 1;
-            }
-        };
-
-        $scope.nextPage = function () {
-            if ($scope.CurPage > 1) {
-                $scope.CurPage -= 1;
-            }
-        };
 
         $scope.turnEditMode = function (id) {
-            for (i = 0; i < $scope.length; i++)
+            for (i = 0; i < $scope.totalItems; i++)
                 if ($scope.news[i].news_id == id) {
                     $scope.idInDB = $scope.news[i].news_id;
                     $scope.idInJSON = i;
@@ -230,8 +216,8 @@ stControllers.controller('NewsCtrl', ['$scope', 'serviceData', 'alertService',
             }
         };
 
-        $scope.deleteNews = function(id){
-            serviceData.get('api/news/delete', {id: id}).then(function(data){
+        $scope.deleteNews = function (id) {
+            serviceData.get('api/news/delete', {id: id}).then(function (data) {
                 if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
                 //если пришел ответ с запретом
                 else if (data.status == 403) alertService.add("danger", "403: Доступ запрещен!");
@@ -243,18 +229,25 @@ stControllers.controller('NewsCtrl', ['$scope', 'serviceData', 'alertService',
             })
         };
 
-        // execute on initialization
         $scope.getNews = function () {
             serviceData.get('api/news/all').then(function (data) {
-                $reply = data.status;
-                console.log('News' + $reply); //DEBUG
-                $scope.news = data.news;
-                $scope.length = data.news.length;
-                $scope.CurPage = 1;
-                $scope.totalPages = Math.ceil($scope.length / 3);
-                $scope.editMode = false;
-            });
+                //если ответ не пришел
+                if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
+                //если пришел ответ с запретом
+                else if (data.status == 400) alertService.add("danger", "400: Произошла ошибка");
+                //Если доступ разрешен
+                else if (data.status == 1) {
+                    //console.log('News' + $reply); //DEBUG
+                    $scope.news = data.news;
+                    $scope.currentPage = 1;
+                    $scope.totalItems = data.news.length;
+                    $scope.editMode = false;
+                }
+            })
         };
+        // execute on initialization
+        $scope.news = [];
         $scope.getNews();
         $scope.editable = null;
-    }]);
+    }
+]);
