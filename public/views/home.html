@@ -1,11 +1,12 @@
 <article class="myWrap col-md-10 col-xs-12 col-sm-12" data-ng-controller="NewsCtrl">
     <div class="page-header">
-        <h1>Новости <button type="button" class="btn btn-default btn-lg pull-right">
+        <h1>Новости <button type="button" class="btn btn-default btn-lg pull-right" data-ng-click="newPost()">
             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> <span class="hidden-xs">Новая</span>
         </button></h1>
     </div>
     <!-- NEWS BLOCK -->
     <!--  -->
+    <news-editor id-in-db="" id-in-json="" data-ng-if="postMode"></news-editor>
     <div data-ng-repeat="n in currentPageNews(3) track by $index">
         <!-- News Editor -->
         <news-editor id-in-db="idInDB" id-in-json="idInJSON" data-ng-if="editMode && n.news_id == idInDB"></news-editor>

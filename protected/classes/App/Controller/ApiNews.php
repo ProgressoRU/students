@@ -40,15 +40,27 @@ class ApiNews extends ApiController
             $role = Auth::getRole($this->pixie);
             if ($role != null) {
                 if ($role == 'admin') {
-                    try {
-                        $this->response('status', 200);
-                        $this->pixie->db->query('update')->table('news')->
-                        data(array('title' => $newsTitle, 'news' => $newsText, 'importance' => $newsLabel))->
-                        where('news_id', $newsId)->
-                        execute();
-                    } catch (Exception $e) {
-                        error_log($e->getMessage());
-                        $this->response('status', 403);
+                    if ($newsId != 0) {
+                        try {
+                            $this->response('status', 200);
+                            $this->pixie->db->query('update')->table('news')->
+                            data(array('title' => $newsTitle, 'news' => $newsText, 'importance' => $newsLabel))->
+                            where('news_id', $newsId)->
+                            execute();
+                        } catch (Exception $e) {
+                            error_log($e->getMessage());
+                            $this->response('status', 403);
+                        }
+                    } elseif ($newsId == 0) {
+                        try {
+                            $this->response('status', 200);
+                            $this->pixie->db->query('insert')->table('news')->
+                            data(array('title' => $newsTitle, 'news' => $newsText, 'importance' => $newsLabel, 'date_created' => date('Y-m-d G:i:s')))->
+                            execute();
+                        } catch (Exception $e) {
+                            error_log($e->getMessage());
+                            $this->response('status', 403);
+                        }
                     }
                 }
             }

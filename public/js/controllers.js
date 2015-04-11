@@ -165,6 +165,17 @@ stControllers.controller('NewsCtrl', ['$scope', 'serviceData', 'alertService',
             return $scope.visibleNews.reverse();
         };
 
+        $scope.newPost = function () {
+            $scope.postMode = true;
+            $scope.editMode = false;
+            $scope.editable = {
+                news: '',
+                title: '',
+                label: 0
+            };
+            $scope.idInDB = 0;
+            $scope.idInJSON = null;
+        };
 
         $scope.turnEditMode = function (id) {
             for (i = 0; i < $scope.totalItems; i++)
@@ -178,10 +189,12 @@ stControllers.controller('NewsCtrl', ['$scope', 'serviceData', 'alertService',
                 label: $scope.news[$scope.idInJSON].importance
             };
             $scope.editMode = true;
+            $scope.postMode = false;
         };
 
         $scope.cancelEdit = function () {
             $scope.editMode = false;
+            $scope.postMode = false;
             $scope.editable = null;
             $scope.idInDB = null;
             $scope.idInJSON = null;
@@ -207,6 +220,7 @@ stControllers.controller('NewsCtrl', ['$scope', 'serviceData', 'alertService',
                     else if (data.status == 200) {
                         alertService.add("success", "<span class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span> Новость сохранена!");
                         $scope.editMode = false;
+                        $scope.postMode = false;
                         $scope.editable = null;
                         $scope.idInDB = null;
                         $scope.idInJSON = null;
