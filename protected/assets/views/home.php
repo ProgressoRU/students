@@ -32,7 +32,7 @@
 </head>
 <body data-ng-controller="WrapCtrl">
 <div class="modalAlert">
-    <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg }}</alert>
+    <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)"><span data-ng-bind-html="alert.msg"></span></alert>
 </div>
 <div data-st-Header></div>
 <div data-ng-view class="container-fluid"></div>

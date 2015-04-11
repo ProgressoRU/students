@@ -32,7 +32,7 @@ class ApiNews extends ApiController
         $newsTitle = Request::getString('title');
         $newsText = Request::getString('news');
         $newsLabel = Request::getInt('label');
-        if ($newsLabel == null || ($newsLabel!=0 && $newsLabel!=1 && $newsLabel!=2))
+        if ($newsLabel == null || ($newsLabel != 0 && $newsLabel != 1 && $newsLabel != 2))
             $newsLabel = 0;
         if ($newsTitle == null || $newsText == null)
             $this->response('status', 25);
@@ -43,7 +43,29 @@ class ApiNews extends ApiController
                     try {
                         $this->response('status', 200);
                         $this->pixie->db->query('update')->table('news')->
-                        data(array('title' => $newsTitle, 'news' => $newsText, 'importance'=>$newsLabel))->
+                        data(array('title' => $newsTitle, 'news' => $newsText, 'importance' => $newsLabel))->
+                        where('news_id', $newsId)->
+                        execute();
+                    } catch (Exception $e) {
+                        error_log($e->getMessage());
+                        $this->response('status', 403);
+                    }
+                }
+            }
+        }
+    }
+
+    public function action_delete()
+    {
+        $this->response('status', 403);
+        $newsId = Request::getInt('id');
+        if (Auth::checkCookie($this->pixie)) {
+            $role = Auth::getRole($this->pixie);
+            if ($role != null) {
+                if ($role == 'admin') {
+                    try {
+                        $this->response('status', 1);
+                        $this->pixie->db->query('delete')->table('news')->
                         where('news_id', $newsId)->
                         execute();
                     } catch (Exception $e) {

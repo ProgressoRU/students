@@ -43,6 +43,13 @@ return array(
             'action' => 'edit'
         )
     ),
+    'news_delete' => array(
+        '/api/news/delete',
+        array(
+            'controller' => 'apiNews',
+            'action' => 'delete'
+        )
+    ),
 	'courses' => array(
 		'/api/courses/all',
 		array(

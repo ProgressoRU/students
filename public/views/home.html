@@ -16,6 +16,10 @@
             </div>
             <a data-ng-click="turnEditMode(n.news_id)" data-ng-if="currentUser.userRole == 'admin'">Edit
                 {{n.news_id}}</a>
+            <a data-ng-really-message="Вы собираетесь удалить запись <strong>«{{n.title}}»</strong> от {{n.date_created|moment: 'lang': 'ru' | moment: 'format': 'LL'}}<br>Продолжить?"
+               data-ng-really-click="deleteNews(n.news_id)"
+               data-ng-if="currentUser.userRole == 'admin'">Delete
+                {{n.news_id}}</a>
 
             <div data-ng-switch="n.importance" class="panel-footer">
                 <small><em>{{n.date_created|moment: 'lang': 'ru' | moment: 'format': 'LL'}}</em></small>
