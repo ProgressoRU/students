@@ -12,13 +12,19 @@
         </div>
     </div>
     <div class="panel-footer">
-        <small><em>{{n.date_created|moment: 'lang': 'ru' | moment: 'format': 'LL'}}</em></small>
-
         <div class="btn-group pull-right">
             <label class="ta-news-label" data-ng-model="editable.label" data-btn-radio="'1'" data-uncheckable><span
                     class="label label-warning pull-right">Обратите внимание</span></label>
             <label class="ta-news-label" data-ng-model="editable.label" data-btn-radio="'2'" data-uncheckable><span
                     class="label label-danger pull-right">Важно</span></label>
+        </div>
+        <!-- Date formatting for large devices -->
+        <div class="hidden-xs">
+            <small><em>{{n.date_created|moment: 'lang': 'ru' | moment: 'format': 'LL'}}</em></small>
+        </div>
+        <!-- Date formatting for small devices -->
+        <div class="visible-xs">
+            <small><em>{{n.date_created|moment: 'lang': 'ru' | moment: 'format': 'L'}}</em></small>
         </div>
     </div>
 </div>
