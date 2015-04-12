@@ -37,7 +37,7 @@
                         </button>
                         <button type="button" class="btn btn-danger btn-xs"
                                 data-ng-really-message="Вы собираетесь удалить запись <strong>«{{lesson.title}}»</strong> от {{lesson.date_created|moment: 'lang': 'ru' | moment: 'format': 'LL'}}<br>Продолжить?"
-                                data-ng-really-click="deleteNews(n.news_id)"
+                                data-ng-really-click="deletePost(lesson.lecture_id)"
                                 data-ng-if="currentUser.userRole == 'admin'">
                             <span class="glyphicon glyphicon-erase" aria-hidden="true"></span>
                         </button>

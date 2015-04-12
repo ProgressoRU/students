@@ -29,6 +29,13 @@ return array(
 			'action' => 'info'
 		),
 	),
+    'delete_lesson' => array(
+        '/api/disciplines/delete_lesson',
+        array(
+            'controller' => 'apiDisciplines',
+            'action' => 'delete_lesson'
+        ),
+    ),
 	'news' => array(
 		'/api/news/all',
 		array(

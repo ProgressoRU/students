@@ -140,6 +140,20 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceDa
                 eventClick: $scope.eventClick
             }
         };
+
+        $scope.deletePost = function (id) {
+            serviceData.get('api/disciplines/delete_lesson', {id: id}).then(function (data) {
+                if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
+                //если пришел ответ с запретом
+                else if (data.status == 403) alertService.add("danger", "403: Доступ запрещен!");
+                else if (data.status == 500) alertService.add("danger", "500: Сервер не смог выполнить запрос.");
+                //Если доступ разрешен
+                else if (data.status == 1) {
+                    alertService.add("success", "<span class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span> Запись удалена!");
+                    //$scope.getNews();
+                }
+            })
+        }
     }]);
 
 stControllers.controller('calendarCtrl', ['$scope'],

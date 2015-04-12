@@ -121,4 +121,26 @@ class ApiDisciplines extends ApiController
         }
     }
 
+    public function action_delete_lesson()
+    {
+        $this->response('status', 403);
+        $postId = Request::getInt('id');
+        if (Auth::checkCookie($this->pixie)) {
+            $role = Auth::getRole($this->pixie);
+            if ($role != null) {
+                if ($role == 'admin') {
+                    try {
+                        $this->response('status', 1);
+                        $this->pixie->db->query('delete')->table('lectures')->
+                        where('lecture_id', $postId)->
+                        execute();
+                    } catch (Exception $e) {
+                        error_log($e->getMessage());
+                        $this->response('status', 500);
+                    }
+                }
+            }
+        }
+    }
+
 }
