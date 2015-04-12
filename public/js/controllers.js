@@ -70,12 +70,6 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceDa
     function ($scope, $routeParams, serviceData, alertService, $compile) {
         //из параметров маршрута берем ID предмета
         $scope.disciplineID = $routeParams.disciplineID;
-        for (var i = 0; i < $scope.$parent.disciplines.length; i++)
-            if ($scope.$parent.disciplines[i].discipline_id == $scope.disciplineID) {
-                //TODO: Temp fix. Not working with page refresh!
-                $scope.disciplineTitle = $scope.$parent.disciplines[i].title;
-                $scope.disciplineDescription = $scope.$parent.disciplines[i].description;
-            }
         $scope.events = [];
         //eventSources — массив объектов, используемый плагином FullCalendar как источник событий
         $scope.eventSources = [{
@@ -107,6 +101,7 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceDa
                 $scope.lectures = data['lectures'] || [];
                 $scope.attachments = data['attachments'] || [];
                 $scope.results = data['results'] || [];
+                $scope.discipline = data['discipline'] || [];
                 for (var i = 0; i < $scope.lectures.length; i++) {
                     var event = {};
                     event = {
