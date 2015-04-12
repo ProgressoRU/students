@@ -81,12 +81,19 @@ class ApiDisciplines extends ApiController
                 $this->response('lectures', array());
                 //получаем список лекций
                 try {
-                    $this->response('lectures',
-                        $this->pixie->db->query('select')->table('lectures')
-                            ->fields('lecture_id', 'date_dead_line', 'discipline_id', 'title', 'description')
-                            ->where('discipline_id', $id)
-                            ->where('is_visible', 1)
-                            ->execute()->as_array());
+                    if ($role == 'admin')
+                        $this->response('lectures',
+                            $this->pixie->db->query('select')->table('lectures')
+                                ->fields('lecture_id', 'date_dead_line', 'discipline_id', 'title', 'description', 'is_visible')
+                                ->where('discipline_id', $id)
+                                ->execute()->as_array());
+                    else
+                        $this->response('lectures',
+                            $this->pixie->db->query('select')->table('lectures')
+                                ->fields('lecture_id', 'date_dead_line', 'discipline_id', 'title', 'description')
+                                ->where('discipline_id', $id)
+                                ->where('is_visible', 1)
+                                ->execute()->as_array());
                     //получаем связанные вложения
                     if ($this->response('lectures')) {
                         //для того, чтобы выбрать вложения только для передаваемых лекций заберем их из уже
