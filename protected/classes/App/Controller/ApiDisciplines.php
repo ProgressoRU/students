@@ -134,6 +134,12 @@ class ApiDisciplines extends ApiController
                         $this->pixie->db->query('delete')->table('lectures')->
                         where('lecture_id', $postId)->
                         execute();
+                        $this->pixie->db->query('delete')->table('lecture_results')->
+                        where('lecture_id', $postId)->
+                        execute();
+                        $this->pixie->db->query('delete')->table('attachments')->
+                        where('lecture_id', $postId)->
+                        execute();
                     } catch (Exception $e) {
                         error_log($e->getMessage());
                         $this->response('status', 500);
