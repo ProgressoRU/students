@@ -23,12 +23,12 @@
 
                 <div class="accordion-footer">Сдать до {{lesson.date_dead_line | moment: 'lang': 'ru' | moment:
                     'format': 'LL' }}
-                    <span data-ng-repeat="result in results" data-ng-if="lesson.lecture_id==result.lecture_id">
-                    <span data-ng-if="result.result==1||result.result==3||result.result==4||result.result==5"
+                    <span data-ng-repeat="result in results" data-ng-if="lesson.lecture_id==result.lecture_id && currentUser.userRole != 'admin'">
+                    <span data-ng-if="result.result==1"
                           class="pull-right">Зачтено <span class="glyphicon glyphicon-ok"
                                                            aria-hidden="true"></span>
                     </span>
-                    <span data-ng-if="result.result==0||result.result==2" class="pull-right">Не зачтено
+                    <span data-ng-if="result.result==0 && currentUser.userRole != 'admin'" class="pull-right">Не зачтено
                         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></span>
                     </span>
                 </div>

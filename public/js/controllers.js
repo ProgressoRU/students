@@ -111,7 +111,7 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceDa
                     $scope.events[i] = event;
                 }
             }
-            else alertService.add("danger", "Неизвестная ощибка. Обратитесь к администратору.")
+            else alertService.add("danger", "Неизвестная ошибка. Обратитесь к администратору.")
         });
         //Тултипы
         $scope.eventRender = function (event, element, view) {
@@ -120,9 +120,6 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceDa
                 'tooltip-append-to-body': true
             });
             $compile(element)($scope);
-        };
-        $scope.eventClick = function (date, jsEvent, view) {
-            $scope.alertMessage = (date.title + ' was clicked ');
         };
 
         $scope.oneAtATime = true;
@@ -203,8 +200,8 @@ stControllers.controller('NewsCtrl', ['$scope', 'serviceData', 'alertService',
         $scope.performEdit = function () {
             if ($scope.editable.title == null || $scope.editable.news == null)
                 alertService.add("danger", 'Новость должна содержать заголовок и текст!');
-            else if ($scope.editable.title.length <= 3)
-                alertService.add("danger", 'Заголовок должен содержать более 3 символов');
+            else if ($scope.editable.title.length <= 3 || $scope.editable.title.length > 100)
+                alertService.add("danger", 'Заголовок должен содержать более 3, но менее 100 символов');
             else {
                 serviceData.get('api/news/edit', {
                     id: $scope.idInDB,
@@ -215,6 +212,7 @@ stControllers.controller('NewsCtrl', ['$scope', 'serviceData', 'alertService',
                     if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
                     //если пришел ответ с запретом
                     else if (data.status == 403) alertService.add("danger", "403: Доступ запрещен!");
+                    else if (data.status == 500) alertService.add("danger", "500: Сервер не смог выполнить запрос.");
                     else if (data.status == 25) alertService.add("danger", "Новость должна содержать заголовок и текст!");
                     //Если доступ разрешен
                     else if (data.status == 200) {
@@ -235,6 +233,7 @@ stControllers.controller('NewsCtrl', ['$scope', 'serviceData', 'alertService',
                 if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
                 //если пришел ответ с запретом
                 else if (data.status == 403) alertService.add("danger", "403: Доступ запрещен!");
+                else if (data.status == 500) alertService.add("danger", "500: Сервер не смог выполнить запрос.");
                 //Если доступ разрешен
                 else if (data.status == 1) {
                     alertService.add("success", "<span class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span> Новость удалена!");
@@ -248,7 +247,7 @@ stControllers.controller('NewsCtrl', ['$scope', 'serviceData', 'alertService',
                 //если ответ не пришел
                 if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
                 //если пришел ответ с запретом
-                else if (data.status == 400) alertService.add("danger", "400: Произошла ошибка");
+                else if (data.status == 500) alertService.add("danger", "400: Произошла ошибка");
                 //Если доступ разрешен
                 else if (data.status == 1) {
                     //console.log('News' + $reply); //DEBUG

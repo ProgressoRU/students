@@ -51,6 +51,7 @@ class ApiDisciplines extends ApiController
     {
         $id = Request::getInt('id'); //id предмета
         $this->response('status', 0);
+        $role = Auth::getRole($this->pixie);
         //Получаем ID курса, для которого преподается предмет
         try {
             $courseId = $this->pixie->db->query('select')->table('disciplines')
@@ -65,7 +66,7 @@ class ApiDisciplines extends ApiController
         //Если прошлый блок выполнился
         if (isset($courseId)) {
             //проверяем совпадает ли курс пользователя с курсом предмета
-            if (Auth::checkPermissions($this->pixie, $courseId->course_id)) {
+            if (Auth::checkPermissions($this->pixie, $courseId->course_id) || $role== 'admin') {
                 $this->response('lectures', array());
                 //получаем список лекций
                 try {
@@ -89,7 +90,7 @@ class ApiDisciplines extends ApiController
                                 ->where('lecture_id', 'IN', $this->pixie->db->expr('(' . $lecturesString . ')'))
                                 ->execute()->as_array());
                         //и результаты для текущего студента
-                        if (isset ($_COOKIE['id'])) {
+                        if (isset ($_COOKIE['id']) && $role!='admin') {
                             $this->response('results',
                                 $this->pixie->db->query('select')->table('lecture_results')
                                     ->where('lecture_id', 'IN', $this->pixie->db->expr('(' . $lecturesString . ')'))

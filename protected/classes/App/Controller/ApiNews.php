@@ -11,7 +11,7 @@ class ApiNews extends ApiController
 
     public function action_index()
     {
-        $this->response('status', 400);
+        $this->response('status', 500);
         $this->response('news', array());
 
         try {
@@ -19,7 +19,7 @@ class ApiNews extends ApiController
             $this->response('news', $this->pixie->db->query('select')->table('news')->execute()->as_array());
         } catch (Exception $e) {
             error_log($e->getMessage());
-            $this->response('status', 400);
+            $this->response('status', 500);
         }
 
         //$this->notFound();
@@ -49,7 +49,7 @@ class ApiNews extends ApiController
                             execute();
                         } catch (Exception $e) {
                             error_log($e->getMessage());
-                            $this->response('status', 403);
+                            $this->response('status', 500);
                         }
                     } elseif ($newsId == 0) {
                         try {
@@ -59,7 +59,7 @@ class ApiNews extends ApiController
                             execute();
                         } catch (Exception $e) {
                             error_log($e->getMessage());
-                            $this->response('status', 403);
+                            $this->response('status', 500);
                         }
                     }
                 }
@@ -82,7 +82,7 @@ class ApiNews extends ApiController
                         execute();
                     } catch (Exception $e) {
                         error_log($e->getMessage());
-                        $this->response('status', 403);
+                        $this->response('status', 500);
                     }
                 }
             }
