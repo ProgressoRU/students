@@ -1,8 +1,8 @@
 var stControllers = angular.module('stControllers', []);
 
 // Обертка (wrap)
-stControllers.controller('WrapCtrl', ['$scope', 'Session', 'AuthService', 'serviceData', 'alertService',
-    function ($scope, Session, AuthService, serviceData, alertService) {
+stControllers.controller('WrapCtrl', ['$scope', 'Session', 'AuthService', 'serviceData', 'alertService', 'taOptions',
+    function ($scope, Session, AuthService, serviceData, alertService, taOptions) {
         //объявляем функции, обращающиеся при вызове к AuthService
         $scope.isAuthenticated = function () {
             return AuthService.isAuthenticated();
@@ -23,9 +23,15 @@ stControllers.controller('WrapCtrl', ['$scope', 'Session', 'AuthService', 'servi
         };
         $scope.clearDisciplineList = function () {
             $scope.disciplines = [];
-        }
+        };
         //on init
         $scope.getDisciplines();
+        taOptions.toolbar = [
+            ['h3', 'h4', 'h5', 'h6', 'p', 'pre', 'quote'],
+            ['bold', 'italics', 'underline', 'strikeThrough', 'ul', 'ol', 'redo', 'undo', 'clear'],
+            ['justifyLeft', 'justifyCenter', 'justifyRight', 'indent', 'outdent'],
+            ['html', 'insertImage', 'insertLink', 'insertVideo', 'charcount']
+        ];
     }]);
 
 stControllers.controller('HomeCtrl', ['$scope', function ($scope) {
@@ -256,7 +262,7 @@ stControllers.controller('NewsCtrl', ['$scope', 'serviceData', 'alertService',
                     $scope.totalItems = data.news.length;
                     $scope.editMode = false;
                 }
-            })
+            });
         };
         // execute on initialization
         $scope.news = [];
