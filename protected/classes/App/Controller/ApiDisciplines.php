@@ -139,9 +139,9 @@ class ApiDisciplines extends ApiController
         $this->response('status', 403);
         $postId = Request::getInt('id');
         if (Auth::checkCookie($this->pixie)) {
-            $role = Auth::getRole($this->pixie);
+            $role = Auth::getPermissions($this->pixie, $postId);
             if ($role != null) {
-                if ($role == 'admin') {
+                if ($role == 'admin' || $role == 'creator' || $role == 'editor') {
                     try {
                         $this->response('status', 1);
                         $this->pixie->db->query('delete')->table('lectures')->

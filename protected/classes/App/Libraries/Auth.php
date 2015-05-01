@@ -145,4 +145,69 @@ abstract class Auth
 
         return true;
     }
+
+    public static function getPermissions(\App\Pixie $pixie, $lessonId = null)
+    {
+        //функция проверяет является ли пользователь администратором, создателем предмета или редактором
+        $permission = null;
+        if (isset($_COOKIE['id']))
+            $uID = $_COOKIE['id'];
+        else
+            return $permission;
+        try {
+            $query = $pixie->db->query('select')->table('users')
+                ->fields('role')
+                ->where('user_id', $uID)
+                ->execute()->current();
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+        }
+        if (isset($query))
+            $permission = $query->role;
+        else $permission = null;
+        if ($permission == 'admin') return $permission;
+        elseif (!is_null($lessonId)) {
+            //по номеру лекции получаем номер предмета
+            try {
+                $lectureToDiscipline = $pixie->db->query('select')->table('lectures')
+                    ->fields('discipline_id')
+                    ->where('lecture_id', $lessonId)
+                    ->execute()->current();
+            } catch (Exception $e) {
+                error_log($e->getMessage());
+            }
+            if (isset($lectureToDiscipline) && !is_null($lectureToDiscipline)) {
+                $disciplineId = $lectureToDiscipline->discipline_id;
+                try {
+                    $discipline = $pixie->db->query('select')->table('disciplines')
+                        ->where('discipline_id', $disciplineId)
+                        ->execute()->current();
+                } catch (Exception $e) {
+                    error_log($e->getMessage());
+                }
+                if (isset($discipline) && !empty($discipline)) {
+                    if ($discipline->creator_id == $uID) {
+                        $permission = 'creator';
+                        return $permission;
+                    } else {
+                        try {
+                            $subscription = $pixie->db->query('select')->table('subscriptions')
+                                ->where('discipline_id', $disciplineId)
+                                ->where('user_id', $uID)
+                                ->execute()->current();
+                        } catch (Exception $e) {
+                            error_log($e->getMessage());
+                        }
+                        if (isset($subscription) && !empty($subscription)) {
+                            if ($subscription->is_editor == 1) {
+                                $permission = 'editor';
+                                return $permission;
+                            }
+                        }
+                    }
+                }
+            }
+        } else return $permission;
+        return $permission;
+    }
 }
