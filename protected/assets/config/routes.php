@@ -22,6 +22,13 @@ return array(
 			'action' => 'index'
 		),
 	),
+    'classes_my' => array(
+        '/api/disciplines/my',
+        array(
+            'controller' => 'apiDisciplines',
+            'action' => 'my_disciplines'
+        ),
+    ),
 	'classes_lectures' => array(
         '/api/disciplines/info',
 		array(

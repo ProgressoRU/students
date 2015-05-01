@@ -34,8 +34,8 @@ stServices.factory('AuthService', ['serviceData', '$location', 'Session', functi
                 //создаем сессии, если ответ от сервера положительный
                 if (data.status == 200) {
                     Session.create(data.user[0].user_id, data.user[0].username, data.user[0].surname, data.user[0].name,
-                        data.user[0].patronymic, data.user[0].group_id, data.user[0].role, data.user[0].course_id);
-                    //console.log(Session);
+                        data.user[0].patronymic, data.user[0].group, data.user[0].role);
+                    //console.log('Session'+Session);
                     return data;
                 }
                 else return data;
@@ -85,7 +85,7 @@ stServices.factory('alertService', function ($rootScope, $timeout) {
 
 stServices.service('Session', [function () {
     //создание сессии
-    this.create = function (userId, userName, surname, name, patronymic, group, userRole, course) {
+    this.create = function (userId, userName, surname, name, patronymic, group, userRole) {
         this.userId = userId;
         this.userName = userName;
         this.surname = surname;
@@ -93,7 +93,6 @@ stServices.service('Session', [function () {
         this.patronymic = patronymic;
         this.group = group;
         this.userRole = userRole;
-        this.course = course;
     };
     //уничтожение сессии
     this.destroy = function () {
@@ -104,7 +103,6 @@ stServices.service('Session', [function () {
         this.patronymic = null;
         this.group = null;
         this.userRole = null;
-        this.course = null;
     };
     return this;
 }]);

@@ -17,7 +17,7 @@ stControllers.controller('WrapCtrl', ['$scope', 'Session', 'AuthService', 'servi
         $scope.currentUser = Session;
         //получение доступных предметов
         $scope.getDisciplines = function () {
-            serviceData.get('api/disciplines/all').then(function (data) {
+            serviceData.get('api/disciplines/my').then(function (data) {
                 $scope.disciplines = (data.status && data.status == 1) ? data.disciplines : [];
             })
         };
@@ -102,6 +102,7 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceDa
                 $scope.attachments = data['attachments'] || [];
                 $scope.results = data['results'] || [];
                 $scope.discipline = data['discipline'] || [];
+                $scope.isEditor = data['isEditor'] || false;
                 for (var i = 0; i < $scope.lectures.length; i++) {
                     var event = {};
                     event = {

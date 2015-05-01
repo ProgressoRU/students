@@ -59,40 +59,6 @@ abstract class Auth
         return $isOk;
     }
 
-    public static function checkPermissions(\App\Pixie $pixie, $course = null, $role = null)
-    {
-//перед вызовом этой функции куки должны бьть проверены.
-//Можно ли в этом убедиться?
-        $accessGranted = false;
-        if (isset($_COOKIE['id']))
-            $id = $_COOKIE['id'];
-        else
-            return $accessGranted;
-        try {
-            //выясняем роль и курс
-            $permissions = $pixie->db->query('select')->table('users')
-                ->fields('user_id', 'group_id', 'role', 'groups.course_id')
-                ->where('user_id', $id)
-                ->join('groups', array('groups.group_id', 'users.group_id'), 'inner')
-                ->execute()->current();
-        } catch (Exception $e) {
-            error_log($e->getMessage());
-        }
-        if ($course != null) {
-            if ($permissions->course_id != $course) {
-                $accessGranted = false;
-                return $accessGranted;
-            } else $accessGranted = true;
-        }
-        if ($role != null) {
-            if ($permissions->role != $role) {
-                $accessGranted = false;
-                return $accessGranted;
-            } else $accessGranted = true;
-        }
-        return $accessGranted;
-    }
-
     public static function getRole(\App\Pixie $pixie)
     {
         $role = null;
@@ -114,28 +80,6 @@ abstract class Auth
         return $role;
     }
 
-    public static function getCourse(\App\Pixie $pixie)
-    {
-        $course = null;
-        if (isset($_COOKIE['id']))
-            $id = $_COOKIE['id'];
-        else
-            return $course;
-        try {
-            $query = $pixie->db->query('select')->table('users')
-                ->fields('group_id', 'groups.course_id')
-                ->where('user_id', $id)
-                ->join('groups', array('groups.group_id', 'users.group_id'), 'inner')
-                ->execute()->current();
-        } catch (Exception $e) {
-            error_log($e->getMessage());
-        }
-        if (isset($query))
-            $course = $query->course_id;
-        else $course = null;
-        return $course;
-    }
-
     public static function login(\App\Pixie $pixie, $login, $pass)
     {
         $reply = array(
@@ -146,10 +90,9 @@ abstract class Auth
         //пытаемся получить информацию о пользователе
         try {
             $reply['user'] = $pixie->db->query('select')->table('users')
-                ->fields('user_id', 'username', 'surname', 'name', 'patronymic', 'group_id', 'role', 'groups.course_id')
+                ->fields('user_id', 'username', 'surname', 'name', 'patronymic', 'role', 'group')
                 ->where('username', $login)
                 ->where('pass_hash', $passHash)
-                ->join('groups', array('groups.group_id', 'users.group_id'), 'inner')
                 ->execute()->as_array();
         } catch (Exception $e) {
             error_log('SQL Error\nIt\'s might help:\n' . $e->getMessage());

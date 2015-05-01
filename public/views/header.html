@@ -18,16 +18,17 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li><a href="#/news">Новости</a></li>
-                    <li data-ng-if="currentUser.userRole == 'student' && disciplines.length<4"
-                        data-ng-repeat="discipline in disciplines"><a href="#/class/{{discipline.discipline_id}}">{{discipline.title}}</a>
-                    </li>
-                    <li data-ng-if="currentUser.userRole == 'admin' || disciplines.length >= 4 " class="dropdown"><a
+                    <li class="dropdown" data-ng-if="isAuthenticated()"><a
                             href="" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                            aria-expanded="false">Предметы<span class="caret"></span></a>
+                            aria-expanded="false">Мои курсы<span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
-                            <li data-ng-repeat="discipline in disciplines"><a href="#/class/{{discipline.discipline_id}}">{{discipline.title}}</a></li>
+                            <li data-ng-if="currentUser.userRole=='admin'"><a href="#">Создать курс</a></li>
+                            <li data-ng-if="currentUser.userRole=='admin'" class="divider"></li>
+                            <li data-ng-repeat="discipline in disciplines"><a
+                                    href="#/class/{{discipline.discipline_id}}">{{discipline.title}}</a></li>
                         </ul>
                     </li>
+                    <li><a href="#/">Все курсы</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right" data-ng-if="isAuthenticated()">
                     <li class="dropdown"><a href="" class="dropdown-toggle" data-toggle="dropdown" role="button"

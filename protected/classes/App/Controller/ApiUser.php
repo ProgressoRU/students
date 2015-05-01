@@ -17,9 +17,8 @@ class ApiUser extends ApiController
             $id = $_COOKIE['id'];
             try {
                 $this->response('user', $this->pixie->db->query('select')->table('users')
-                    ->fields('user_id', 'username', 'surname', 'name', 'patronymic', 'group_id', 'role','groups.course_id')
+                    ->fields('user_id', 'username', 'surname', 'name', 'patronymic', 'group', 'role')
                     ->where('user_id', $id)
-                    ->join('groups', array('groups.group_id', 'users.group_id'), 'inner')
                     ->execute()->as_array());
             } catch (Exception $e) {
                 error_log($e->getMessage());
