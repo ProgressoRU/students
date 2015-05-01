@@ -39,7 +39,11 @@ stDirectives.directive('loginDialog', function (AUTH_EVENTS) {
 //редактор новостей
 stDirectives.directive('newsEditor', function () {
     return {
-        templateUrl: 'public/views/newsEditor.html'
+        restrict: 'E',
+        templateUrl: 'public/views/newsEditor.html',
+        link: function ($scope, $element, $attributes) {
+            $scope.mode = $attributes.mode;
+        }
     }
 });
 
