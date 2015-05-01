@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50523
 File Encoding         : 65001
 
-Date: 2015-04-08 01:26:14
+Date: 2015-05-01 04:31:58
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -32,17 +32,6 @@ CREATE TABLE `attachments` (
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for courses
--- ----------------------------
-DROP TABLE IF EXISTS `courses`;
-CREATE TABLE `courses` (
-  `course_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `speciality` varchar(24) NOT NULL,
-  `course_num` int(11) unsigned NOT NULL,
-  PRIMARY KEY (`course_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
-
--- ----------------------------
 -- Table structure for disciplines
 -- ----------------------------
 DROP TABLE IF EXISTS `disciplines`;
@@ -50,22 +39,10 @@ CREATE TABLE `disciplines` (
   `discipline_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(64) NOT NULL,
   `description` varchar(144) DEFAULT NULL,
-  `course_id` int(11) unsigned DEFAULT NULL,
-  `teacher_id` int(11) unsigned DEFAULT NULL,
-  PRIMARY KEY (`discipline_id`),
-  KEY `GroupID` (`course_id`)
+  `creator_id` int(11) unsigned DEFAULT NULL,
+  `type` tinyint(1) unsigned NOT NULL,
+  PRIMARY KEY (`discipline_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Table structure for groups
--- ----------------------------
-DROP TABLE IF EXISTS `groups`;
-CREATE TABLE `groups` (
-  `group_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `course_id` int(11) unsigned NOT NULL,
-  PRIMARY KEY (`group_id`),
-  KEY `CourseID` (`course_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for lectures
@@ -82,7 +59,7 @@ CREATE TABLE `lectures` (
   `discipline_id` int(4) unsigned DEFAULT NULL,
   PRIMARY KEY (`lecture_id`),
   KEY `intClass` (`discipline_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for lecture_results
@@ -102,12 +79,23 @@ CREATE TABLE `lecture_results` (
 DROP TABLE IF EXISTS `news`;
 CREATE TABLE `news` (
   `news_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `title` varchar(80) NOT NULL,
+  `title` varchar(100) NOT NULL,
   `news` longtext NOT NULL,
   `importance` tinyint(4) unsigned NOT NULL,
   `date_created` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`news_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for subscriptions
+-- ----------------------------
+DROP TABLE IF EXISTS `subscriptions`;
+CREATE TABLE `subscriptions` (
+  `user_id` int(11) unsigned NOT NULL,
+  `discipline_id` int(11) unsigned NOT NULL,
+  `status` tinyint(1) unsigned NOT NULL,
+  `is_editor` tinyint(1) unsigned NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for users
@@ -120,11 +108,10 @@ CREATE TABLE `users` (
   `surname` varchar(42) NOT NULL,
   `name` varchar(42) NOT NULL,
   `patronymic` varchar(42) DEFAULT NULL COMMENT 'Отчество',
-  `group_id` int(11) NOT NULL,
   `session_hash` varchar(32) DEFAULT NULL,
   `last_ip` varchar(16) DEFAULT NULL,
   `role` varchar(8) NOT NULL,
   `useragent` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`user_id`),
-  KEY `GroupID` (`group_id`)
+  `group` varchar(12) NOT NULL,
+  PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
