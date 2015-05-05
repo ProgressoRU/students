@@ -6,6 +6,13 @@
     </div>
     <div class="row">
         <accordion close-others="oneAtATime" class="col-md-7">
+            <!--Editor -->
+            <news-editor mode="lecture" data-ng-if="postMode"></news-editor>
+            <!-- //Editor -->
+            <div class="panel panel-info" data-ng-if="!postMode && canEdit">
+                <div class="panel-heading"><a href="" data-ng-click="newPost()"><span class="glyphicon glyphicon-plus"></span> Новый материал</a></div>
+            </div>
+            <hr>
             <div data-ng-repeat="lesson in lectures" style="margin-top: 5px">
                 <!--Editor -->
                 <news-editor mode="lecture" data-ng-if="editMode && lesson.lecture_id == idInDB"></news-editor>

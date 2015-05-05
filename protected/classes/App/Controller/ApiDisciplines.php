@@ -193,8 +193,8 @@ class ApiDisciplines extends ApiController
                         try {
                             $this->response('status', 200);
                             $this->pixie->db->query('insert')->table('lectures')->
-                            data(array('title' => $title, 'news' => $description, 'date_dead_line' => $deadline,
-                                    'discipline_id' => $disciplineId, 'date_created' => date('Y-m-d G:i:s')))->
+                            data(array('title' => $title, 'description' => $description, 'date_dead_line' => $deadline,
+                                    'discipline_id' => $disciplineId, 'date_created' => date('Y-m-d G:i:s'), 'is_visible' => 1))->
                             execute();
                             $id = $this->pixie->db->insert_id();
                             error_log($id);

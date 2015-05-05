@@ -162,6 +162,20 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceDa
             })
         };
 
+        $scope.newPost = function () {
+            $scope.postMode = true;
+            $scope.editMode = false;
+            $scope.editable = {
+                news: '',
+                title: '',
+                deadline: '',
+                attachments: []
+            };
+            $scope.idInDB = 0;
+            $scope.idInJSON = null;
+            $scope.today();
+        };
+
         $scope.turnEditMode = function (idInDb, idInJson) {
             $scope.idInDB = idInDb;
             $scope.idInJSON = idInJson;
