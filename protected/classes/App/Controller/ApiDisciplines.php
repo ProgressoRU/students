@@ -170,9 +170,10 @@ class ApiDisciplines extends ApiController
         $description = Request::getString('description');
         $deadline = Request::getDate('deadline');
         $attachments = Request::getArray('attachments');
+        $disciplineId = Request::getInt('disciplineId');
         $deadline = date('Y-m-d', strtotime($deadline));
         if ($title == null || $description == null)
-            $this->response('status', 25);
+            $this->response('status', 26);
         elseif (Auth::checkCookie($this->pixie)) {
             $role = Auth::getPermissions($this->pixie, $id);
             if ($role != null) {
@@ -189,22 +190,65 @@ class ApiDisciplines extends ApiController
                             $this->response('status', 500);
                         }
                     } elseif ($id == 0) {
-                        //TODO
+                        try {
+                            $this->response('status', 200);
+                            $this->pixie->db->query('insert')->table('lectures')->
+                            data(array('title' => $title, 'news' => $description, 'date_dead_line' => $deadline,
+                                    'discipline_id' => $disciplineId, 'date_created' => date('Y-m-d G:i:s')))->
+                            execute();
+                            $id = $this->pixie->db->insert_id();
+                            error_log($id);
+                        } catch (Exception $e) {
+                            error_log($e->getMessage());
+                            $this->response('status', 500);
+                        }
                     }
                 }
-                /*
-                if($this->response('status') == 200 && isset($attachments))
-                {
+                if ($this->response('status') == 200 && isset($attachments)) {
                     $newAttaches = array();
                     $editedAttaches = array();
                     $deletedAttaches = array();
-                    foreach($attachments as $attach) {
-                        error_log($attach['new']);
-                        error_log(print_r($newAttaches));
-                        if ($attach['new']) $newAttaches[] = $attach;
+                    foreach ($attachments as $attach) {
+                        if ($attach['new'] && $attach['deleted']) continue;
+                        elseif ($attach['deleted']) $deletedAttaches[] = $attach;
+                        elseif ($attach['new']) $newAttaches[] = $attach;
+                        elseif ($attach['edited']) $editedAttaches[] = $attach;
                     }
+                    if (!empty($deletedAttaches))
+                        try {
+                            foreach ($deletedAttaches as $delete) {
+                                $this->pixie->db->query('delete')->table('attachments')
+                                    ->where('attach_id', $delete['attach_id'])
+                                    ->execute();
+                            }
+                        } catch (Exception $e) {
+                            error_log($e->getMessage());
+                            $this->response('status', 25);
+                        }
+                    if (!empty ($newAttaches))
+                        try {
+                            foreach ($newAttaches as $new) {
+                                $this->pixie->db->query('insert')->table('attachments')
+                                    ->data(array('lecture_id' => $id, 'url' => $new['url'], 'title' => $new['title'],
+                                        'description' => $new['description'], 'date_created' => date('Y-m-d G:i:s')))
+                                    ->execute();
+                            }
+                        } catch (Exception $e) {
+                            error_log($e->getMessage());
+                            $this->response('status', 25);
+                        }
+                    if (!empty ($editedAttaches))
+                        try {
+                            foreach ($editedAttaches as $edit) {
+                                $this->pixie->db->query('update')->table('attachments')
+                                    ->data(array('url' => $edit['url'], 'title' => $edit['title'],
+                                        'description' => $edit['description']));
+                            }
+                        } catch (Exception $e) {
+                            error_log($e->getMessage());
+                            $this->response('status', 25);
+                        }
                 }
-                */
             }
         }
     }

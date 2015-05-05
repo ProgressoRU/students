@@ -14,7 +14,7 @@
                                  class="panel panel-info" is-open="status.open">
                     <accordion-heading><strong>{{$index+1}}.</strong> <span
                             class="glyphicon glyphicon-eye-close" aria-hidden="true"
-                            data-ng-if="lesson.is_visible == 0" tooltip="Скрытый урок"></span> {{lesson.title}}
+                            data-ng-if="lesson.is_visible == 0" data-tooltip="Скрытый урок"></span> {{lesson.title}}
                         <i class="pull-right glyphicon"
                            data-ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
                     </accordion-heading>

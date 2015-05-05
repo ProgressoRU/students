@@ -168,16 +168,17 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceDa
             $scope.editable = {
                 news: $scope.lectures[idInJson].description,
                 title: $scope.lectures[idInJson].title,
-                deadline: $scope.lectures[idInJson].date_dead_line.replace(/(.+) (.+)/, "$1T$2Z"), //sring date format to 'date' format
+                deadline: $scope.lectures[idInJson].date_dead_line.replace(/(.+) (.+)/, "$1T$2Z"), //string date format to 'date' format
                 attachments: []
             };
             for (i = 0; i < $scope.attachments.length; i++)
                 if ($scope.attachments[i].lecture_id == idInDb) {
                     $scope.editable.attachments.push($scope.attachments[i]);
-                    $scope.editable.attachments[i].deleted = false;
-                    $scope.editable.attachments[i].editing = false; //сейчас редактируется
-                    $scope.editable.attachments[i].edited = false; //отредактировано
-                    $scope.editable.attachments[i].new = false; //новый
+                    var last = $scope.editable.attachments.length - 1;
+                    $scope.editable.attachments[last].deleted = false;
+                    $scope.editable.attachments[last].editing = false; //сейчас редактируется
+                    $scope.editable.attachments[last].edited = false; //отредактировано
+                    $scope.editable.attachments[last].new = false; //новый
                 }
             $scope.editMode = true;
             $scope.postMode = false;
@@ -239,7 +240,8 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceDa
                 url: "",
                 description: "",
                 editing: true,
-                new: true
+                new: true,
+                deleted: false
             });
         };
 
@@ -251,6 +253,7 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceDa
             else {
                 serviceData.get('api/disciplines/edit_lesson', {
                     id: $scope.idInDB,
+                    disciplineId: $scope.disciplineID,
                     title: $scope.editable.title,
                     description: $scope.editable.news,
                     deadline: $scope.editable.deadline,
@@ -260,7 +263,8 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceDa
                     //если пришел ответ с запретом
                     else if (data.status == 403) alertService.add("danger", "403: Доступ запрещен!");
                     else if (data.status == 500) alertService.add("danger", "500: Сервер не смог выполнить запрос.");
-                    else if (data.status == 25) alertService.add("danger", "Новость должна содержать заголовок и текст!");
+                    else if (data.status == 25) alertService.add("warning", "Материал сохранен, но возникла проблема при сохранении вложений");
+                    else if (data.status == 26) alertService.add("danger", "Материал должен содержать заголовок и текст!");
                     //Если доступ разрешен
                     else if (data.status == 200) {
                         alertService.add("success", "<span class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span> Материал сохранен!");
