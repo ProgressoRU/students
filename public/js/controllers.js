@@ -71,6 +71,7 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceDa
         //из параметров маршрута берем ID предмета
         $scope.disciplineID = $routeParams.disciplineID;
         $scope.events = [];
+        $scope.editable = null;
         //eventSources — массив объектов, используемый плагином FullCalendar как источник событий
         $scope.eventSources = [{
             events: $scope.events //первый источник — массив, инициализируемый при инициализации скоупа.
@@ -112,6 +113,11 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceDa
                     };
                     $scope.events[i] = event;
                 }
+                if ($scope.currentUser.userRole == 'admin' || $scope.isEditor || $scope.discipline.creator_id == $scope.currentUser.userId)
+                    $scope.canEdit = true;
+                else $scope.canEdit = false;
+                $scope.totalItems = data.lectures.length;
+                $scope.editMode = false;
             }
             else alertService.add("danger", "Неизвестная ошибка. Обратитесь к администратору.")
         });
@@ -154,13 +160,140 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceDa
                     $scope.lectures.splice(jsonId, 1);
                 }
             })
-        }
-    }]);
+        };
 
-stControllers.controller('calendarCtrl', ['$scope'],
-    function ($scope) {
+        $scope.turnEditMode = function (idInDb, idInJson) {
+            $scope.idInDB = idInDb;
+            $scope.idInJSON = idInJson;
+            $scope.editable = {
+                news: $scope.lectures[idInJson].description,
+                title: $scope.lectures[idInJson].title,
+                deadline: $scope.lectures[idInJson].date_dead_line.replace(/(.+) (.+)/, "$1T$2Z"), //sring date format to 'date' format
+                attachments: []
+            };
+            for (i = 0; i < $scope.attachments.length; i++)
+                if ($scope.attachments[i].lecture_id == idInDb) {
+                    $scope.editable.attachments.push($scope.attachments[i]);
+                    $scope.editable.attachments[i].deleted = false;
+                    $scope.editable.attachments[i].editing = false; //сейчас редактируется
+                    $scope.editable.attachments[i].edited = false; //отредактировано
+                }
+            $scope.editMode = true;
+            $scope.postMode = false;
+        };
 
-    });
+        $scope.cancelEdit = function () {
+            $scope.editMode = false;
+            $scope.postMode = false;
+            $scope.editable = null;
+        };
+
+        $scope.markAttachOnRemoval = function (idInDb, idInJson) {
+            $scope.editable.attachments[idInJson].deleted = true;
+        };
+
+        $scope.restoreAttach = function (idInDb, idInJson) {
+            $scope.editable.attachments[idInJson].deleted = false;
+        };
+
+        $scope.editAttach = function (idInDb, idInJson) {
+            $scope.editable.attachments[idInJson].editing = true;
+        };
+
+        $scope.cancelAttachEdit = function (event, idInJson) {
+            var item = event.currentTarget;
+            $scope.editable.attachments[idInJson].title = item.getAttribute('data-title');
+            $scope.editable.attachments[idInJson].description = item.getAttribute('data-description');
+            $scope.editable.attachments[idInJson].url = item.getAttribute('data-url');
+            $scope.editable.attachments[idInJson].editing = false;
+            if ($scope.editable.attachments[idInJson].new == true) $scope.editable.attachments.splice(idInJson, 1);
+        };
+
+        $scope.saveAttach = function (idInJson) {
+            var checks = true;
+            if ($scope.editable.attachments[idInJson].title == '' ||
+                $scope.editable.attachments[idInJson].description == '' ||
+                $scope.editable.attachments[idInJson].url == '') {
+                alertService.add("danger", 'Все поля должны быть заполнены');
+                checks = false
+            }
+            if ($scope.editable.attachments[idInJson].title.length <= 3 || $scope.editable.attachments[idInJson].title.length > 100) {
+                alertService.add("danger", 'Заголовок должен содержать более 3, но менее 100 символов');
+                checks = false;
+            }
+            if ($scope.editable.attachments[idInJson].description.length <= 3 || $scope.editable.attachments[idInJson].description.length > 255) {
+                alertService.add("danger", 'Описание должно содержать более 3, но менее 255 символов');
+                checks = false;
+            }
+            if (checks) {
+                if (!$scope.editable.attachments[idInJson].new) $scope.editable.attachments[idInJson].edited = true;
+                $scope.editable.attachments[idInJson].editing = false;
+            }
+        };
+
+        $scope.newAttach = function (lectureId) {
+            $scope.editable.attachments.push({
+                lecture_id: lectureId,
+                title: "",
+                url: "",
+                description: "",
+                editing: true,
+                new: true
+            });
+        };
+
+        $scope.performEdit = function () {
+            if ($scope.editable.title == null || $scope.editable.description == null)
+                alertService.add("danger", 'Материал должен содержать заголовок и текст!');
+            else if ($scope.editable.title.length <= 3 || $scope.editable.title.length > 100)
+                alertService.add("danger", 'Заголовок должен содержать более 3, но менее 100 символов');
+            else {
+                serviceData.get('api/discipline/edit', {
+                    id: $scope.idInDB,
+                    title: $scope.editable.title,
+                    description: $scope.editable.news,
+                    label: $scope.editable.deadline,
+                    attachments: $scope.editable.attachments
+                }).then(function (data) {
+                    if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
+                    //если пришел ответ с запретом
+                    else if (data.status == 403) alertService.add("danger", "403: Доступ запрещен!");
+                    else if (data.status == 500) alertService.add("danger", "500: Сервер не смог выполнить запрос.");
+                    else if (data.status == 25) alertService.add("danger", "Новость должна содержать заголовок и текст!");
+                    //Если доступ разрешен
+                    else if (data.status == 200) {
+                        alertService.add("success", "<span class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span> Материал сохранен!");
+                        $scope.editMode = false;
+                        $scope.postMode = false;
+                        $scope.editable = null;
+                        $scope.idInDB = null;
+                        $scope.idInJSON = null;
+                    }
+                })
+            }
+        };
+        $scope.dateOptions = {
+            formatYear: 'yyyy',
+            startingDay: 1
+        };
+
+        $scope.today = function () {
+            $scope.editable.deadline = new Date();
+        };
+
+        $scope.toggleMin = function () {
+            $scope.minDate = $scope.minDate ? null : new Date();
+        };
+        $scope.toggleMin();
+
+        $scope.open = function ($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+
+            $scope.datepicker = {'opened': true};
+        };
+    }])
+;
 
 stControllers.controller('HeaderCtrl', ['$scope', function ($scope) {
 

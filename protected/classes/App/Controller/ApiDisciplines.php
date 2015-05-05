@@ -61,7 +61,7 @@ class ApiDisciplines extends ApiController
             try {
                 $this->response('discipline',
                     $this->pixie->db->query('select')->table('disciplines')->
-                    fields('title', 'description')->
+                    fields('title', 'description', 'creator_id')->
                     where('discipline_id', $id)->
                     execute()->current());
             } catch (Exception $e) {
