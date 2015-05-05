@@ -43,6 +43,13 @@ return array(
             'action' => 'delete_lesson'
         ),
     ),
+    'edit_lesson' => array(
+        '/api/disciplines/edit_lesson',
+        array(
+            'controller' => 'apiDisciplines',
+            'action' => 'edit_lesson'
+        ),
+    ),
 	'news' => array(
 		'/api/news/all',
 		array(

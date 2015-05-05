@@ -18,7 +18,7 @@
                         <i class="pull-right glyphicon"
                            data-ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
                     </accordion-heading>
-                    <p>{{lesson.description}}</p>
+                    <div data-ta-bind data-ng-model="lesson.description"></div>
 
                     <div class="bs-callout bs-callout-primary" data-ng-repeat="atc in attachments"
                          data-ng-if="lesson.lecture_id==atc.lecture_id">

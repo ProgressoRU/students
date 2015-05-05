@@ -177,6 +177,7 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceDa
                     $scope.editable.attachments[i].deleted = false;
                     $scope.editable.attachments[i].editing = false; //сейчас редактируется
                     $scope.editable.attachments[i].edited = false; //отредактировано
+                    $scope.editable.attachments[i].new = false; //новый
                 }
             $scope.editMode = true;
             $scope.postMode = false;
@@ -243,16 +244,16 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceDa
         };
 
         $scope.performEdit = function () {
-            if ($scope.editable.title == null || $scope.editable.description == null)
+            if ($scope.editable.title == null || $scope.editable.news == null)
                 alertService.add("danger", 'Материал должен содержать заголовок и текст!');
             else if ($scope.editable.title.length <= 3 || $scope.editable.title.length > 100)
                 alertService.add("danger", 'Заголовок должен содержать более 3, но менее 100 символов');
             else {
-                serviceData.get('api/discipline/edit', {
+                serviceData.get('api/disciplines/edit_lesson', {
                     id: $scope.idInDB,
                     title: $scope.editable.title,
                     description: $scope.editable.news,
-                    label: $scope.editable.deadline,
+                    deadline: $scope.editable.deadline,
                     attachments: $scope.editable.attachments
                 }).then(function (data) {
                     if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');

@@ -162,4 +162,50 @@ class ApiDisciplines extends ApiController
         }
     }
 
+    public function action_edit_lesson()
+    {
+        $this->response('status', 403);
+        $id = Request::getInt('id');
+        $title = Request::getString('title');
+        $description = Request::getString('description');
+        $deadline = Request::getDate('deadline');
+        $attachments = Request::getArray('attachments');
+        $deadline = date('Y-m-d', strtotime($deadline));
+        if ($title == null || $description == null)
+            $this->response('status', 25);
+        elseif (Auth::checkCookie($this->pixie)) {
+            $role = Auth::getPermissions($this->pixie, $id);
+            if ($role != null) {
+                if ($role == 'admin' || $role == 'creator' || $role == 'editor') {
+                    if ($id != 0) {
+                        try {
+                            $this->response('status', 200);
+                            $this->pixie->db->query('update')->table('lectures')->
+                            data(array('title' => $title, 'description' => $description, 'date_dead_line' => $deadline))->
+                            where('lecture_id', $id)->
+                            execute();
+                        } catch (Exception $e) {
+                            error_log($e->getMessage());
+                            $this->response('status', 500);
+                        }
+                    } elseif ($id == 0) {
+                        //TODO
+                    }
+                }
+                /*
+                if($this->response('status') == 200 && isset($attachments))
+                {
+                    $newAttaches = array();
+                    $editedAttaches = array();
+                    $deletedAttaches = array();
+                    foreach($attachments as $attach) {
+                        error_log($attach['new']);
+                        error_log(print_r($newAttaches));
+                        if ($attach['new']) $newAttaches[] = $attach;
+                    }
+                }
+                */
+            }
+        }
+    }
 }
