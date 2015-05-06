@@ -84,7 +84,7 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceDa
                         for (var i = 0; i < $scope.lectures.length; i++)
                             events.push({
                                 title: $scope.lectures[i].title,
-                                start: $scope.lectures[i].date_dead_line,
+                                start: $scope.lectures[i].date_deadline,
                                 allDay: true
                             });
                     callback(events);
@@ -101,14 +101,14 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceDa
                 //пытаемся передать в lectures, полученные данные
                 $scope.lectures = data['lectures'] || [];
                 $scope.attachments = data['attachments'] || [];
-                $scope.results = data['results'] || [];
                 $scope.discipline = data['discipline'] || [];
                 $scope.isEditor = data['isEditor'] || false;
+                $scope.perm = data['perm'] || null;
                 for (var i = 0; i < $scope.lectures.length; i++) {
                     var event = {};
                     event = {
                         title: $scope.lectures[i].title,
-                        start: $scope.lectures[i].date_dead_line,
+                        start: $scope.lectures[i].date_deadline,
                         allDay: true
                     };
                     $scope.events[i] = event;
@@ -168,7 +168,6 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceDa
             $scope.editable = {
                 news: '',
                 title: '',
-                deadline: '',
                 attachments: []
             };
             $scope.idInDB = 0;
@@ -182,7 +181,6 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceDa
             $scope.editable = {
                 news: $scope.lectures[idInJson].description,
                 title: $scope.lectures[idInJson].title,
-                deadline: $scope.lectures[idInJson].date_dead_line.replace(/(.+) (.+)/, "$1T$2Z"), //string date format to 'date' format
                 attachments: []
             };
             for (i = 0; i < $scope.attachments.length; i++)
@@ -270,7 +268,6 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceDa
                     disciplineId: $scope.disciplineID,
                     title: $scope.editable.title,
                     description: $scope.editable.news,
-                    deadline: $scope.editable.deadline,
                     attachments: $scope.editable.attachments
                 }).then(function (data) {
                     if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
@@ -291,28 +288,7 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceDa
                 })
             }
         };
-        $scope.dateOptions = {
-            formatYear: 'yyyy',
-            startingDay: 1
-        };
-
-        $scope.today = function () {
-            $scope.editable.deadline = new Date();
-        };
-
-        $scope.toggleMin = function () {
-            $scope.minDate = $scope.minDate ? null : new Date();
-        };
-        $scope.toggleMin();
-
-        $scope.open = function ($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-
-            $scope.datepicker = {'opened': true};
-        };
-    }])
-;
+    }]);
 
 stControllers.controller('HeaderCtrl', ['$scope', function ($scope) {
 

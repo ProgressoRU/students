@@ -82,21 +82,7 @@
             <button type="button" class="btn btn-default" data-ng-click="cancelEdit()">Отменить</button>
             <button type="button" class="btn btn-success" data-ng-click="performEdit()">Сохранить</button>
         </div>
-        <p class="input-group col-md-8" data-ng-if="mode == 'lecture'">
-            <span class="input-group-addon">Сдать до: </span>
-            <input type="text"
-                   class="form-control"
-                   data-datepicker-popup="d MMMM yyyy"
-                   data-ng-model="editable.deadline"
-                   data-is-open="datepicker.opened"
-                   data-min-date="minDate"
-                   data-datepicker-options="dateOptions"
-                   data-ng-required="true"
-                   data-show-button-bar="false"/><span class="input-group-btn">
-                <button type="button" class="btn btn-default" data-ng-click="open($event)"><i
-                        class="glyphicon glyphicon-calendar"></i></button>
-              </span>
-        </p>
+        <p data-ng-if="mode=='lecture'"><br></p>
         <!-- Date formatting for large devices -->
         <div class="hidden-xs" data-ng-if="mode == 'news'">
             <small><em>{{n.date_created|moment: 'lang': 'ru' | moment: 'format': 'LL'}}</em></small>

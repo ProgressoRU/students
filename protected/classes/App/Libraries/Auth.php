@@ -146,68 +146,69 @@ abstract class Auth
         return true;
     }
 
-    public static function getPermissions(\App\Pixie $pixie, $lessonId = null)
+    public static function getPermissions(\App\Pixie $pixie, $disciplineId)
     {
-        //функция проверяет является ли пользователь администратором, создателем предмета или редактором
         $permission = null;
         if (isset($_COOKIE['id']))
             $uID = $_COOKIE['id'];
         else
             return $permission;
         try {
-            $query = $pixie->db->query('select')->table('users')
-                ->fields('role')
-                ->where('user_id', $uID)
+            $discipline = $pixie->db->query('select')->table('disciplines')
+                ->where('discipline_id', $disciplineId)
                 ->execute()->current();
         } catch (Exception $e) {
             error_log($e->getMessage());
         }
-        if (isset($query))
-            $permission = $query->role;
-        else $permission = null;
-        if ($permission == 'admin') return $permission;
-        elseif (!is_null($lessonId)) {
-            //по номеру лекции получаем номер предмета
-            try {
-                $lectureToDiscipline = $pixie->db->query('select')->table('lectures')
-                    ->fields('discipline_id')
-                    ->where('lecture_id', $lessonId)
-                    ->execute()->current();
-            } catch (Exception $e) {
-                error_log($e->getMessage());
-            }
-            if (isset($lectureToDiscipline) && !is_null($lectureToDiscipline)) {
-                $disciplineId = $lectureToDiscipline->discipline_id;
+        if (isset($discipline) && !empty($discipline)) {
+            if ($discipline->creator_id == $uID) {
+                $permission = 'creator';
+                return $permission;
+            } else {
+                //получаем права пользователя
                 try {
-                    $discipline = $pixie->db->query('select')->table('disciplines')
-                        ->where('discipline_id', $disciplineId)
+                    $subscription = $pixie->db->query('select')->table('subscriptions')
+                        ->where('user_id', $uID)
+                        ->where('group_id', 'IN', $pixie->db->query('select')->table('group_access')
+                            ->fields('group_id')
+                            ->where('discipline_id', $disciplineId))
                         ->execute()->current();
                 } catch (Exception $e) {
                     error_log($e->getMessage());
                 }
-                if (isset($discipline) && !empty($discipline)) {
-                    if ($discipline->creator_id == $uID) {
-                        $permission = 'creator';
+                if (isset($subscription) && !empty($subscription)) {
+                    //error_log(print_r($subscription));
+                    if ($subscription->is_editor == 1) {
+                        $permission = 'editor';
                         return $permission;
                     } else {
-                        try {
-                            $subscription = $pixie->db->query('select')->table('subscriptions')
-                                ->where('discipline_id', $disciplineId)
-                                ->where('user_id', $uID)
-                                ->execute()->current();
-                        } catch (Exception $e) {
-                            error_log($e->getMessage());
-                        }
-                        if (isset($subscription) && !empty($subscription)) {
-                            if ($subscription->is_editor == 1) {
-                                $permission = 'editor';
-                                return $permission;
-                            }
-                        }
+                        $permission = 'subscriber';
+                        return $permission;
                     }
-                }
+                } else $permission = null;
             }
-        } else return $permission;
+        }
         return $permission;
+    }
+
+    public static function getGroupId(\App\Pixie $pixie, $disciplineId)
+    {
+        $groupId = null;
+        if (isset($_COOKIE['id']))
+            $uID = $_COOKIE['id'];
+        else
+            return $groupId;
+
+        $group = $pixie->db->query('select')->table('subscriptions')
+            ->where('user_id', $uID)
+            ->where('group_id', 'IN', $pixie->db->query('select')->table('group_access')
+                ->fields('group_id')
+                ->where('discipline_id', $disciplineId))
+            ->execute()->current();
+
+        if (isset($group) && !empty($group))
+            $groupId = $group->group_id;
+
+        return $groupId;
     }
 }

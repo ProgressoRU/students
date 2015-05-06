@@ -22,8 +22,10 @@
                             href="" class="dropdown-toggle" data-toggle="dropdown" role="button"
                             aria-expanded="false">Мои курсы<span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
-                            <li data-ng-if="currentUser.userRole=='admin'"><a href="#">Создать курс</a></li>
-                            <li data-ng-if="currentUser.userRole=='admin'" class="divider"></li>
+                            <li data-ng-if="currentUser.userRole=='admin' || currentUser.userRole=='teacher'"><a
+                                    href="#">Создать курс</a></li>
+                            <li data-ng-if="currentUser.userRole=='admin' || currentUser.userRole=='teacher'"
+                                class="divider"></li>
                             <li data-ng-repeat="discipline in disciplines"><a
                                     href="#/class/{{discipline.discipline_id}}">{{discipline.title}}</a></li>
                         </ul>

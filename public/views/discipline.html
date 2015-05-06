@@ -5,14 +5,14 @@
         </h1>
     </div>
     <div class="row">
-        <accordion close-others="oneAtATime" class="col-md-7">
+        <accordion close-others="oneAtATime" class="col-md-6">
             <!--Editor -->
             <news-editor mode="lecture" data-ng-if="postMode"></news-editor>
             <!-- //Editor -->
             <div class="panel panel-info" data-ng-if="!postMode && canEdit">
                 <div class="panel-heading"><a href="" data-ng-click="newPost()"><span class="glyphicon glyphicon-plus"></span> Новый материал</a></div>
             </div>
-            <hr>
+            <hr data-ng-if="canEdit">
             <div data-ng-repeat="lesson in lectures" style="margin-top: 5px">
                 <!--Editor -->
                 <news-editor mode="lecture" data-ng-if="editMode && lesson.lecture_id == idInDB"></news-editor>
@@ -36,16 +36,6 @@
                     <br>
 
                     <div class="accordion-footer">
-                    <span data-ng-repeat="result in results"
-                          data-ng-if="lesson.lecture_id==result.lecture_id && !canEdit">
-                    <span data-ng-if="result.result==1"
-                          class="pull-right">Зачтено <span class="glyphicon glyphicon-ok"
-                                                           aria-hidden="true"></span>
-                    </span>
-                    <span data-ng-if="result.result==0 && !canEdit" class="pull-right">Не зачтено
-                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></span>
-                    </span>
-
                         <div class="pull-right">
                             <button type="button" class="btn btn-primary btn-xs"
                                     data-ng-click="turnEditMode(lesson.lecture_id, $index)"
@@ -60,18 +50,18 @@
                             </button>
                         </div>
                         <div class="hidden-xs">
-                            <em>Сдать до {{lesson.date_dead_line|moment: 'lang': 'ru' | moment: 'format': 'LL'}}</em>
+                            <em>Сдать до {{lesson.date_deadline|moment: 'lang': 'ru' | moment: 'format': 'LL'}}</em>
                         </div>
                         <!-- Date formatting for small devices -->
                         <div class="visible-xs">
-                            <em>Сдать до: {{lesson.date_dead_line|moment: 'lang': 'ru' | moment: 'format': 'L'}}</em>
+                            <em>Сдать до: {{lesson.date_deadline|moment: 'lang': 'ru' | moment: 'format': 'L'}}</em>
                         </div>
                     </div>
                 </accordion-group>
             </div>
         </accordion>
-        <div data-ui-calendar="uiConfig.calendar" class="col-md-5 col-xs-12" data-ng-model="eventSources"
-             data-calendar="lecturesCalendar"></div>
+        <div data-ui-calendar="uiConfig.calendar" class="col-md-6 col-xs-12" data-ng-model="eventSources"
+             data-calendar="lecturesCalendar" data-ng-if="!canEdit"></div>
     </div>
 
 </article>
