@@ -38,8 +38,8 @@ stControllers.controller('HomeCtrl', ['$scope', function ($scope) {
 
 }]);
 
-stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope', 'AUTH_EVENTS', '$route', 'alertService',
-    function ($scope, AuthService, $rootScope, AUTH_EVENTS, $route, alertService) {
+stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope', 'AUTH_EVENTS', '$route', 'alertService', 'serviceData',
+    function ($scope, AuthService, $rootScope, AUTH_EVENTS, $route, alertService, serviceData) {
         $scope.login = function (credentials) {
             //отправляем сервису Авторизации необходимые данные
             AuthService.login(credentials).then(function (user) {
@@ -59,11 +59,66 @@ stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope
                 }
             });
         };
+
+        $scope.regUser = function (regData) {
+            console.log('?');
+            if (regData.username.length <= 3 || regData.username.length >= 16)
+                alertService.add("danger", 'Имя пользователя должно содержать более 3, но менее 16 символов');
+            else if (regData.pass.length <= 6)
+                alertService.add("danger", 'Пароль должен содержать более 6 символов');
+            else {
+                serviceData.get('api/user/reg', {
+                    username: regData.username,
+                    pass: regData.pass,
+                    passcode: regData.passcode,
+                    group: regData.group
+                }).then(function (data) {
+                    if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
+                    //обработка ошибок
+                    else if (data.status == 21) alertService.add("danger", "Имя пользователя должно содержать более 3, но менее 16 символов");
+                    else if (data.status == 22) alertService.add("danger", "Пароль должен содержать более 6 символов.");
+                    else if (data.status == 23) alertService.add("danger", "Не указано кодовое слово");
+                    else if (data.status == 24) alertService.add("danger", "Не указана группа");
+                    else if (data.status == 25) alertService.add("danger", "Срок действия кодового слова истек. Обратитесь к учителю");
+                    else if (data.status == 26) alertService.add("danger", "Кодовое слово не подходит.");
+                    else if (data.status == 27) alertService.add("danger", "Имя уже занято");
+                    else if (data.status == 28) alertService.add("danger", "Возникла ошибка. Обратитесь к администратору.");
+                    else if (data.status == 200) {
+                        alertService.add("success", "<span class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span> Регистрация завершена");
+                        $scope.toAuth();
+                    }
+
+                })
+            }
+        };
+
+        $scope.toReg = function () {
+            $scope.auth = false;
+            $scope.reg = true;
+            $scope.regData = null;
+        };
+
+        $scope.toAuth = function () {
+            $scope.auth = true;
+            $scope.reg = false;
+            $scope.credentials = null;
+        };
+
         // execute on initialization
+        $scope.reg = false;
+        $scope.auth = true;
         $scope.credentials = {
             username: '',
-            pass: ''
+            pass: '',
+            rememberMe: false
         };
+        $scope.regData =
+        {
+            username: '',
+            pass: '',
+            passcode: '',
+            group: ''
+        }
     }]);
 
 stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceData', 'alertService', '$compile',

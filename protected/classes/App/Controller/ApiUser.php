@@ -40,5 +40,78 @@ class ApiUser extends ApiController
         } else $this->response('status', false);
     }
 
+    public function action_reg()
+    {
+        $login = Request::getStringTrim('username');
+        $pass = Request::getStringTrim('pass'); //пароль
+        $passcode = Request::getStringTrim('passcode'); //код доступа
+        $userGroup = Request::getString('group');
+        $checks = true;
+        if (empty($login) || strlen($login) < 4) {
+            $this->response('status', 21);
+            $checks = false;
+        }
+        if (empty($pass) || strlen($pass) < 6) {
+            $this->response('status', 22);
+            $checks = false;
+        }
+        if (empty($passcode)) {
+            $this->response('status', 23);
+            $checks = false;
+        }
+        if (empty($userGroup)) {
+            $this->response('status', 24);
+            $checks = false;
+        }
+        if ($checks) {
+            //passcode check
+            $valid = true; //метка валидностии пассфразы
+            $group = $this->pixie->db->query('select')->table('groups')
+                ->where('passcode', $passcode)
+                ->execute()->current();
+            if (!isset($group) || empty ($group)) {
+                $valid = false;
+                $this->response('status', 26);
+            } else {
+                $groupId = $group->group_id;
+                $expirationDate = $group->expire_date;
+                if (!empty ($expirationDate)) {
+                    $expirationDate = new \DateTime($expirationDate);
+                    $today = time();
+                    if ($expirationDate->getTimestamp() < $today) {
+                        $valid = false;
+                        $this->response('status', 25);
+                    }
+                }
+                if ($valid) {
+                    $nameOccupied = false; //метка доступности имени
+                    $user = $this->pixie->db->query('select')->table('users')
+                        ->where('username', $login)
+                        ->execute()->current();
+                    if (!empty($user)) {
+                        $nameOccupied = true;
+                        $this->response('status', 27);
+                    }
+                    if (!$nameOccupied) {
+                        try {
+                            //добавление пользователя
+                            $this->pixie->db->query('insert')->table('users')
+                                ->data(array('username' => $login, 'role' => 'student', 'group' => $userGroup, 'pass_hash' => crypt($pass, '$5$rounds=5000$Geronimo$')))
+                                ->execute();
+                            $uId = $this->pixie->db->insert_id();
+                            $this->pixie->db->query('insert')->table('subscriptions')
+                                ->data(array('user_id' => $uId, 'group_id' => $groupId, 'is_editor' => '0'))
+                                ->execute();
+                            $this->response('status', 200);
+                        } catch (Exception $e) {
+                            $this->response('status', 28);
+                            error_log($e->getMessage());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }
 

@@ -15,6 +15,13 @@ return array(
             'action' => 'logout'
         ),
     ),
+    'user_reg' => array(
+        '/api/user/reg',
+        array(
+            'controller' => 'apiUser',
+            'action' => 'reg'
+        ),
+    ),
 	'classes_all' => array(
 		'/api/disciplines/all',
 		array(

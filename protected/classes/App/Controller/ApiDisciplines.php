@@ -194,7 +194,7 @@ class ApiDisciplines extends ApiController
         $description = Request::getString('description');
         $attachments = Request::getArray('attachments');
         $disciplineId = Request::getInt('disciplineId');
-        if ($title == null || $description == null)
+        if (empty($title) || empty($description))
             $this->response('status', 26);
         elseif (Auth::checkCookie($this->pixie)) {
             $role = Auth::getRole($this->pixie);

@@ -86,7 +86,7 @@ abstract class Auth
             'status' => 403, //403: Forbidden
             'user' => array()
         );
-        $passHash = md5(md5($pass)); //TODO: заменить на SHA
+        $passHash = crypt($pass, '$5$rounds=5000$Geronimo$');
         //пытаемся получить информацию о пользователе
         try {
             $reply['user'] = $pixie->db->query('select')->table('users')
