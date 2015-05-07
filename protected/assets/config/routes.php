@@ -85,6 +85,13 @@ return array(
 			'action' => 'index'
 		)
 	),
+    'subscribe' => array(
+        '/api/groups/subscribe',
+        array(
+            'controller' => 'apiGroups',
+            'action' => 'subscribe'
+        )
+    ),
 	'default' => array(
 		'(/<controller>(/<action>(/<id>)))', 
 		array(

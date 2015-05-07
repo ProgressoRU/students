@@ -1,8 +1,8 @@
 var stControllers = angular.module('stControllers', []);
 
 // Обертка (wrap)
-stControllers.controller('WrapCtrl', ['$scope', 'Session', 'AuthService', 'serviceData', 'alertService', 'taOptions',
-    function ($scope, Session, AuthService, serviceData, alertService, taOptions) {
+stControllers.controller('WrapCtrl', ['$scope', 'Session', 'AuthService', 'serviceData', 'alertService', 'taOptions', '$modal', '$log',
+    function ($scope, Session, AuthService, serviceData, alertService, taOptions, $modal, $log) {
         //объявляем функции, обращающиеся при вызове к AuthService
         $scope.isAuthenticated = function () {
             return AuthService.isAuthenticated();
@@ -32,7 +32,47 @@ stControllers.controller('WrapCtrl', ['$scope', 'Session', 'AuthService', 'servi
             ['justifyLeft', 'justifyCenter', 'justifyRight', 'indent', 'outdent'],
             ['html', 'insertImage', 'insertLink', 'insertVideo', 'charcount']
         ];
+
+        $scope.openSubs = function (size) {
+            var modalInstance = $modal.open({
+                animation: true,
+                templateUrl: 'subscribeModal.html',
+                controller: 'SubscribeCtrl',
+                size: size
+            });
+            modalInstance.result.then(function (success) {
+                if (success) $scope.getDisciplines();
+            });
+        };
     }]);
+
+stControllers.controller('SubscribeCtrl', ['$scope', '$modalInstance', 'serviceData', 'alertService', function ($scope, $modalInstance, serviceData, alertService) {
+    $scope.passcode = '';
+
+    $scope.ok = function () {
+        serviceData.get('api/groups/subscribe', {
+            passcode: $scope.passcode
+        }).then(function (data) {
+            if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
+            //обработка ошибок
+            else if (data.status == 21) alertService.add("danger", "Ключевое слово не получено сервером.");
+            else if (data.status == 22) alertService.add("danger", "Ключевое слово не подходит.");
+            else if (data.status == 23) alertService.add("danger", "Ключевое слово устарело. Обратитесь за новым к преподавателю.");
+            else if (data.status == 24) alertService.add("danger", "Возникла ошибка при выполнении запроса. Обратитесь к администратору!");
+            else if (data.status == 25) alertService.add("danger", "Вы не можете подписаться на группу, изучающую предметы на которые вы уже подписаны.");
+            else if (data.status == 26) alertService.add("danger", "Вы уже подписаны на эту группу.");
+            else if (data.status == 200) {
+                alertService.add("success", "<span class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span> Подписка оформлена!");
+                var success = true;
+                $modalInstance.close(success);
+            }
+        })
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+}]);
 
 stControllers.controller('HomeCtrl', ['$scope', function ($scope) {
 

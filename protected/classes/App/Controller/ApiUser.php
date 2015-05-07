@@ -14,7 +14,7 @@ class ApiUser extends ApiController
         $this->response('status', 403);
         $this->response('user', array());
         if (Auth::checkCookie($this->pixie)) {
-            $id = $_COOKIE['id'];
+            $id = isset($_COOKIE['id']) ? $_COOKIE['id'] : 0;
             try {
                 $this->response('user', $this->pixie->db->query('select')->table('users')
                     ->fields('user_id', 'username', 'surname', 'name', 'patronymic', 'group', 'role')

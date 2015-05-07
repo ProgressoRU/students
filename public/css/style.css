@@ -139,7 +139,7 @@ body
     position: fixed;
     top: 35px;
     margin: 0 auto;
-    z-index: 1050;
+    z-index: 10500;
     width: 100%;
     /* todo: modal alert перекрывает элементы из-за ширины 100% */
 }

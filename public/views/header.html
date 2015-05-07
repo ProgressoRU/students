@@ -30,7 +30,7 @@
                                     href="#/class/{{discipline.discipline_id}}">{{discipline.title}}</a></li>
                         </ul>
                     </li>
-                    <li><a href="#/">Все курсы</a></li>
+                    <li><a data-ng-click="openSubs()" href="">Использовать код</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right" data-ng-if="isAuthenticated()">
                     <li class="dropdown"><a href="" class="dropdown-toggle" data-toggle="dropdown" role="button"
