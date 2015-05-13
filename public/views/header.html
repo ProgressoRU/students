@@ -23,18 +23,22 @@
                             aria-expanded="false">Мои курсы<span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
                             <li data-ng-if="currentUser.userRole=='admin' || currentUser.userRole=='teacher'"><a
-                                    href="#">Создать курс</a></li>
+                                    href="#/class/edit/0">Создать курс</a></li>
                             <li data-ng-if="currentUser.userRole=='admin' || currentUser.userRole=='teacher'"
                                 class="divider"></li>
                             <li data-ng-repeat="discipline in disciplines"><a
                                     href="#/class/{{discipline.discipline_id}}">{{discipline.title}}</a></li>
                         </ul>
                     </li>
-                    <li><a data-ng-click="openSubs()" href="">Использовать код</a></li>
+                    <li><a data-ng-click="openSubs()" data-ng-if="currentUser.userRole != 'admin'" href="">Использовать
+                        код</a></li>
+                    <li><a href="#/groups" data-ng-if="currentUser.userRole != 'student'">Мои группы</a></li>
+                    <li><a href="#/users" data-ng-if="currentUser.userRole == 'admin'">Права доступа</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right" data-ng-if="isAuthenticated()">
                     <li class="dropdown"><a href="" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                            aria-expanded="false">{{currentUser.userName}}<span class="caret"></span></a>
+                                            aria-expanded="false">{{currentUser.userName}}<span
+                            class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="">Профиль (NYI)</a></li>
                             <li class="divider"></li>

@@ -507,3 +507,16 @@ stControllers.controller('NewsCtrl', ['$scope', 'serviceData', 'alertService',
         $scope.editable = null;
     }
 ]);
+
+stControllers.controller('DisciplineEditCtrl', ['$scope', function ($scope) {
+
+}]);
+
+stControllers.controller('GroupCtrl', ['$scope', function ($scope) {
+
+}]);
+
+stControllers.controller('UserAccessCtrl', ['$scope', function ($scope) {
+
+}]);
+

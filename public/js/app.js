@@ -16,6 +16,18 @@ var app = angular.module('students', ['angular-loading-bar', 'ngAnimate', 'ngRou
                 controller: 'DisciplineCtrl',
                 templateUrl: 'public/views/discipline.html'
             }).
+            when('/class/edit/:disciplineID', {
+                controller: 'DisciplineEditCtrl',
+                templateUrl: 'public/views/disciplineEdit.html'
+            }).
+            when('/groups', {
+                controller: 'GroupCtrl',
+                templateUrl: 'public/views/group.html'
+            }).
+            when('/users', {
+                controller: 'UserAccessCtrl',
+                templateUrl: 'public/views/userAccess.html'
+            }).
             otherwise({redirectTo: '/news'});
     })
 
