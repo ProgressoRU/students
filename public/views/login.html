@@ -32,30 +32,46 @@
                     <button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>
                 </form>
                 <!-- REGISTRATION FORM -->
-                <form class="form-signin" method="post" name="regForm" data-ng-Submit="regUser(regData)"
+                <form class="form-horizontal" method="post" name="regForm" data-ng-Submit="regUser(regData)"
                       data-ng-if="reg">
-                    <div style="margin-bottom: 25px" class="input-group">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                        <input id="reg-username" type="text" class="form-control" name="username"
-                               placeholder="Логин" required autofocus data-ng-model="regData.username">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <input id="reg-username" type="text" class="form-control" name="username"
+                                   placeholder="Логин" required autofocus data-ng-model="regData.username">
+                        </div>
                     </div>
-                    <div class="input-group" style="margin-bottom: 25px">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                        <input id="reg-password" type="password" class="form-control" name="password"
-                               placeholder="Пароль"
-                               required data-ng-model="regData.pass">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <input id="reg-password" type="password" class="form-control" name="password"
+                                   placeholder="Пароль"
+                                   required data-ng-model="regData.pass">
+                        </div>
                     </div>
-                    <div style="margin-bottom: 15px" class="input-group">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-education"></i></span>
-                        <input id="reg-group" type="text" class="form-control" name="group"
-                               placeholder="Название группы. Например: 4ИС, 3ТОП" required
-                               data-ng-model="regData.group">
+                    <hr>
+                    <div class="form-group">
+                        <div class="col-md-6 col-xs-12" style="margin-bottom: 5px"><input id="reg-surname" type="text"
+                                                                                          class="form-control"
+                                                                                          name="surname"
+                                                                                          placeholder="Фамилия" required
+                                                                                          data-ng-model="regData.surname">
+                        </div>
+                        <div class="col-md-6 col-xs-12"><input id="reg-name" type="text" class="form-control"
+                                                               name="name"
+                                                               placeholder="Имя" required
+                                                               data-ng-model="regData.name"></div>
                     </div>
-                    <div style="margin-bottom: 25px" class="form-group">
-                        <label for="reg-passcode">Кодовое слово: </label>
-                        <input id="reg-passcode" type="text" class="form-control" name="passcode"
-                               placeholder="Кодовое слово можно получить у преподавателя" required
-                               data-ng-model="regData.passcode">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <input id="reg-group" type="text" class="form-control" name="group"
+                                   placeholder="Название группы. Например: 4ИС, 3ТОП" required
+                                   data-ng-model="regData.group"></div>
+                    </div>
+                    <hr>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <input id="reg-passcode" type="text" class="form-control" name="passcode"
+                                   placeholder="Кодовое слово (Выдается преподавателем)" required
+                                   data-ng-model="regData.passcode"></div>
                     </div>
                     <button class="btn btn-lg btn-primary btn-block" type="submit">Зарегистрироваться</button>
                 </form>

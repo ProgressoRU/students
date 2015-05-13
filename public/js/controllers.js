@@ -101,7 +101,6 @@ stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope
         };
 
         $scope.regUser = function (regData) {
-            console.log('?');
             if (regData.username.length <= 3 || regData.username.length >= 16)
                 alertService.add("danger", 'Имя пользователя должно содержать более 3, но менее 16 символов');
             else if (regData.pass.length <= 6)
@@ -111,7 +110,9 @@ stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope
                     username: regData.username,
                     pass: regData.pass,
                     passcode: regData.passcode,
-                    group: regData.group
+                    group: regData.group,
+                    surname: regData.surname,
+                    name: regData.name
                 }).then(function (data) {
                     if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
                     //обработка ошибок
@@ -123,6 +124,7 @@ stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope
                     else if (data.status == 26) alertService.add("danger", "Кодовое слово не подходит.");
                     else if (data.status == 27) alertService.add("danger", "Имя уже занято");
                     else if (data.status == 28) alertService.add("danger", "Возникла ошибка. Обратитесь к администратору.");
+                    else if (data.status == 29) alertService.add("danger", "Укажите имя и фамилию");
                     else if (data.status == 200) {
                         alertService.add("success", "<span class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span> Регистрация завершена");
                         $scope.toAuth();
@@ -157,7 +159,9 @@ stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope
             username: '',
             pass: '',
             passcode: '',
-            group: ''
+            group: '',
+            name: '',
+            surname: ''
         }
     }]);
 

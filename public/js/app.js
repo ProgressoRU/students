@@ -1,4 +1,5 @@
-var app = angular.module('students', ['angular-loading-bar', 'ngAnimate', 'ngRoute', 'stServices', 'stControllers', 'stDirectives', 'stFilters', 'textAngular', 'ui.bootstrap', 'ui.calendar'])
+var app = angular.module('students', ['angular-loading-bar', 'ngAnimate', 'ngRoute', 'stServices', 'stControllers',
+    'stDirectives', 'stFilters', 'textAngular', 'ui.bootstrap', 'ui.calendar'])
 //роутинг
     .config(function ($routeProvider) {
         $routeProvider.
@@ -16,7 +17,6 @@ var app = angular.module('students', ['angular-loading-bar', 'ngAnimate', 'ngRou
                 templateUrl: 'public/views/discipline.html'
             }).
             otherwise({redirectTo: '/news'});
-
     })
 
     .run(function ($rootScope, AUTH_EVENTS, AuthService) {

@@ -18,7 +18,7 @@ stServices.service('serviceData', ['$http', '$q', '$cacheFactory', function ($ht
             });
     };
 
-    this.cache = $cacheFactory('dataCache',{});
+    this.cache = $cacheFactory('dataCache', {});
 
     return this;
 }]);

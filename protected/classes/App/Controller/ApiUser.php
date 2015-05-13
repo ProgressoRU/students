@@ -46,6 +46,8 @@ class ApiUser extends ApiController
         $pass = Request::getStringTrim('pass'); //пароль
         $passcode = Request::getStringTrim('passcode'); //код доступа
         $userGroup = Request::getString('group');
+        $name = Request::getStringTrim('name');
+        $surname = Request::getStringTrim('surname');
         $checks = true;
         if (empty($login) || strlen($login) < 4) {
             $this->response('status', 21);
@@ -61,6 +63,10 @@ class ApiUser extends ApiController
         }
         if (empty($userGroup)) {
             $this->response('status', 24);
+            $checks = false;
+        }
+        if (empty($name) || empty($surname)) {
+            $this->response('status', 29);
             $checks = false;
         }
         if ($checks) {
@@ -96,7 +102,8 @@ class ApiUser extends ApiController
                         try {
                             //добавление пользователя
                             $this->pixie->db->query('insert')->table('users')
-                                ->data(array('username' => $login, 'role' => 'student', 'group' => $userGroup, 'pass_hash' => crypt($pass, '$5$rounds=5000$Geronimo$')))
+                                ->data(array('username' => $login, 'role' => 'student', 'group' => $userGroup,
+                                    'pass_hash' => crypt($pass, '$5$rounds=5000$Geronimo$'), 'name' => $name, 'surname' => $surname))
                                 ->execute();
                             $uId = $this->pixie->db->insert_id();
                             $this->pixie->db->query('insert')->table('subscriptions')
