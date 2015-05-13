@@ -29,7 +29,8 @@ class ApiUser extends ApiController
         } else {
             $login = Request::getString('username');
             $pass = Request::getString('pass');
-            $this->response(null, Auth::login(($this->pixie), $login, $pass));
+            $rememberMe = Request::getBool('rememberMe');
+            $this->response(null, Auth::login(($this->pixie), $login, $pass, $rememberMe));
         }
     }
 

@@ -80,7 +80,7 @@ abstract class Auth
         return $role;
     }
 
-    public static function login(\App\Pixie $pixie, $login, $pass)
+    public static function login(\App\Pixie $pixie, $login, $pass, $rememberMe = false)
     {
         $reply = array(
             'status' => 403, //403: Forbidden
@@ -114,9 +114,15 @@ abstract class Auth
             } catch (Exception $e) {
                 error_log('User is found, but session update caused an error\nIt\'s might help:\n' . $e->getMessage());
             }
-            //Устанавливем куки (на час)
-            setcookie("id", $reply['user'][0]->user_id, time() + 3600, '/');
-            setcookie("hash", $hash, time() + 3600, '/');
+            if (!$rememberMe) {
+                //Устанавливем куки (на час)
+                setcookie("id", $reply['user'][0]->user_id, time() + 3600, '/');
+                setcookie("hash", $hash, time() + 3600, '/');
+            } else {
+                //куки на месяц
+                setcookie("id", $reply['user'][0]->user_id, time() + 2592000, '/');
+                setcookie("hash", $hash, time() + 2592000, '/');
+            }
         } else $reply['status'] = 403; //403: Forbidden
 
         return $reply;
