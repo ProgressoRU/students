@@ -49,6 +49,7 @@ class ApiUser extends ApiController
         $userGroup = Request::getString('group');
         $name = Request::getStringTrim('name');
         $surname = Request::getStringTrim('surname');
+        $role = Request::getString('role');
         $checks = true;
         if (empty($login) || strlen($login) < 4) {
             $this->response('status', 21);
@@ -58,50 +59,65 @@ class ApiUser extends ApiController
             $this->response('status', 22);
             $checks = false;
         }
-        if (empty($passcode)) {
-            $this->response('status', 23);
-            $checks = false;
-        }
-        if (empty($userGroup)) {
-            $this->response('status', 24);
-            $checks = false;
-        }
         if (empty($name) || empty($surname)) {
             $this->response('status', 29);
             $checks = false;
         }
+        if (!empty($role)) {
+            if (!Auth::checkCookie($this->pixie)) {
+                $this->response('status', 31);
+                $checks = false;
+            }
+            if (Auth::getRole($this->pixie) != 'admin') {
+                $this->response('status', 30);
+                $checks = false;
+            }
+        } else {
+            if (empty($passcode)) {
+                $this->response('status', 23);
+                $checks = false;
+            }
+            if (empty($userGroup)) {
+                $this->response('status', 24);
+                $checks = false;
+            }
+        }
         if ($checks) {
             //passcode check
             $valid = true; //метка валидностии пассфразы
-            $group = $this->pixie->db->query('select')->table('groups')
-                ->where('passcode', $passcode)
-                ->execute()->current();
-            if (!isset($group) || empty ($group)) {
-                $valid = false;
-                $this->response('status', 26);
-            } else {
-                $groupId = $group->group_id;
-                $expirationDate = $group->expire_date;
-                if (!empty ($expirationDate)) {
-                    $expirationDate = new \DateTime($expirationDate);
-                    $today = time();
-                    if ($expirationDate->getTimestamp() < $today) {
-                        $valid = false;
-                        $this->response('status', 25);
+            if (empty($role)) {
+                $group = $this->pixie->db->query('select')->table('groups')
+                    ->where('passcode', $passcode)
+                    ->execute()->current();
+                if (!isset($group) || empty ($group)) {
+                    $valid = false;
+                    $this->response('status', 26);
+                } else {
+                    $groupId = $group->group_id;
+                    $expirationDate = $group->expire_date;
+                    if (!empty ($expirationDate)) {
+                        $expirationDate = new \DateTime($expirationDate);
+                        $today = time();
+                        if ($expirationDate->getTimestamp() < $today) {
+                            $valid = false;
+                            $this->response('status', 25);
+                        }
                     }
                 }
-                if ($valid) {
-                    $nameOccupied = false; //метка доступности имени
-                    $user = $this->pixie->db->query('select')->table('users')
-                        ->where('username', $login)
-                        ->execute()->current();
-                    if (!empty($user)) {
-                        $nameOccupied = true;
-                        $this->response('status', 27);
-                    }
-                    if (!$nameOccupied) {
-                        try {
-                            //добавление пользователя
+            }
+            if ($valid) {
+                $nameOccupied = false; //метка доступности имени
+                $user = $this->pixie->db->query('select')->table('users')
+                    ->where('username', $login)
+                    ->execute()->current();
+                if (!empty($user)) {
+                    $nameOccupied = true;
+                    $this->response('status', 27);
+                }
+                if (!$nameOccupied) {
+                    try {
+                        //добавление пользователя
+                        if (empty($role)) {
                             $this->pixie->db->query('insert')->table('users')
                                 ->data(array('username' => $login, 'role' => 'student', 'group' => $userGroup,
                                     'pass_hash' => crypt($pass, '$5$rounds=5000$Geronimo$'), 'name' => $name, 'surname' => $surname))
@@ -111,15 +127,92 @@ class ApiUser extends ApiController
                                 ->data(array('user_id' => $uId, 'group_id' => $groupId, 'is_editor' => '0'))
                                 ->execute();
                             $this->response('status', 200);
-                        } catch (Exception $e) {
-                            $this->response('status', 28);
-                            error_log($e->getMessage());
+                        } else {
+                            $this->pixie->db->query('insert')->table('users')
+                                ->data(array('username' => $login, 'role' => $role, 'name' => $name, 'surname' => $surname,
+                                    'pass_hash' => crypt($pass, '$5$rounds=5000$Geronimo$')))
+                                ->execute();
+                            $this->response('status', 200);
                         }
+                    } catch (Exception $e) {
+                        $this->response('status', 28);
+                        error_log($e->getMessage());
                     }
                 }
             }
         }
     }
 
+    public function action_user_list()
+        //TODO: организовать отдельный контроллер для админских штук?
+    {
+        $this->response('status', 403);
+        if (Auth::checkCookie($this->pixie))
+            if (Auth::getRole($this->pixie) == 'admin') {
+                try {
+                    $this->response('status', 200);
+                    $this->response('userList', $this->pixie->db->query('select')->table('users')
+                        ->fields('username', 'surname', 'role', 'name', 'user_id')
+                        ->where('role', 'teacher')
+                        ->where('OR', array('role', 'admin'))
+                        ->execute()->as_array());
+                } catch (Exception $e) {
+                    $this->response('status', 403);
+                    error_log($e->getMessage());
+                }
+            } else
+                $this->response('status', 403);
+    }
+
+    public function action_rights()
+    {
+        $this->response('status',403);
+        $uId = Request::getInt('uId');
+        $rights = Request::getStringTrim('rights');
+        if (Auth::checkCookie($this->pixie))
+            if (Auth::getRole($this->pixie) == 'admin') {
+                if($rights == 'admin')
+                {
+                    try{
+                        $this->response('status',200);
+                        $this->pixie->db->query('update')->table('users')
+                            ->data(array('role' => 'admin'))
+                            ->where('user_id', $uId)
+                            ->execute();
+                    }
+                    catch(Exception $e)
+                    {
+                        $this->response('status',403);
+                        error_log($e->getMessage());
+                    }
+                }
+                elseif($rights == 'student')
+                {
+                    $currentRights = $this->pixie->db->query('select')->table('users')
+                        ->fields('role')
+                        ->where('user_id', $uId)
+                        ->execute()->current();
+                    if ($currentRights != 'admin')
+                    {
+                        try{
+                            $this->response('status',200);
+                            $this->pixie->db->query('update')->table('users')
+                                ->data(array('role' => 'student'))
+                                ->where('user_id', $uId)
+                                ->execute();
+                        }
+                        catch(Exception $e)
+                        {
+                            $this->response('status',403);
+                            error_log($e->getMessage());
+                        }
+                    }
+                    else
+                        $this->response('status',20);
+                }
+                else $this->response('status',21);
+            }
+        else $this->response('status',22);
+    }
 }
 

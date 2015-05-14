@@ -22,6 +22,20 @@ return array(
             'action' => 'reg'
         ),
     ),
+    'user_list' => array(
+        '/api/user/userList',
+        array(
+            'controller' => 'apiUser',
+            'action' => 'user_list'
+        )
+    ),
+    'user_rights' => array(
+        '/api/user/rights',
+        array(
+            'controller' => 'apiUser',
+            'action' => 'rights'
+        )
+    ),
 	'classes_all' => array(
 		'/api/disciplines/all',
 		array(
