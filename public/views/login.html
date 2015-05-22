@@ -11,7 +11,7 @@
             </div>
             <div class="modal-body">
                 <!-- AUTH FORM -->
-                <form class="form-signin" method="post" name="loginForm" data-ng-Submit="login(credentials)"
+                <form class="form-horizontal swipe-enter" method="post" name="loginForm" data-ng-Submit="login(credentials)"
                       data-ng-if="auth">
                     <div style="margin-bottom: 25px" class="input-group">
                         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
@@ -33,7 +33,7 @@
                     <button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>
                 </form>
                 <!-- REGISTRATION FORM -->
-                <form class="form-horizontal" method="post" name="regForm" data-ng-Submit="regUser(regData)"
+                <form class="form-horizontal swipe-enter" method="post" name="regForm" data-ng-Submit="regUser(regData)"
                       data-ng-if="reg">
                     <div class="form-group">
                         <div class="col-md-12">
@@ -50,13 +50,13 @@
                     </div>
                     <hr>
                     <div class="form-group">
-                        <div class="col-md-6 col-xs-12" style="margin-bottom: 5px"><input id="reg-surname" type="text"
+                        <div class="col-sm-6 col-xs-12" style="margin-bottom: 5px"><input id="reg-surname" type="text"
                                                                                           class="form-control"
                                                                                           name="surname"
                                                                                           placeholder="Фамилия" required
                                                                                           data-ng-model="regData.surname">
                         </div>
-                        <div class="col-md-6 col-xs-12"><input id="reg-name" type="text" class="form-control"
+                        <div class="col-sm-6 col-xs-12"><input id="reg-name" type="text" class="form-control"
                                                                name="name"
                                                                placeholder="Имя" required
                                                                data-ng-model="regData.name"></div>

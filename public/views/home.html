@@ -9,10 +9,10 @@
     </div>
     <!-- NEWS BLOCK -->
     <!--  -->
-    <news-editor mode="news" data-ng-if="postMode"></news-editor>
+    <news-editor mode="news" data-ng-if="postMode" class="repeat-animation"></news-editor>
     <div data-ng-repeat="n in currentPageNews(3) track by $index">
         <!-- News Editor -->
-        <news-editor mode="news" data-ng-if="editMode && n.news_id == idInDB"></news-editor>
+        <news-editor mode="news" data-ng-if="editMode && n.news_id == idInDB" class="animate-enter"></news-editor>
         <!-- //News Editor -->
         <div class="panel panel-info" data-ng-if="!editMode || (editMode && n.news_id != idInDB)"
              data-ng-hide="!n.news_id">

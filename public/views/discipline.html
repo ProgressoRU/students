@@ -7,15 +7,15 @@
     <div class="row">
         <accordion close-others="oneAtATime" class="col-md-6">
             <!--Editor -->
-            <news-editor mode="lecture" data-ng-if="postMode"></news-editor>
+            <news-editor mode="lecture" data-ng-if="postMode" class="repeat-animation"></news-editor>
             <!-- //Editor -->
-            <div class="panel panel-info" data-ng-if="!postMode && canEdit">
+            <div class="panel panel-info animate-if" data-ng-if="!postMode && canEdit">
                 <div class="panel-heading"><a href="" data-ng-click="newPost()"><span class="glyphicon glyphicon-plus"></span> Новый материал</a></div>
             </div>
             <hr data-ng-if="canEdit">
-            <div data-ng-repeat="lesson in lectures" style="margin-top: 5px">
+            <div data-ng-repeat="lesson in lectures" style="margin-top: 5px" class="repeat-animation">
                 <!--Editor -->
-                <news-editor mode="lecture" data-ng-if="editMode && lesson.lecture_id == idInDB"></news-editor>
+                <news-editor mode="lecture" data-ng-if="editMode && lesson.lecture_id == idInDB" class="animate-enter"></news-editor>
                 <!-- //Editor -->
                 <accordion-group data-ng-if="!editMode || (editMode && lesson.lecture_id != idInDB)"
                                  class="panel panel-info" is-open="status.open">
@@ -60,6 +60,7 @@
                 </accordion-group>
             </div>
         </accordion>
+        <!-- CALENDAR -->
         <div data-ui-calendar="uiConfig.calendar" class="col-md-6 col-xs-12" data-ng-model="eventSources"
              data-calendar="lecturesCalendar" data-ng-if="!canEdit"></div>
     </div>

@@ -11,11 +11,11 @@
             <button type="button" class="btn btn-success" data-ng-click="performEdit()">Сохранить</button>
         </div>
 
-        <div class="bs-callout bs-callout-default col-md-12" data-ng-class="{'bs-callout-primary': !atc.deleted}"
+        <div class="bs-callout bs-callout-default col-md-12 animate-if" data-ng-class="{'bs-callout-primary': !atc.deleted}"
              data-ng-repeat="atc in editable.attachments"
              data-ng-if="lesson.lecture_id==atc.lecture_id && mode == 'lecture'">
             <!-- Вложение в режиме просмотра -->
-            <div data-ng-if="!atc.editing">
+            <div data-ng-if="!atc.editing" class="animate-enter">
                 <a href="{{atc.url}}"><h4><span class="glyphicon glyphicon-cloud-download"
                                                 aria-hidden="true"></span> {{atc.title}}</h4></a>
 
