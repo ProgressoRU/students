@@ -10,6 +10,7 @@ stControllers.controller('WrapCtrl', ['$scope', 'Session', 'AuthService', 'servi
 
         $scope.logout = function () {
             $scope.clearDisciplineList();
+            $scope.clearGroupList();
             return AuthService.logout();
         };
         $scope.closeAlert = alertService.closeAlert;
@@ -21,18 +22,32 @@ stControllers.controller('WrapCtrl', ['$scope', 'Session', 'AuthService', 'servi
                 $scope.disciplines = (data.status && data.status == 1) ? data.disciplines : [];
             })
         };
+
         $scope.clearDisciplineList = function () {
             $scope.disciplines = [];
         };
+
+        $scope.clearGroupList = function () {
+            $scope.groups = [];
+        };
+
+        //получение списка групп
+        $scope.getGroups = function () {
+            serviceData.get('api/groups/list').then(function (data) {
+                $scope.groups = (data.status && data.status == 1) ? data.groups : [];
+            })
+        };
+
         //on init
         $scope.getDisciplines();
+        $scope.getGroups(); //TODO: нужно выполнять только у админов и учителец
         taOptions.toolbar = [
             ['h3', 'h4', 'h5', 'h6', 'p', 'pre', 'quote'],
             ['bold', 'italics', 'underline', 'strikeThrough', 'ul', 'ol', 'redo', 'undo', 'clear'],
             ['justifyLeft', 'justifyCenter', 'justifyRight', 'indent', 'outdent'],
             ['html', 'insertImage', 'insertLink', 'insertVideo', 'charcount']
         ];
-
+        //subscription modal
         $scope.openSubs = function (size) {
             var modalInstance = $modal.open({
                 animation: true,
@@ -44,7 +59,25 @@ stControllers.controller('WrapCtrl', ['$scope', 'Session', 'AuthService', 'servi
                 if (success) $scope.getDisciplines();
             });
         };
+        //new group modal
+        $scope.newGroup = function (size) {
+            var modalInstance = $modal.open({
+                animation: true,
+                templateUrl: 'newGroupModal.html',
+                controller: 'newGroupCtrl',
+                size: size
+            });
+            modalInstance.result.then(function (success) {
+                if (success) $scope.getGroups();
+            });
+        };
     }]);
+
+stControllers.controller('newGroupCtrl', ['$scope', '$modalInstance', 'serviceData', 'alertService', function ($scope, $modalInstance, serviceData, alertService) {
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    }
+}]);
 
 stControllers.controller('SubscribeCtrl', ['$scope', '$modalInstance', 'serviceData', 'alertService', function ($scope, $modalInstance, serviceData, alertService) {
     $scope.passcode = '';
@@ -521,7 +554,7 @@ stControllers.controller('UserAccessCtrl', ['$scope', 'serviceData', 'alertServi
         {name: 'Студент', data: 'student'},
         {name: 'Учитель', data: 'teacher'},
         {name: 'Админ', data: 'admin'}];
-    $scope.emptyRegData = function() {
+    $scope.emptyRegData = function () {
         $scope.regData =
         {
             username: '',
@@ -533,17 +566,17 @@ stControllers.controller('UserAccessCtrl', ['$scope', 'serviceData', 'alertServi
     }
     $scope.emptyRegData();
 
-    $scope.getTeachersAndAdmins = function() {
-      serviceData.get('api/user/userList').then(function (data) {
-          //если ответ не пришел
-          if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
-          //если пришел ответ с запретом
-          else if (data.status == 403) alertService.add("danger", "403: Доступ запрещен или произошла ошибка");
-          //Если доступ разрешен
-          else if (data.status == 200) {
-              $scope.userList = data.userList;
-          }
-      })
+    $scope.getTeachersAndAdmins = function () {
+        serviceData.get('api/user/userList').then(function (data) {
+            //если ответ не пришел
+            if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
+            //если пришел ответ с запретом
+            else if (data.status == 403) alertService.add("danger", "403: Доступ запрещен или произошла ошибка");
+            //Если доступ разрешен
+            else if (data.status == 200) {
+                $scope.userList = data.userList;
+            }
+        })
     };
 
     $scope.getTeachersAndAdmins();
@@ -587,7 +620,7 @@ stControllers.controller('UserAccessCtrl', ['$scope', 'serviceData', 'alertServi
         }
     };
 
-    $scope.promote = function(uId){
+    $scope.promote = function (uId) {
         serviceData.get('api/user/rights', {
             uId: uId,
             rights: 'admin'
@@ -606,7 +639,7 @@ stControllers.controller('UserAccessCtrl', ['$scope', 'serviceData', 'alertServi
         })
     };
 
-    $scope.demote = function(uId){
+    $scope.demote = function (uId) {
         serviceData.get('api/user/rights', {
             uId: uId,
             rights: 'student'

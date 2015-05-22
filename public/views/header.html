@@ -32,7 +32,16 @@
                     </li>
                     <li><a data-ng-click="openSubs()" data-ng-if="currentUser.userRole != 'admin'" href="">Использовать
                         код</a></li>
-                    <li><a href="#/groups" data-ng-if="currentUser.userRole != 'student'">Мои группы</a></li>
+                    <li class="dropdown" data-ng-if="currentUser.userRole != 'student'">
+                        <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Мои
+                            группы<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="" data-ng-click="newGroup()">Создать группу</a></li>
+                            <li class="divider"></li>
+                            <li data-ng-repeat="group in groups"><a
+                                    href="#/group/{{group.group_id}}">{{group.title}}</a></li>
+                        </ul>
+                    </li>
                     <li><a href="#/users" data-ng-if="currentUser.userRole == 'admin'">Права доступа</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right" data-ng-if="isAuthenticated()">

@@ -20,7 +20,7 @@ var app = angular.module('students', ['angular-loading-bar', 'ngAnimate', 'ngRou
                 controller: 'DisciplineEditCtrl',
                 templateUrl: 'public/views/disciplineEdit.html'
             }).
-            when('/groups', {
+            when('/group/:groupID', {
                 controller: 'GroupCtrl',
                 templateUrl: 'public/views/group.html'
             }).

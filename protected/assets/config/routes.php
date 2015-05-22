@@ -106,6 +106,13 @@ return array(
             'action' => 'subscribe'
         )
     ),
+    'group_list' => array(
+        '/api/groups/list',
+        array(
+            'controller' => 'apiGroups',
+            'action' => 'list'
+        )
+    ),
 	'default' => array(
 		'(/<controller>(/<action>(/<id>)))', 
 		array(

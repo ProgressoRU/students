@@ -9,9 +9,26 @@ use Exception,
 class ApiGroups extends ApiController
 {
 
-    public function action_index()
+    public function action_list()
     {
-
+        $this->response('status', 403);
+        $role = Auth::getRole($this->pixie);
+        if (Auth::checkCookie($this->pixie) && ($role == 'admin' || $role == 'teacher'))
+        {
+            $uId = isset($_COOKIE['id']) ? $_COOKIE['id'] : 0;
+            try {
+                $this->response('status', 1);
+                $this->response('groups', $this->pixie->db->query('select')->table('groups')
+                    ->fields('group_id', 'title')
+                    ->where('teacher_id', $uId)
+                    ->execute()->as_array());
+            }
+            catch (Exception $e)
+            {
+                $this->response('status', 403);
+                error_log($e->getMessage());
+            }
+        }
     }
 
     public function action_subscribe()

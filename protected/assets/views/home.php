@@ -41,6 +41,7 @@
 <div data-st-Header></div>
 <div data-ng-view class="container-fluid"></div>
 <div data-login-dialog></div>
+<!--TODO: переместить модалы в отдельные вьюхи -->
 <script type="text/ng-template" id="subscribeModal.html">
     <div class="modal-header">
         <h3 class="modal-title">Использовать кодовое слово</h3>
@@ -50,6 +51,19 @@
             преподаватель.</p>
         <h3 class="text-center">Код:</h3>
         <p class="text-center"><input class="form-control input-lg" type="text" data-ng-model="passcode"></p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" data-ng-click="ok()">OK</button>
+        <button class="btn btn-warning" data-ng-click="cancel()">Отмена</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="newGroupModal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Новая группа</h3>
+    </div>
+    <div class="modal-body">
+
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" data-ng-click="ok()">OK</button>
