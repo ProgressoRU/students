@@ -32,7 +32,8 @@
                     </li>
                     <li><a data-ng-click="openSubs()" data-ng-if="currentUser.userRole != 'admin'" href="">Использовать
                         код</a></li>
-                    <li class="dropdown" data-ng-if="currentUser.userRole != 'student'">
+                    <li class="dropdown"
+                        data-ng-if="currentUser.userRole == 'admin' || currentUser.userRole == 'teacher'">
                         <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Мои
                             группы<span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">

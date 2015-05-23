@@ -113,6 +113,13 @@ return array(
             'action' => 'list'
         )
     ),
+    'group_new' => array(
+        '/api/groups/new',
+        array(
+            'controller' => 'apiGroups',
+            'action' => 'new'
+        )
+    ),
 	'default' => array(
 		'(/<controller>(/<action>(/<id>)))', 
 		array(

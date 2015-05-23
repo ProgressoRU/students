@@ -12,9 +12,9 @@ class ApiGroups extends ApiController
     public function action_list()
     {
         $this->response('status', 403);
-        $role = Auth::getRole($this->pixie);
-        if (Auth::checkCookie($this->pixie) && ($role == 'admin' || $role == 'teacher'))
-        {
+        $cookieCheck = Auth::checkCookie($this->pixie);
+        if ($cookieCheck) $role = Auth::getRole($this->pixie);
+        if ($cookieCheck && !empty($role) && ($role == 'admin' || $role == 'teacher')) {
             $uId = isset($_COOKIE['id']) ? $_COOKIE['id'] : 0;
             try {
                 $this->response('status', 1);
@@ -22,11 +22,47 @@ class ApiGroups extends ApiController
                     ->fields('group_id', 'title')
                     ->where('teacher_id', $uId)
                     ->execute()->as_array());
-            }
-            catch (Exception $e)
-            {
+            } catch (Exception $e) {
                 $this->response('status', 403);
                 error_log($e->getMessage());
+            }
+        }
+    }
+
+    public function action_new()
+    {
+        $this->response('status', 403);
+        $cookieCheck = Auth::checkCookie($this->pixie);
+        if ($cookieCheck) $role = Auth::getRole($this->pixie);
+        if ($cookieCheck && !empty($role) && ($role == 'admin' || $role == 'teacher')) {
+            $uId = isset($_COOKIE['id']) ? $_COOKIE['id'] : 0;
+            $title = Request::getString('title');
+            $passcode = Request::getString('passcode');
+            $expirationFlag = Request::getBool('expirationFlag');
+            if (!$expirationFlag) {
+                $expiration = Request::getDate('expiration');
+                $expiration = date('Y-m-d', strtotime($expiration));
+            }
+            else $expiration = null;
+            if (empty($title) || empty($passcode))
+                $this->response('status', 21);
+            else {
+                try {
+                    $passCheck = $this->pixie->db->query('select')->table('groups')
+                        ->where('passcode', $passcode)
+                        ->execute()->current();
+                    if (!empty ($passCheck))
+                        $this->response('status', 22);
+                    else {
+                        $this->response('status', 200);
+                        $this->pixie->db->query('insert')->table('groups')
+                            ->data(array('passcode' => $passcode, 'expire_date' => $expiration, 'teacher_id' => $uId, 'title' => $title))
+                            ->execute();
+                    }
+                } catch (Exception $e) {
+                    $this->response('status', 500);
+                    error_log($e->getMessage());
+                }
             }
         }
     }
@@ -34,7 +70,7 @@ class ApiGroups extends ApiController
     public function action_subscribe()
     {
         $this->response('status', 403);
-        $passcode = Request::getStringTrim('passcode');
+        $passcode = Request::getString('passcode');
         if (empty($passcode)) {
             $this->response('status', 21);
         } else {
@@ -84,7 +120,7 @@ class ApiGroups extends ApiController
                                     ->where('discipline_id', 'IN', $this->pixie->db->query('select')->table('group_access')
                                         ->fields('discipline_id')
                                         ->where('group_id', $groupId))
-                                ->execute()->as_array();
+                                    ->execute()->as_array();
                         } catch (Exception $e) {
                             error_log($e->getMessage());
                             $this->response('status', 24);

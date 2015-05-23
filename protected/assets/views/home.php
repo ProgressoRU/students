@@ -20,7 +20,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-animate.min.js"></script>
     <script src="http://code.angularjs.org/1.0.8/i18n/angular-locale_ru-ru.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-    <script src="/public/lib/bootstrap/ui-bootstrap-tpls-0.12.0.min.js"></script>
+    <script src="/public/lib/bootstrap/ui-bootstrap-tpls-0.13.0.min.js"></script>
     <script src="//momentjs.com/downloads/moment-with-locales.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.3.0/fullcalendar.min.js"></script>
     <script src="/public/lib/angular/textAngular-sanitize.min.js"></script>
@@ -49,7 +49,9 @@
     <div class="modal-body">
         <p>С помощью кодового слова вы можете подписаться на интересующий вас курс. Кодовое слово может выдать вам
             преподаватель.</p>
+
         <h3 class="text-center">Код:</h3>
+
         <p class="text-center"><input class="form-control input-lg" type="text" data-ng-model="passcode"></p>
     </div>
     <div class="modal-footer">
@@ -63,7 +65,59 @@
         <h3 class="modal-title">Новая группа</h3>
     </div>
     <div class="modal-body">
+        <div class="form-group">
+            <label for="title">Название: </label>
+            <input type="text" class="form-control" id="title" data-ng-model="group.title" placeholder="Будет известно только вам">
+        </div>
 
+        <div class="form-group">
+            <label for="passcode">Кодовое слово: </label>
+            <input type="text" class="form-control" id="passcode" data-ng-model="group.passcode"
+                   placeholder="Передайте его тем, кого хотите пригласить в группу">
+        </div>
+        <div class="row">
+            <div class="col-sm-9">
+                <label for="expiration">Срок действия кодового слова: </label>
+
+                <p class="input-group" data-ng-hide="turnExpiration == 1">
+                    <input id="expiration" type="text" class="form-control" data-datepicker-popup="dd MMMM yyyy"
+                           data-ng-model="group.expiration"
+                           data-is-open="opened"
+                           data-min-date="minDate" data-datepicker-options="dateOptions"
+                           data-ng-required="true"
+                           data-show-button-bar="false"
+                           data-ng-disabled="turnExpiration == 1"
+                            readonly/>
+              <span class="input-group-btn">
+                <button type="button" data-ng-disabled="turnExpiration == 1" class="btn btn-default"
+                        data-ng-click="open($event)"><i
+                        class="glyphicon glyphicon-calendar"
+                        ></i></button>
+              </span>
+                </p>
+                <!-- DateTime picker placeholder (showing then switcher is ON) -->
+                <p class="input-group" data-ng-if="turnExpiration == 1"><input id="expirationPlaceholder" disabled
+                                                                               placeholder="БЕССРОЧНО"
+                                                                               class="form-control">
+                              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" disabled><i
+                        class="glyphicon glyphicon-calendar"
+                        ></i></button>
+              </span</p>
+                <!-- //Placeholder -->
+            </div>
+            <div class="col-sm-3">
+                <div><label for="needExp">Бессрочно?</label></div>
+                <div class="btn-group btn-toggle">
+                    <button id="needExp" class="btn btn-default" data-ng-model="turnExpiration" data-btn-radio=1
+                            data-ng-class="{'active btn-primary': turnExpiration == 1}">ДА
+                    </button>
+                    <button class="btn btn-default" data-ng-model="turnExpiration" data-btn-radio=0
+                            data-ng-class="{'active btn-primary': turnExpiration == 0}">НЕТ
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" data-ng-click="ok()">OK</button>

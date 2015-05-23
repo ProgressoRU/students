@@ -74,9 +74,62 @@ stControllers.controller('WrapCtrl', ['$scope', 'Session', 'AuthService', 'servi
     }]);
 
 stControllers.controller('newGroupCtrl', ['$scope', '$modalInstance', 'serviceData', 'alertService', function ($scope, $modalInstance, serviceData, alertService) {
+    $scope.turnExpiration = 0;
+    $scope.group = {
+        title: '',
+        passcode: '',
+        expiration: new Date()
+    };
+
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
-    }
+    };
+
+    $scope.ok = function () {
+        if ($scope.group.title == null) alertService.add("danger", 'Введите название группы');
+        else if ($scope.group.passcode == null || $scope.group.passcode.length < 3)
+            alertService.add("danger", 'Кодовое слово должно содержать не менее 3 символов и быть уникальным.');
+        else serviceData.get('api/groups/new', {
+                title: $scope.group.title,
+                passcode: $scope.group.passcode,
+                expirationFlag: $scope.turnExpiration,
+                expiration: $scope.group.expiration
+            }).then(function (data) {
+                if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
+                //обработка ошибок
+                else if (data.status == 21) alertService.add("danger", "Не заполнены ключевые поля.");
+                else if (data.status == 22) alertService.add("danger", "Кодовое слово уже используется. Попробуйте изменить его.");
+                else if (data.status == 403) alertService.add("danger", "403: Доступ запрещен");
+                else if (data.status == 500) alertService.add("danger", "Произошла ощибка. Обратитесь к администратору");
+                else if (data.status == 200) {
+                    alertService.add("success", "<span class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span> Группа создана!");
+                    var success = true;
+                    $modalInstance.close(success);
+                }
+            })
+    };
+
+    $scope.open = function ($event) {
+        $event.preventDefault();
+        $event.stopPropagation();
+        $scope.opened = true;
+    };
+
+    $scope.dateOptions = {
+        formatYear: 'yy',
+        startingDay: 1
+    };
+
+    $scope.toggleMin = function () {
+        $scope.minDate = $scope.minDate ? null : new Date();
+    };
+    $scope.toggleMin();
+
+    $scope.weekAhead = function () {
+        $scope.group.expiration.setDate($scope.group.expiration.getDate() + 14);
+    };
+    $scope.weekAhead();
+
 }]);
 
 stControllers.controller('SubscribeCtrl', ['$scope', '$modalInstance', 'serviceData', 'alertService', function ($scope, $modalInstance, serviceData, alertService) {
@@ -126,6 +179,7 @@ stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope
                     alertService.add("success", "Вход выполнен");
                     $route.reload();
                     $scope.getDisciplines();
+                    $scope.getGroups();
                 }
                 else {
                     alertService.add("danger", "Имя и/или пароль введены неверно.");
