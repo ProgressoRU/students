@@ -1,79 +1,6 @@
 var stControllers = angular.module('stControllers', []);
 
-// Обертка (wrap)
-stControllers.controller('WrapCtrl', ['$scope', 'Session', 'AuthService', 'serviceData', 'alertService', 'taOptions', '$modal', '$log',
-    function ($scope, Session, AuthService, serviceData, alertService, taOptions, $modal, $log) {
-        //объявляем функции, обращающиеся при вызове к AuthService
-        $scope.isAuthenticated = function () {
-            return AuthService.isAuthenticated();
-        };
-
-        $scope.logout = function () {
-            $scope.clearDisciplineList();
-            $scope.clearGroupList();
-            return AuthService.logout();
-        };
-        $scope.closeAlert = alertService.closeAlert;
-        //текущий пользователь берется из сервиса сессий
-        $scope.currentUser = Session;
-        //получение доступных предметов
-        $scope.getDisciplines = function () {
-            serviceData.get('api/disciplines/my').then(function (data) {
-                $scope.disciplines = (data.status && data.status == 1) ? data.disciplines : [];
-            })
-        };
-
-        $scope.clearDisciplineList = function () {
-            $scope.disciplines = [];
-        };
-
-        $scope.clearGroupList = function () {
-            $scope.groups = [];
-        };
-
-        //получение списка групп
-        $scope.getGroups = function () {
-            serviceData.get('api/groups/list').then(function (data) {
-                $scope.groups = (data.status && data.status == 1) ? data.groups : [];
-            })
-        };
-
-        //on init
-        $scope.getDisciplines();
-        $scope.getGroups(); //TODO: нужно выполнять только у админов и учителец
-        taOptions.toolbar = [
-            ['h3', 'h4', 'h5', 'h6', 'p', 'pre', 'quote'],
-            ['bold', 'italics', 'underline', 'strikeThrough', 'ul', 'ol', 'redo', 'undo', 'clear'],
-            ['justifyLeft', 'justifyCenter', 'justifyRight', 'indent', 'outdent'],
-            ['html', 'insertImage', 'insertLink', 'insertVideo', 'charcount']
-        ];
-        //subscription modal
-        $scope.openSubs = function (size) {
-            var modalInstance = $modal.open({
-                animation: true,
-                templateUrl: 'subscribeModal.html',
-                controller: 'SubscribeCtrl',
-                size: size
-            });
-            modalInstance.result.then(function (success) {
-                if (success) $scope.getDisciplines();
-            });
-        };
-        //new group modal
-        $scope.newGroup = function (size) {
-            var modalInstance = $modal.open({
-                animation: true,
-                templateUrl: 'newGroupModal.html',
-                controller: 'newGroupCtrl',
-                size: size
-            });
-            modalInstance.result.then(function (success) {
-                if (success) $scope.getGroups();
-            });
-        };
-    }]);
-
-stControllers.controller('newGroupCtrl', ['$scope', '$modalInstance', 'serviceData', 'alertService', function ($scope, $modalInstance, serviceData, alertService) {
+stControllers.controller('newGroupCtrl', ['$scope', '$modalInstance', 'DataService', 'alertService', function ($scope, $modalInstance, DataService, alertService) {
     $scope.turnExpiration = 0;
     $scope.group = {
         title: '',
@@ -89,7 +16,7 @@ stControllers.controller('newGroupCtrl', ['$scope', '$modalInstance', 'serviceDa
         if ($scope.group.title == null) alertService.add("danger", 'Введите название группы');
         else if ($scope.group.passcode == null || $scope.group.passcode.length < 3)
             alertService.add("danger", 'Кодовое слово должно содержать не менее 3 символов и быть уникальным.');
-        else serviceData.get('api/groups/new', {
+        else DataService.get('api/groups/new', {
                 title: $scope.group.title,
                 passcode: $scope.group.passcode,
                 expirationFlag: $scope.turnExpiration,
@@ -132,11 +59,11 @@ stControllers.controller('newGroupCtrl', ['$scope', '$modalInstance', 'serviceDa
 
 }]);
 
-stControllers.controller('SubscribeCtrl', ['$scope', '$modalInstance', 'serviceData', 'alertService', function ($scope, $modalInstance, serviceData, alertService) {
+stControllers.controller('SubscribeCtrl', ['$scope', '$modalInstance', 'DataService', 'alertService', function ($scope, $modalInstance, DataService, alertService) {
     $scope.passcode = '';
 
     $scope.ok = function () {
-        serviceData.get('api/groups/subscribe', {
+        DataService.get('api/groups/subscribe', {
             passcode: $scope.passcode
         }).then(function (data) {
             if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
@@ -164,8 +91,8 @@ stControllers.controller('HomeCtrl', ['$scope', function ($scope) {
 
 }]);
 
-stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope', 'AUTH_EVENTS', '$route', 'alertService', 'serviceData',
-    function ($scope, AuthService, $rootScope, AUTH_EVENTS, $route, alertService, serviceData) {
+stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope', 'AUTH_EVENTS', '$route', 'alertService', 'DataService',
+    function ($scope, AuthService, $rootScope, AUTH_EVENTS, $route, alertService, DataService) {
         $scope.login = function (credentials) {
             //отправляем сервису Авторизации необходимые данные
             AuthService.login(credentials).then(function (user) {
@@ -178,8 +105,8 @@ stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope
                 if ($reply == 200) {
                     alertService.add("success", "Вход выполнен");
                     $route.reload();
-                    $scope.getDisciplines();
-                    $scope.getGroups();
+                    $scope.wrap.getDisciplines();
+                    $scope.wrap.getGroups();
                 }
                 else {
                     alertService.add("danger", "Имя и/или пароль введены неверно.");
@@ -193,7 +120,7 @@ stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope
             else if (regData.pass.length <= 6)
                 alertService.add("danger", 'Пароль должен содержать более 6 символов');
             else {
-                serviceData.get('api/user/reg', {
+                DataService.get('api/user/reg', {
                     username: regData.username,
                     pass: regData.pass,
                     passcode: regData.passcode,
@@ -252,8 +179,8 @@ stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope
         }
     }]);
 
-stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceData', 'alertService', '$compile',
-    function ($scope, $routeParams, serviceData, alertService, $compile) {
+stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'DataService', 'alertService', '$compile',
+    function ($scope, $routeParams, DataService, alertService, $compile) {
         //из параметров маршрута берем ID предмета
         $scope.disciplineID = $routeParams.disciplineID;
         $scope.events = [];
@@ -277,7 +204,7 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceDa
                 }
             }];
         //вызываем API, чтобы получить все лекции по предмету
-        serviceData.get('api/disciplines/info', {id: $scope.disciplineID}).then(function (data) {
+        DataService.get('api/disciplines/info', {id: $scope.disciplineID}).then(function (data) {
             //если ответ не пришел
             if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
             //если пришел ответ с запретом
@@ -299,7 +226,7 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceDa
                     };
                     $scope.events[i] = event;
                 }
-                if ($scope.currentUser.userRole == 'admin' || $scope.isEditor || $scope.discipline.creator_id == $scope.currentUser.userId)
+                if ($scope.wrap.currentUser.userRole == 'admin' || $scope.isEditor || $scope.wrap.discipline.creator_id == $scope.wrap.currentUser.userId)
                     $scope.canEdit = true;
                 else $scope.canEdit = false;
                 $scope.totalItems = data.lectures.length;
@@ -335,7 +262,7 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceDa
         };
 
         $scope.deletePost = function (id, jsonId) {
-            serviceData.get('api/disciplines/delete_lesson', {id: id}).then(function (data) {
+            DataService.get('api/disciplines/delete_lesson', {id: id}).then(function (data) {
                 if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
                 //если пришел ответ с запретом
                 else if (data.status == 403) alertService.add("danger", "403: Доступ запрещен!");
@@ -449,7 +376,7 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'serviceDa
             else if ($scope.editable.title.length <= 3 || $scope.editable.title.length > 100)
                 alertService.add("danger", 'Заголовок должен содержать более 3, но менее 100 символов');
             else {
-                serviceData.get('api/disciplines/edit_lesson', {
+                DataService.get('api/disciplines/edit_lesson', {
                     id: $scope.idInDB,
                     disciplineId: $scope.disciplineID,
                     title: $scope.editable.title,
@@ -480,8 +407,8 @@ stControllers.controller('HeaderCtrl', ['$scope', function ($scope) {
 
 }]);
 
-stControllers.controller('NewsCtrl', ['$scope', 'serviceData', 'alertService',
-    function ($scope, serviceData, alertService) {
+stControllers.controller('NewsCtrl', ['$scope', 'DataService', 'alertService',
+    function ($scope, DataService, alertService) {
         $scope.currentPageNews = function (k) {
             $scope.visibleNews = [];
             startPosition = $scope.totalItems - $scope.currentPage * k;
@@ -533,7 +460,7 @@ stControllers.controller('NewsCtrl', ['$scope', 'serviceData', 'alertService',
             else if ($scope.editable.title.length <= 3 || $scope.editable.title.length > 100)
                 alertService.add("danger", 'Заголовок должен содержать более 3, но менее 100 символов');
             else {
-                serviceData.get('api/news/edit', {
+                DataService.get('api/news/edit', {
                     id: $scope.idInDB,
                     title: $scope.editable.title,
                     news: $scope.editable.news,
@@ -559,7 +486,7 @@ stControllers.controller('NewsCtrl', ['$scope', 'serviceData', 'alertService',
         };
 
         $scope.deleteNews = function (id) {
-            serviceData.get('api/news/delete', {id: id}).then(function (data) {
+            DataService.get('api/news/delete', {id: id}).then(function (data) {
                 if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
                 //если пришел ответ с запретом
                 else if (data.status == 403) alertService.add("danger", "403: Доступ запрещен!");
@@ -573,7 +500,7 @@ stControllers.controller('NewsCtrl', ['$scope', 'serviceData', 'alertService',
         };
 
         $scope.getNews = function () {
-            serviceData.get('api/news/all').then(function (data) {
+            DataService.get('api/news/all').then(function (data) {
                 //если ответ не пришел
                 if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
                 //если пришел ответ с запретом
@@ -603,7 +530,7 @@ stControllers.controller('GroupCtrl', ['$scope', function ($scope) {
 
 }]);
 
-stControllers.controller('UserAccessCtrl', ['$scope', 'serviceData', 'alertService', function ($scope, serviceData, alertService) {
+stControllers.controller('UserAccessCtrl', ['$scope', 'DataService', 'alertService', function ($scope, DataService, alertService) {
     $scope.roles = [
         {name: 'Студент', data: 'student'},
         {name: 'Учитель', data: 'teacher'},
@@ -621,7 +548,7 @@ stControllers.controller('UserAccessCtrl', ['$scope', 'serviceData', 'alertServi
     $scope.emptyRegData();
 
     $scope.getTeachersAndAdmins = function () {
-        serviceData.get('api/user/userList').then(function (data) {
+        DataService.get('api/user/userList').then(function (data) {
             //если ответ не пришел
             if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
             //если пришел ответ с запретом
@@ -643,7 +570,7 @@ stControllers.controller('UserAccessCtrl', ['$scope', 'serviceData', 'alertServi
         else if (regData.pass.length <= 6)
             alertService.add("danger", 'Пароль должен содержать более 6 символов');
         else {
-            serviceData.get('api/user/reg', {
+            DataService.get('api/user/reg', {
                 username: regData.username,
                 pass: regData.pass,
                 surname: regData.surname,
@@ -675,7 +602,7 @@ stControllers.controller('UserAccessCtrl', ['$scope', 'serviceData', 'alertServi
     };
 
     $scope.promote = function (uId) {
-        serviceData.get('api/user/rights', {
+        DataService.get('api/user/rights', {
             uId: uId,
             rights: 'admin'
         }).then(function (data) {
@@ -694,7 +621,7 @@ stControllers.controller('UserAccessCtrl', ['$scope', 'serviceData', 'alertServi
     };
 
     $scope.demote = function (uId) {
-        serviceData.get('api/user/rights', {
+        DataService.get('api/user/rights', {
             uId: uId,
             rights: 'student'
         }).then(function (data) {

@@ -27,15 +27,16 @@
     <script src="/public/lib/angular/textAngular.min.js"></script>
     <script src="/public/lib/angular/calendar.js"></script>
     <script src="/public/lib/angular/loading-bar.js"></script>
-    <script src="/public/js/app.js"></script>
-    <script src="/public/js/services.js"></script>
-    <script src="/public/js/controllers.js"></script>
-    <script src="/public/js/directives.js"></script>
-    <script src="/public/js/filters.js"></script>
+    <script src="/public/app/students.module.js"></script>
+    <script src="/public/app/services.js"></script>
+    <script src="/public/app/controllers.js"></script>
+    <script src="/public/app/directives.js"></script>
+    <script src="/public/app/filters.js"></script>
+    <script src="/public/app/layout/wrap.controller.js"></script>
 </head>
-<body data-ng-controller="WrapCtrl">
+<body data-ng-controller="WrapController as wrap">
 <div class="modalAlert">
-    <alert class="repeat-animation" ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)"><span
+    <alert class="repeat-animation" ng-repeat="alert in alerts" type="{{alert.type}}" close="wrap.closeAlert($index)"><span
             data-ng-bind-html="alert.msg"></span></alert>
 </div>
 <div data-st-Header></div>

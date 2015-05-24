@@ -1,8 +1,21 @@
 var stServices = angular.module('stServices', []);
 //обертка для всех запросов
-stServices.service('serviceData', ['$http', '$q', '$cacheFactory', function ($http, $q, $cacheFactory) {
 
-    this.get = function (url, param) {
+angular
+    .module('students')
+    .service('DataService', DataService);
+
+DataService.$inject = ['$http', '$q'];
+
+function DataService($http, $q) {
+
+    var service = {
+        get: get
+    };
+
+    return service;
+
+    function get (url, param) {
         return $http.post(url, param)
             .then(function (response) {
                 //console.log(response);
@@ -16,19 +29,36 @@ stServices.service('serviceData', ['$http', '$q', '$cacheFactory', function ($ht
                 // something went wrong
                 return $q.reject(response.data);
             });
-    };
+    }
+}
+/*
+ stServices.service('DataService', ['$http', '$q', function ($http, $q) {
 
-    this.cache = $cacheFactory('dataCache', {});
+ function get (url, param) {
+ return $http.post(url, param)
+ .then(function (response) {
+ //console.log(response);
+ if (typeof response.data === 'object') {
+ return response.data;
+ } else {
+ // invalid response
+ return $q.reject(response.data);
+ }
+ }, function (response) {
+ // something went wrong
+ return $q.reject(response.data);
+ });
+ }
 
-    return this;
-}]);
-
-stServices.factory('AuthService', ['serviceData', '$location', 'Session', function (serviceData, $location, Session) {
+ return this;
+ }]);
+ */
+stServices.factory('AuthService', ['DataService', '$location', 'Session', function (DataService, $location, Session) {
 
     var authService = {};
 
     authService.login = function (credentials) {
-        return serviceData
+        return DataService
             .get('api/user/auth', credentials)
             .then(function (data) {
                 //создаем сессии, если ответ от сервера положительный
@@ -48,7 +78,7 @@ stServices.factory('AuthService', ['serviceData', '$location', 'Session', functi
     };
 
     authService.logout = function () {
-        return serviceData
+        return DataService
             .get('api/user/logout')
             .then(function (data) {
                 //console.log(data);

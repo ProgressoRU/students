@@ -1,5 +1,5 @@
 <!-- HEADER -->
-<header data-ng-controller="HeaderCtrl" data-ng-cloak>
+<header data-ng-cloaks>
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -13,46 +13,46 @@
                 </button>
                 <a class="navbar-brand">[Students]</a>
             </div>
-
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li><a href="#/news">Новости</a></li>
-                    <li class="dropdown" data-ng-if="isAuthenticated()"><a
+                    <li class="dropdown" data-ng-if="wrap.isAuthenticated()"><a
                             href="" class="dropdown-toggle" data-toggle="dropdown" role="button"
                             aria-expanded="false">Мои курсы<span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
-                            <li data-ng-if="currentUser.userRole=='admin' || currentUser.userRole=='teacher'"><a
+                            <li data-ng-if="wrap.currentUser.userRole=='admin' || wrap.currentUser.userRole=='teacher'"><a
                                     href="#/class/edit/0">Создать курс</a></li>
-                            <li data-ng-if="currentUser.userRole=='admin' || currentUser.userRole=='teacher'"
+                            <li data-ng-if="wrap.currentUser.userRole=='admin' || wrap.currentUser.userRole=='teacher'"
                                 class="divider"></li>
-                            <li data-ng-repeat="discipline in disciplines"><a
+                            <li data-ng-repeat="discipline in wrap.disciplines"><a
                                     href="#/class/{{discipline.discipline_id}}">{{discipline.title}}</a></li>
                         </ul>
                     </li>
-                    <li><a data-ng-click="openSubs()" data-ng-if="currentUser.userRole != 'admin'" href="">Использовать
+                    <li><a data-ng-click="wrap.openSubs()" data-ng-if="wrap.currentUser.userRole != 'admin' && wrap.isAuthenticated()"
+                           href="">Использовать
                         код</a></li>
                     <li class="dropdown"
-                        data-ng-if="currentUser.userRole == 'admin' || currentUser.userRole == 'teacher'">
+                        data-ng-if="wrap.currentUser.userRole == 'admin' || wrap.currentUser.userRole == 'teacher'">
                         <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Мои
                             группы<span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
-                            <li><a href="" data-ng-click="newGroup()">Создать группу</a></li>
+                            <li><a href="" data-ng-click="wrap.newGroup()">Создать группу</a></li>
                             <li class="divider"></li>
-                            <li data-ng-repeat="group in groups"><a
+                            <li data-ng-repeat="group in wrap.groups"><a
                                     href="#/group/{{group.group_id}}">{{group.title}}</a></li>
                         </ul>
                     </li>
-                    <li><a href="#/users" data-ng-if="currentUser.userRole == 'admin'">Права доступа</a></li>
+                    <li><a href="#/users" data-ng-if="wrap.currentUser.userRole == 'admin'">Права доступа</a></li>
                 </ul>
-                <ul class="nav navbar-nav navbar-right" data-ng-if="isAuthenticated()">
+                <ul class="nav navbar-nav navbar-right" data-ng-if="wrap.isAuthenticated()">
                     <li class="dropdown"><a href="" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                            aria-expanded="false">{{currentUser.userName}}<span
+                                            aria-expanded="false">{{wrap.currentUser.userName}}<span
                             class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="">Профиль (NYI)</a></li>
                             <li class="divider"></li>
-                            <li class="logout"><a href="" data-ng-click="logout()">Выход</a></li>
+                            <li class="logout"><a href="" data-ng-click="wrap.logout()">Выход</a></li>
                         </ul>
                     </li>
                 </ul>

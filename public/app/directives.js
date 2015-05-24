@@ -3,7 +3,7 @@ var stDirectives = angular.module('stDirectives', []);
 //шапка
 stDirectives.directive('stHeader', function () {
     return {
-        templateUrl: 'public/views/header.html'
+        templateUrl: 'public/app/layout/header.html'
     };
 });
 
