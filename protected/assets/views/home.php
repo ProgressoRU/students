@@ -28,15 +28,20 @@
     <script src="/public/lib/angular/calendar.js"></script>
     <script src="/public/lib/angular/loading-bar.js"></script>
     <script src="/public/app/students.module.js"></script>
-    <script src="/public/app/services.js"></script>
     <script src="/public/app/controllers.js"></script>
     <script src="/public/app/directives.js"></script>
     <script src="/public/app/filters.js"></script>
     <script src="/public/app/layout/wrap.controller.js"></script>
+    <script src="/public/app/shared/data.service.js"></script>
+    <script src="/public/app/shared/auth.factory.js"></script>
+    <script src="/public/app/shared/alert.factory.js"></script>
+    <script src="/public/app/shared/session.service.js"></script>
+    <script src="/public/app/shared/authevents.constant.js"></script>
 </head>
 <body data-ng-controller="WrapController as wrap">
 <div class="modalAlert">
-    <alert class="repeat-animation" ng-repeat="alert in alerts" type="{{alert.type}}" close="wrap.closeAlert($index)"><span
+    <alert class="repeat-animation" ng-repeat="alert in wrap.alerts" type="{{alert.type}}"
+           close="wrap.closeAlert($index)"><span
             data-ng-bind-html="alert.msg"></span></alert>
 </div>
 <div data-st-Header></div>
@@ -68,7 +73,8 @@
     <div class="modal-body">
         <div class="form-group">
             <label for="title">Название: </label>
-            <input type="text" class="form-control" id="title" data-ng-model="group.title" placeholder="Будет известно только вам">
+            <input type="text" class="form-control" id="title" data-ng-model="group.title"
+                   placeholder="Будет известно только вам">
         </div>
 
         <div class="form-group">
@@ -88,7 +94,7 @@
                            data-ng-required="true"
                            data-show-button-bar="false"
                            data-ng-disabled="turnExpiration == 1"
-                            readonly/>
+                           readonly/>
               <span class="input-group-btn">
                 <button type="button" data-ng-disabled="turnExpiration == 1" class="btn btn-default"
                         data-ng-click="open($event)"><i

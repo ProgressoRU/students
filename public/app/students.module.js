@@ -7,7 +7,6 @@
             'ngAnimate',
             'ngRoute',
             //app modules
-            'stServices',
             'stControllers',
             'stDirectives',
             'stFilters',

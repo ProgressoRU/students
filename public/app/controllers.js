@@ -226,7 +226,7 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'DataServi
                     };
                     $scope.events[i] = event;
                 }
-                if ($scope.wrap.currentUser.userRole == 'admin' || $scope.isEditor || $scope.wrap.discipline.creator_id == $scope.wrap.currentUser.userId)
+                if ($scope.wrap.currentUser.userRole == 'admin' || $scope.isEditor || $scope.wrap.disciplines.creator_id == $scope.wrap.currentUser.userId)
                     $scope.canEdit = true;
                 else $scope.canEdit = false;
                 $scope.totalItems = data.lectures.length;

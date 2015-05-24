@@ -5,26 +5,27 @@
         .module('students')
         .controller('WrapController', WrapController);
 
-    WrapController.$inject = ['Session', 'AuthService', 'DataService', 'alertService', 'taOptions', '$modal'];
+    WrapController.$inject = ['SessionService', 'AuthService', 'DataService', 'alertService', 'taOptions', '$modal'];
 
-    function WrapController(Session, AuthService, DataService, alertService, taOptions, $modal) {
+    function WrapController(SessionService, AuthService, DataService, alertService, taOptions, $modal) {
 
         /*jshint validthis: true */
         var vm = this;
 
+        vm.alerts = alertService.getAlerts();
         vm.closeAlert = alertService.closeAlert;
-        vm.currentUser = Session;
+        vm.currentUser = SessionService;
         vm.disciplines = [];
         vm.groups = [];
 
-        vm.isAuthenticated = isAuthenticated;
         vm.clearDisciplineList = clearDisciplineList;
         vm.clearGroupList = clearGroupList;
         vm.getDisciplines = getDisciplines;
         vm.getGroups = getGroups;
+        vm.isAuthenticated = isAuthenticated;
         vm.logout = logout;
-        vm.newGroup = newGroup;
-        vm.openSubs = openSubs;
+        vm.newGroupModal = newGroupModal;
+        vm.openSubModal = newSubModal;
 
         activate();
 
@@ -55,14 +56,14 @@
 
         //получение доступных предметов
         function getDisciplines() {
-            DataService.get('api/disciplines/my').then(function (data) {
+            return DataService.get('api/disciplines/my').then(function (data) {
                 vm.disciplines = (data.status && data.status == 1) ? data.disciplines : [];
             })
         }
 
         //получение списка групп
         function getGroups() {
-            DataService.get('api/groups/list').then(function (data) {
+            return DataService.get('api/groups/list').then(function (data) {
                 vm.groups = (data.status && data.status == 1) ? data.groups : [];
             })
         }
@@ -78,7 +79,7 @@
         }
 
         //subscription modal
-        function openSubs(size) {
+        function newSubModal(size) {
             var modalInstance = $modal.open({
                 animation: true,
                 templateUrl: 'subscribeModal.html',
@@ -91,7 +92,7 @@
         }
 
         //new group modal
-        function newGroup(size) {
+        function newGroupModal(size) {
             var modalInstance = $modal.open({
                 animation: true,
                 templateUrl: 'newGroupModal.html',
