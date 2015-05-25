@@ -4,12 +4,13 @@
         .module('students')
         .service('DataService', DataService);
 
-    DataService.$inject = ['$http', '$q'];
+    DataService.$inject = ['$http', '$q', 'alertService'];
 
-    function DataService($http, $q) {
+    function DataService($http, $q, alertService) {
 
         var service = {
-            get: get
+            get: get, // deprecated
+            send: send
         };
 
         return service;
@@ -27,6 +28,22 @@
                 }, function (response) {
                     // something went wrong
                     return $q.reject(response.data);
+                });
+        }
+
+        function send(url, param) {
+            return $http.post(url, param)
+                .error(function(data, status/*, headers, config*/) {
+                    if (data.status) {
+                        alertService.push(data.status);
+                    } else {
+                        alertService.push(status);
+                    }
+                })
+                .success(function(data/*, status, headers, config*/) {
+                    if (data.status) {
+                        alertService.push(data.status);
+                    }
                 });
         }
     }

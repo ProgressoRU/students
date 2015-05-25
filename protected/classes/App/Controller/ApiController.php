@@ -58,23 +58,33 @@ class ApiController extends \App\Page
         parent::after();
     }
 
-    public function badRequest()
+    public function ok($status = -1)
     {
+        $this->response('status', $status);
+        header('HTTP/1.1 200 OK');
+    }
+
+    public function badRequest($status = -1)
+    {
+        $this->response('status', $status);
         header('HTTP/1.1 400 Bad Request');
     }
 
-    public function unauthorized()
+    public function unauthorized($status = -1)
     {
+        $this->response('status', $status);
         header('HTTP/1.1 401 Unauthorized');
     }
 
-    public function forbidden()
+    public function forbidden($status = -1)
     {
+        $this->response('status', $status);
         header('HTTP/1.1 403 Forbidden');
     }
 
-    public function notFound()
+    public function notFound($status = -1)
     {
+        $this->response('status', $status);
         header('HTTP/1.1 404 Not found');
     }
 
@@ -83,7 +93,6 @@ class ApiController extends \App\Page
         $cookieCheck = Auth::checkCookie($this->pixie);
         if (!$cookieCheck) {
             if ($sendErrorAndHttpStatus) {
-                $this->response('error_code', 403);
                 $this->unauthorized();
             }
             return false;
@@ -101,7 +110,6 @@ class ApiController extends \App\Page
         $role = Auth::getRole($this->pixie);
         if (empty($role) || !in_array($role, $arrayRoles)) {
             if ($sendErrorAndHttpStatus) {
-                $this->response('error_code', 403);
                 $this->forbidden();
             }
             return false;

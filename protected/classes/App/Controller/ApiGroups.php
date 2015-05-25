@@ -48,8 +48,7 @@ class ApiGroups extends ApiController
         }
 
         if (empty($title) || empty($passcode)) {
-            $this->response('error_code', 21);
-            $this->badRequest();
+            $this->badRequest(21);
             return;
         }
 
@@ -60,8 +59,7 @@ class ApiGroups extends ApiController
                     ->where('passcode', $passcode)
                     ->execute()->current();
                 if (!empty($passCheck)) {
-                    $this->response('error_code', 22);
-                    $this->badRequest();
+                    $this->badRequest(22);
                     return;
                 }
             }
@@ -72,12 +70,11 @@ class ApiGroups extends ApiController
                 ->execute();
 
             // сообщаем что ошибок нет и номер новой группы
-            $this->response('error_code', 0);
+            $this->ok(23);
             $this->response('group_id', intval($this->pixie->db->insert_id()));
 
         } catch (Exception $e) {
-            $this->response('error_code', 500);
-            $this->badRequest();
+            $this->badRequest(500);
             error_log($e->getMessage());
         }
     }

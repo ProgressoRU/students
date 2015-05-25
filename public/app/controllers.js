@@ -1,6 +1,6 @@
 var stControllers = angular.module('stControllers', []);
 
-stControllers.controller('newGroupCtrl', ['$scope', '$modalInstance', '$http', 'alertService', function ($scope, $modalInstance, $http, alertService) {
+stControllers.controller('newGroupCtrl', ['$scope', '$modalInstance', 'DataService', 'alertService', function ($scope, $modalInstance, DataService, alertService) {
     $scope.turnExpiration = 0;
     $scope.group = {
         title: '',
@@ -16,24 +16,14 @@ stControllers.controller('newGroupCtrl', ['$scope', '$modalInstance', '$http', '
         if ($scope.group.title == null) alertService.add("danger", 'Введите название группы');
         else if ($scope.group.passcode == null || $scope.group.passcode.length < 3)
             alertService.push('Кодовое слово должно содержать не менее 3 символов и быть уникальным.');
-        else $http.post('api/groups/new', {
+        else DataService.send('api/groups/new', {
                 title: $scope.group.title,
                 passcode: $scope.group.passcode,
                 expirationFlag: $scope.turnExpiration,
                 expiration: $scope.group.expiration
             })
                 .success(function(/*data, status, headers, config*/) {
-                    alertService.push("<span class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span> Группа создана!");
                     $modalInstance.close(true);
-                })
-                .error(function(data/*, status, headers, config*/) {
-                    switch(data.error_code) {
-                        case 21: alertService.push("Не заполнены ключевые поля."); break;
-                        case 22: alertService.push("Кодовое слово уже используется. Попробуйте изменить его."); break;
-                        case 403: alertService.push("403: Доступ запрещен"); break;
-                        case 500: alertService.push("Произошла ощибка. Обратитесь к администратору"); break;
-                        default: alertService.push('Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
-                    }
                 })
     };
 
