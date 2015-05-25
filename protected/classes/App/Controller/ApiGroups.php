@@ -27,7 +27,7 @@ class ApiGroups extends ApiController
     {
         // Проверка прав доступа (Функция в ApiController)
         if (!$this->isInRole(array('admin', 'teacher'))) {
-            return;
+            return true;
         }
 
         $uId = isset($_COOKIE['id']) ? $_COOKIE['id'] : 0;
@@ -42,8 +42,7 @@ class ApiGroups extends ApiController
         }
 
         if (empty($title) || empty($passcode)) {
-            $this->badRequest(21);
-            return;
+            return $this->badRequest(21);
         }
 
         // проверка повторного кода
@@ -51,8 +50,7 @@ class ApiGroups extends ApiController
             ->where('passcode', $passcode)
             ->execute()->current();
         if (!empty($passCheck)) {
-            $this->badRequest(22);
-            return;
+            return $this->badRequest(22);
         }
 
         // Создание группы
@@ -61,8 +59,8 @@ class ApiGroups extends ApiController
             ->execute();
 
         // сообщаем что ошибок нет и номер новой группы
-        $this->ok(26);
         $this->response('group_id', intval($this->pixie->db->insert_id()));
+        return $this->ok(26);
     }
 
     public function action_subscribe()

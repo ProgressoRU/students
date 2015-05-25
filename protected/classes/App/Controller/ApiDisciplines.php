@@ -127,41 +127,48 @@ class ApiDisciplines extends ApiController
 
     public function action_delete_lesson()
     {
-        $this->response('status', 403);
+        if ($this->isAuthorized()) {
+            return true;
+        }
+
         $postId = Request::getInt('id');
-        if (!is_null($postId)) {
-            //по номеру лекции получаем номер предмета
-            try {
-                $lectureToDiscipline = $this->pixie->db->query('select')->table('lectures')
-                    ->fields('discipline_id')
-                    ->where('lecture_id', $postId)
-                    ->execute()->current();
-            } catch (Exception $e) {
-                error_log($e->getMessage());
-            }
-            if (isset($lectureToDiscipline) && !is_null($lectureToDiscipline)) {
-                $disciplineId = $lectureToDiscipline->discipline_id;
-                if (Auth::checkCookie($this->pixie)) {
-                    $perm = Auth::getPermissions($this->pixie, $disciplineId);
-                    $role = Auth::getRole($this->pixie);
-                    if ($role != null) {
-                        if ($role == 'admin' || $perm == 'creator' || $perm == 'editor') {
-                            try {
-                                $this->response('status', 1);
-                                $this->pixie->db->query('delete')->table('lectures')->
-                                where('lecture_id', $postId)->
-                                execute();
-                                $this->pixie->db->query('delete')->table('attachments')->
-                                where('lecture_id', $postId)->
-                                execute();
-                                $this->pixie->db->query('delete')->table('group_progress')->
-                                where('lecture_id', $postId)->
-                                execute();
-                            } catch (Exception $e) {
-                                error_log($e->getMessage());
-                                $this->response('status', 500);
-                            }
-                        }
+        if (empty($postId)) {
+            return $this->badRequest();
+        }
+
+        //по номеру лекции получаем номер предмета
+        $lectureToDiscipline = $this->pixie->db
+            ->query('select')
+            ->table('lectures')
+            ->fields('discipline_id')
+            ->where('lecture_id', $postId)
+            ->execute()->current();
+
+        if (empty($lectureToDiscipline)) {
+            return true;
+        }
+
+        $disciplineId = $lectureToDiscipline->discipline_id;
+
+        if (Auth::checkCookie($this->pixie)) {
+            $perm = Auth::getPermissions($this->pixie, $disciplineId);
+            $role = Auth::getRole($this->pixie);
+            if ($role != null) {
+                if ($role == 'admin' || $perm == 'creator' || $perm == 'editor') {
+                    try {
+                        $this->response('status', 1);
+                        $this->pixie->db->query('delete')->table('lectures')->
+                        where('lecture_id', $postId)->
+                        execute();
+                        $this->pixie->db->query('delete')->table('attachments')->
+                        where('lecture_id', $postId)->
+                        execute();
+                        $this->pixie->db->query('delete')->table('group_progress')->
+                        where('lecture_id', $postId)->
+                        execute();
+                    } catch (Exception $e) {
+                        error_log($e->getMessage());
+                        $this->response('status', 500);
                     }
                 }
             }
@@ -180,86 +187,89 @@ class ApiDisciplines extends ApiController
             return $this->badRequest(26);
         }
 
+        if (!$this->isAuthorized()) {
+            return true;
+        }
 
-        if (Auth::checkCookie($this->pixie)) {
-            $role = Auth::getRole($this->pixie);
-            $perm = Auth::getPermissions($this->pixie, $disciplineId);
-            if ($role != null) {
-                if ($role == 'admin' || $perm == 'creator' || $perm == 'editor') {
-                    if ($id != 0) {
-                        try {
-                            $this->response('status', 200);
-                            $this->pixie->db->query('update')->table('lectures')->
-                            data(array('title' => $title, 'description' => $description))->
-                            where('lecture_id', $id)->
-                            execute();
-                        } catch (Exception $e) {
-                            error_log($e->getMessage());
-                            $this->response('status', 500);
-                        }
-                    } elseif ($id == 0) {
-                        try {
-                            $this->response('status', 200);
-                            $this->pixie->db->query('insert')->table('lectures')->
-                            data(array('title' => $title, 'description' => $description,
-                                    'discipline_id' => $disciplineId, 'date_created' => date('Y-m-d G:i:s')))->
-                            execute();
-                            $id = $this->pixie->db->insert_id();
-                            error_log($id);
-                        } catch (Exception $e) {
-                            error_log($e->getMessage());
-                            $this->response('status', 500);
-                        }
-                    }
-                }
-                if ($this->response('status') == 200 && isset($attachments)) {
-                    $newAttaches = array();
-                    $editedAttaches = array();
-                    $deletedAttaches = array();
-                    foreach ($attachments as $attach) {
-                        if ($attach['new'] && $attach['deleted']) continue;
-                        elseif ($attach['deleted']) $deletedAttaches[] = $attach;
-                        elseif ($attach['new']) $newAttaches[] = $attach;
-                        elseif ($attach['edited']) $editedAttaches[] = $attach;
-                    }
-                    if (!empty($deletedAttaches))
-                        try {
-                            foreach ($deletedAttaches as $delete) {
-                                $this->pixie->db->query('delete')->table('attachments')
-                                    ->where('attach_id', $delete['attach_id'])
-                                    ->execute();
-                            }
-                        } catch (Exception $e) {
-                            error_log($e->getMessage());
-                            $this->response('status', 25);
-                        }
-                    if (!empty ($newAttaches))
-                        try {
-                            foreach ($newAttaches as $new) {
-                                $this->pixie->db->query('insert')->table('attachments')
-                                    ->data(array('lecture_id' => $id, 'url' => $new['url'], 'title' => $new['title'],
-                                        'description' => $new['description'], 'date_created' => date('Y-m-d G:i:s')))
-                                    ->execute();
-                            }
-                        } catch (Exception $e) {
-                            error_log($e->getMessage());
-                            $this->response('status', 25);
-                        }
-                    if (!empty ($editedAttaches))
-                        try {
-                            foreach ($editedAttaches as $edit) {
-                                $this->pixie->db->query('update')->table('attachments')
-                                    ->data(array('url' => $edit['url'], 'title' => $edit['title'],
-                                        'description' => $edit['description']))
-                                    ->where('attach_id', $edit['attach_id'])
-                                    ->execute();
-                            }
-                        } catch (Exception $e) {
-                            error_log($e->getMessage());
-                            $this->response('status', 25);
-                        }
-                }
+        $perm = Auth::getPermissions($this->pixie, $disciplineId);
+
+        $isCanEdit = $this->getRole() == 'admin' || $perm == 'creator' || $perm == 'editor';
+
+        if ($isCanEdit) {
+            return $this->forbidden();
+        }
+
+        if (empty($id)) {
+            $this->pixie->db->query('insert')
+                ->table('lectures')
+                ->data(array(
+                    'title' => $title,
+                    'description' => $description,
+                    'discipline_id' => $disciplineId,
+                    'date_created' => date('Y-m-d G:i:s')
+                ))
+                ->execute();
+            $id = intval($this->pixie->db->insert_id());
+        } else {
+            $this->pixie->db->query('update')
+                ->table('lectures')
+                ->data(array('title' => $title, 'description' => $description))
+                ->where('lecture_id', $id)
+                ->execute();
+        }
+
+        if (empty($attachments)) {
+            return $this->ok();
+        }
+
+        $newAttaches = array();
+        $editedAttaches = array();
+        $deletedAttaches = array();
+
+        foreach ($attachments as $attach) {
+            if ($attach['new'] && $attach['deleted']) continue;
+            elseif ($attach['deleted']) $deletedAttaches[] = $attach;
+            elseif ($attach['new']) $newAttaches[] = $attach;
+            elseif ($attach['edited']) $editedAttaches[] = $attach;
+        }
+
+        if (!empty($deletedAttaches)) {
+            foreach ($deletedAttaches as $delete) {
+                $this->pixie->db->query('delete')
+                    ->table('attachments')
+                    ->where('attach_id', $delete['attach_id'])
+                    ->execute();
             }
         }
+
+        if (!empty ($newAttaches)) {
+            foreach ($newAttaches as $new) {
+                $this->pixie->db->query('insert')
+                    ->table('attachments')
+                    ->data(array(
+                        'lecture_id' => $id,
+                        'url' => $new['url'],
+                        'title' => $new['title'],
+                        'description' => $new['description'],
+                        'date_created' => date('Y-m-d G:i:s')
+                    ))
+                    ->execute();
+            }
+        }
+
+        if (!empty ($editedAttaches)) {
+            foreach ($editedAttaches as $edit) {
+                $this->pixie->db->query('update')->table('attachments')
+                    ->data(array(
+                        'url' => $edit['url'],
+                        'title' => $edit['title'],
+                        'description' => $edit['description']
+                    ))
+                    ->where('attach_id', $edit['attach_id'])
+                    ->execute();
+            }
+        }
+
+        return $this->ok();
     }
 }

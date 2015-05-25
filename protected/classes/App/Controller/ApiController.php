@@ -101,8 +101,7 @@ class ApiController extends \App\Page
             if ($sendErrorAndHttpStatus) {
                 $this->unauthorized();
             }
-        } else {
-            return true;
+            return false;
         }
 
         return true;
