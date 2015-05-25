@@ -56,15 +56,15 @@
 
         //получение доступных предметов
         function getDisciplines() {
-            return DataService.get('api/disciplines/my').then(function (data) {
-                vm.disciplines = (data.status && data.status == 1) ? data.disciplines : [];
+            return DataService.send('api/disciplines/my').success(function (data) {
+                vm.disciplines = data.disciplines;
             })
         }
 
         //получение списка групп
         function getGroups() {
-            return DataService.get('api/groups/list').then(function (data) {
-                vm.groups = (data.status && data.status == 1) ? data.groups : [];
+            return DataService.send('api/groups/list').success(function (data) {
+                vm.groups = data.groups;
             })
         }
 

@@ -11,22 +11,16 @@ class ApiGroups extends ApiController
 
     public function action_list()
     {
-        $this->response('status', 403);
-        $cookieCheck = Auth::checkCookie($this->pixie);
-        if ($cookieCheck) $role = Auth::getRole($this->pixie);
-        if ($cookieCheck && !empty($role) && ($role == 'admin' || $role == 'teacher')) {
-            $uId = isset($_COOKIE['id']) ? $_COOKIE['id'] : 0;
-            try {
-                $this->response('status', 1);
-                $this->response('groups', $this->pixie->db->query('select')->table('groups')
-                    ->fields('group_id', 'title')
-                    ->where('teacher_id', $uId)
-                    ->execute()->as_array());
-            } catch (Exception $e) {
-                $this->response('status', 403);
-                error_log($e->getMessage());
-            }
+        // Проверка прав доступа (Функция в ApiController)
+        if (!$this->isInRole(array('admin', 'teacher'))) {
+            return;
         }
+
+        $uId = isset($_COOKIE['id']) ? $_COOKIE['id'] : 0;
+        $this->response('groups', $this->pixie->db->query('select')->table('groups')
+            ->fields('group_id', 'title')
+            ->where('teacher_id', $uId)
+            ->execute()->as_array());
     }
 
     public function action_new()
@@ -52,31 +46,23 @@ class ApiGroups extends ApiController
             return;
         }
 
-        try {
-            // проверка повторного кода
-            {
-                $passCheck = $this->pixie->db->query('select')->table('groups')
-                    ->where('passcode', $passcode)
-                    ->execute()->current();
-                if (!empty($passCheck)) {
-                    $this->badRequest(22);
-                    return;
-                }
-            }
-
-            // Создание группы
-            $this->pixie->db->query('insert')->table('groups')
-                ->data(array('passcode' => $passcode, 'expire_date' => $expiration, 'teacher_id' => $uId, 'title' => $title))
-                ->execute();
-
-            // сообщаем что ошибок нет и номер новой группы
-            $this->ok(23);
-            $this->response('group_id', intval($this->pixie->db->insert_id()));
-
-        } catch (Exception $e) {
-            $this->badRequest(500);
-            error_log($e->getMessage());
+        // проверка повторного кода
+        $passCheck = $this->pixie->db->query('select')->table('groups')
+            ->where('passcode', $passcode)
+            ->execute()->current();
+        if (!empty($passCheck)) {
+            $this->badRequest(22);
+            return;
         }
+
+        // Создание группы
+        $this->pixie->db->query('insert')->table('groups')
+            ->data(array('passcode' => $passcode, 'expire_date' => $expiration, 'teacher_id' => $uId, 'title' => $title))
+            ->execute();
+
+        // сообщаем что ошибок нет и номер новой группы
+        $this->ok(26);
+        $this->response('group_id', intval($this->pixie->db->insert_id()));
     }
 
     public function action_subscribe()

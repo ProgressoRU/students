@@ -16,6 +16,6 @@
             //Groups
             21: ['danger', 'Не заполнены ключевые поля.'],
             22: ['danger', 'Кодовое слово уже используется. Попробуйте изменить его.'],
-            23: ['success', '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Группа создана!']
+            26: ['success', '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Группа создана!']
         });
 })();

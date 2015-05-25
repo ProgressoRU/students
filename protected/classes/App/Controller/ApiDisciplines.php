@@ -28,7 +28,7 @@ class ApiDisciplines extends ApiController
 
     public function action_my_disciplines()
     {
-        $this->response('status', 0);
+        //$this->response('status', 0);
         $this->response('disciplines', array());
         if (Auth::checkCookie($this->pixie)) {
             $role = Auth::getRole($this->pixie);
@@ -36,18 +36,18 @@ class ApiDisciplines extends ApiController
             if ($role != null) {
                 if ($role == 'admin') {
                     try {
-                        $this->response('status', 1);
+                        //$this->response('status', 1);
                         $this->response('disciplines',
                             $this->pixie->db->query('select')->table('disciplines')->
                             execute()->as_array());
                     } catch (Exception $e) {
-                        $this->response('status', 0);
+                        //$this->response('status', 0);
                         error_log($e->getMessage());
                     }
                 }
                 if ($role == 'student') {
                     try {
-                        $this->response('status', 1);
+                        //$this->response('status', 1);
                         $this->response('disciplines',
                             $this->pixie->db->query('select')->table('disciplines')
                                 ->where('discipline_id', 'IN', $this->pixie->db->query('select')->table('subscriptions')
@@ -56,7 +56,7 @@ class ApiDisciplines extends ApiController
                                     ->where('user_id', $uID))
                                 ->execute()->as_array());
                     } catch (Exception $e) {
-                        $this->response('status', 0);
+                        //$this->response('status', 0);
                         error_log($e->getMessage());
                     }
                 }

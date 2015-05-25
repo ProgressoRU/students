@@ -17,6 +17,15 @@ class Pixie extends \PHPixie\Pixie {
 
 	protected function after_bootstrap() {
 		// Whatever code you want to run after bootstrap is done.
+
+        $this->debug->display_errors = $this->config->get('site.debug') ? true : false;
 	}
+
+    public function handle_exception($exception) {
+        if ($exception instanceof \Exception) {
+            error_log($exception->getMessage());
+        }
+        parent::handle_exception($exception);
+    }
 
 }
