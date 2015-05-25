@@ -31,39 +31,54 @@ class ApiGroups extends ApiController
 
     public function action_new()
     {
-        $this->response('status', 403);
-        $cookieCheck = Auth::checkCookie($this->pixie);
-        if ($cookieCheck) $role = Auth::getRole($this->pixie);
-        if ($cookieCheck && !empty($role) && ($role == 'admin' || $role == 'teacher')) {
-            $uId = isset($_COOKIE['id']) ? $_COOKIE['id'] : 0;
-            $title = Request::getString('title');
-            $passcode = Request::getString('passcode');
-            $expirationFlag = Request::getBool('expirationFlag');
-            if (!$expirationFlag) {
-                $expiration = Request::getDate('expiration');
-                $expiration = date('Y-m-d', strtotime($expiration));
-            }
-            else $expiration = null;
-            if (empty($title) || empty($passcode))
-                $this->response('status', 21);
-            else {
-                try {
-                    $passCheck = $this->pixie->db->query('select')->table('groups')
-                        ->where('passcode', $passcode)
-                        ->execute()->current();
-                    if (!empty ($passCheck))
-                        $this->response('status', 22);
-                    else {
-                        $this->response('status', 200);
-                        $this->pixie->db->query('insert')->table('groups')
-                            ->data(array('passcode' => $passcode, 'expire_date' => $expiration, 'teacher_id' => $uId, 'title' => $title))
-                            ->execute();
-                    }
-                } catch (Exception $e) {
-                    $this->response('status', 500);
-                    error_log($e->getMessage());
+        // Проверка прав доступа (Функция в ApiController)
+        if (!$this->isInRole(array('admin', 'teacher'))) {
+            return;
+        }
+
+        $uId = isset($_COOKIE['id']) ? $_COOKIE['id'] : 0;
+        $title = Request::getString('title');
+        $passcode = Request::getString('passcode');
+        $expirationFlag = Request::getBool('expirationFlag');
+
+        if (!$expirationFlag) {
+            $expiration = date('Y-m-d', strtotime(Request::getDate('expiration')));
+        } else {
+            $expiration = null;
+        }
+
+        if (empty($title) || empty($passcode)) {
+            $this->response('error_code', 21);
+            $this->badRequest();
+            return;
+        }
+
+        try {
+            // проверка повторного кода
+            {
+                $passCheck = $this->pixie->db->query('select')->table('groups')
+                    ->where('passcode', $passcode)
+                    ->execute()->current();
+                if (!empty($passCheck)) {
+                    $this->response('error_code', 22);
+                    $this->badRequest();
+                    return;
                 }
             }
+
+            // Создание группы
+            $this->pixie->db->query('insert')->table('groups')
+                ->data(array('passcode' => $passcode, 'expire_date' => $expiration, 'teacher_id' => $uId, 'title' => $title))
+                ->execute();
+
+            // сообщаем что ошибок нет и номер новой группы
+            $this->response('error_code', 0);
+            $this->response('group_id', intval($this->pixie->db->insert_id()));
+
+        } catch (Exception $e) {
+            $this->response('error_code', 500);
+            $this->badRequest();
+            error_log($e->getMessage());
         }
     }
 

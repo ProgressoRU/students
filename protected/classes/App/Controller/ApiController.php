@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Libraries\Auth;
+
 class ApiController extends \App\Page
 {
 
@@ -37,7 +39,7 @@ class ApiController extends \App\Page
                 $this->_response[$param] = $value;
             } else {
                 // incorrect
-                error_log('ApiController incorrect calling'. $param .'is not string or numeric');
+                error_log('ApiController incorrect calling' . $param . 'is not string or numeric');
             }
         }
 
@@ -76,4 +78,35 @@ class ApiController extends \App\Page
         header('HTTP/1.1 404 Not found');
     }
 
+    public function isAuthorized($sendErrorAndHttpStatus = true)
+    {
+        $cookieCheck = Auth::checkCookie($this->pixie);
+        if (!$cookieCheck) {
+            if ($sendErrorAndHttpStatus) {
+                $this->response('error_code', 403);
+                $this->unauthorized();
+            }
+            return false;
+        }
+
+        return true;
+    }
+
+    public function isInRole($arrayRoles, $sendErrorAndHttpStatus = true)
+    {
+        if (!$this->isAuthorized($sendErrorAndHttpStatus)) {
+            return false;
+        }
+
+        $role = Auth::getRole($this->pixie);
+        if (empty($role) || !in_array($role, $arrayRoles)) {
+            if ($sendErrorAndHttpStatus) {
+                $this->response('error_code', 403);
+                $this->forbidden();
+            }
+            return false;
+        }
+
+        return true;
+    }
 }
