@@ -36,17 +36,6 @@ stDirectives.directive('loginDialog', function (AUTH_EVENTS) {
     };
 });
 
-//редактор новостей
-stDirectives.directive('newsEditor', function () {
-    return {
-        restrict: 'E',
-        templateUrl: 'public/views/newsEditor.html',
-        link: function ($scope, $element, $attributes) {
-            $scope.mode = $attributes.mode;
-        }
-    }
-});
-
 //confirmation
 stDirectives.directive('ngReallyClick', ['$modal',
     function ($modal) {

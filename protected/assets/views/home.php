@@ -41,7 +41,7 @@
     <script src="/public/app/shared/authevents.constant.js"></script>
     <script src="/public/app/news/news.controller.js"></script>
     <script src="/public/app/editors/editor.module.js"></script>
-    <script src="/public/app/editors/textEditor.directive.js"></script>
+    <script src="/public/app/editors/newsEditor.directive.js"></script>
 </head>
 <body data-ng-controller="WrapController as wrap">
 <div class="modalAlert">

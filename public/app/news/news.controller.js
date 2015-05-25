@@ -48,21 +48,24 @@
             vm.postMode = true;
             vm.editMode = false;
             vm.editable = {
-                news: '',
+                body: '',
                 title: '',
                 label: 0
             };
-            vm.idInDB = 0;
-            vm.idInJSON = null;
+            vm.idInDb = 0;
+            vm.idInJson = null;
         }
 
-        function editPost(idInDb, idInJson) {
-            vm.idInDB = idInDb;
-            vm.idInJSON = idInJson;
+        function editPost(idInDb) {
+            for (var i = 0; i < vm.totalItems; i++)
+                if (vm.news[i].news_id == idInDb) {
+                    vm.idInDb = vm.news[i].news_id;
+                    vm.idInJson = i;
+                }
             vm.editable = {
-                news: vm.news[idInJson].news,
-                title: vm.news[idInJson].title,
-                label: vm.news[idInJson].importance
+                body: vm.news[vm.idInJson].news,
+                title: vm.news[vm.idInJson].title,
+                label: vm.news[vm.idInJson].importance
             };
             vm.editMode = true;
             vm.postMode = false;
@@ -72,21 +75,21 @@
             vm.editMode = false;
             vm.postMode = false;
             vm.editable = null;
-            vm.idInDB = null;
-            vm.idInJSON = null;
+            vm.idInDb = null;
+            vm.idInJson = null;
         }
 
         function performEdit() {
-            if (vm.editable.title == null || vm.editable.news == null) {
+            if (vm.editable.title == null || vm.editable.body == null) {
                 alertService.push(11);
             }
             else if (vm.editable.title.length <= 3 || vm.editable.title.length > 100)
                 alertService.push(12);
             else {
                 DataService.get('api/news/edit', {
-                    id: vm.idInDB,
+                    id: vm.idInDb,
                     title: vm.editable.title,
-                    news: vm.editable.news,
+                    news: vm.editable.body,
                     label: vm.editable.label
                 }).then(function (data) {
                     if (!data.status) alertService.push(0);
@@ -100,8 +103,8 @@
                         vm.editMode = false;
                         vm.postMode = false;
                         vm.editable = null;
-                        vm.idInDB = null;
-                        vm.idInJSON = null;
+                        vm.idInDb = null;
+                        vm.idInJson = null;
                         vm.getNews();
                     }
                 })
@@ -115,7 +118,7 @@
                 else if (data.status == 403) alertService.push(403);
                 else if (data.status == 500) alertService.push(500);
                 //Если доступ разрешен
-                else if (data.status == 1) {
+                else if (data.status == 13) {
                     alertService.push(13);
                     vm.getNews();
                 }
