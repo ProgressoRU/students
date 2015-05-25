@@ -41,7 +41,7 @@
                     }
                 })
                 .success(function(data/*, status, headers, config*/) {
-                    if (data.status) {
+                    if (data.status && data.status != '200' && data.status != 200) {
                         alertService.push(data.status);
                     }
                 });

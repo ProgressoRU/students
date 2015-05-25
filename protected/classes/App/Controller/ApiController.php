@@ -22,6 +22,11 @@ class ApiController extends \App\Page
         $this->view->subview = 'json';
     }
 
+    /**
+     * @param null $param
+     * @param null $value
+     * @return bool|null|array|int
+     */
     public function response($param = null, $value = null)
     {
         if (is_null($value)) {

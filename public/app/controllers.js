@@ -197,7 +197,7 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'DataServi
             //если пришел ответ с запретом
             else if (data.status == 403) alertService.add("danger", "403: Доступ запрещен!");
             //Если доступ разрешен
-            else if (data.status == 1) {
+            else if (data.status == 200) {
                 //пытаемся передать в lectures, полученные данные
                 $scope.lectures = data['lectures'] || [];
                 $scope.attachments = data['attachments'] || [];

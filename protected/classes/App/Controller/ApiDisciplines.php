@@ -3,8 +3,7 @@
 namespace App\Controller;
 
 use App\Libraries\Request,
-    App\Libraries\Auth as Auth,
-    Exception;
+    App\Libraries\Auth as Auth;
 
 class ApiDisciplines extends ApiController
 {
@@ -51,83 +50,100 @@ class ApiDisciplines extends ApiController
 
     public function action_info()
     {
-        $id = Request::getInt('id'); //id предмета
-        $this->response('status', 0);
-        $role = Auth::getRole($this->pixie); //роль пользователя
-        if (Auth::checkCookie($this->pixie)) {
-            $uID = isset($_COOKIE['id']) ? $_COOKIE['id'] : 0;
-            //Получаем название и описание предмета
-            try {
-                $this->response('discipline',
-                    $this->pixie->db->query('select')->table('disciplines')->
-                    fields('title', 'description', 'creator_id')->
-                    where('discipline_id', $id)->
-                    execute()->current());
-            } catch (Exception $e) {
-                $this->response('status', 0);
-                error_log($e->getMessage());
-            }
-            //Ищем совпадение предмета и пользователя в подписках
-            if($role != 'admin')
-                $permission = Auth::getPermissions($this->pixie, $id);
-            else $permission = 'creator';
-            $this->response('perm', $permission);
-            //Если прошлый блок выполнился
-            if (isset($permission) && $permission != null) {
-                if ($permission == 'creator' || $permission == 'editor' || $role == 'admin') $isEditor = true; else $isEditor = false; //редактор?
-                $this->response('isEditor', $isEditor);
-                if ($permission == 'subscriber' || $permission == 'editor' || $permission == 'creator' || $role == 'admin')
-                    $isSubscribed = true; else $isSubscribed = false;
-                //получаем список лекций
-                try {
-                    if ($isSubscribed) {
-                        if ($role == 'admin' || $isEditor) { //если админ или редактор — все материалы
-                            $this->response('lectures',
-                                $this->pixie->db->query('select')->table('lectures')
-                                    ->fields('lecture_id', 'discipline_id', 'title', 'description')
-                                    ->where('discipline_id', $id)
-                                    ->execute()->as_array());
-                        } else //если студент, то с учетом групповых прав
-                            $groupId = Auth::getGroupId($this->pixie, $id);
-                        if (isset($groupId) && $groupId != null) {
-                            $this->response('lectures',
-                                $this->pixie->db->query('select')->table('lectures')
-                                    ->fields('lecture_id', 'discipline_id', 'title', 'description', 'group_progress.date_deadline')
-                                    ->join('group_progress', array('group_progress.lecture_id', 'lectures.lecture_id'), 'inner')
-                                    ->where('lectures.discipline_id', $id)
-                                    ->where('group_progress.is_visible', 1)
-                                    ->execute()->as_array());
-                        }
+        if (!$this->isAuthorized()) {
+            return true;
+        }
 
-                        //получаем связанные вложения
-                        if ($this->response('lectures')) {
-                            //для того, чтобы выбрать вложения только для передаваемых лекций заберем их из уже
-                            //сформированной части респонса
-                            $lecturesList = array();
-                            foreach ($this->response('lectures') as $lecture)
-                                $lecturesList[] = $lecture->lecture_id;
-                            $lecturesString = implode(",", $lecturesList); //превращаем массив в строку, разделяемую ','
-                            $this->response('attachments',
-                                $this->pixie->db->query('select')->table('attachments')
-                                    //условие: where lecture_id IN <номера лекций>
-                                    ->where('lecture_id', 'IN', $this->pixie->db->expr('(' . $lecturesString . ')'))
-                                    ->execute()->as_array());
-                        }
-                        $this->response('status', 1);
+        $id = Request::getInt('id'); //id предмета
+        $role = $this->getRole(); //роль пользователя
+
+        //Получаем название и описание предмета
+        $this->response('discipline',
+            $this->pixie->db
+                ->query('select')
+                ->table('disciplines')
+                ->fields('title', 'description', 'creator_id')
+                ->where('discipline_id', $id)
+                ->execute()
+                ->current());
+
+        //Ищем совпадение предмета и пользователя в подписках
+        $this->response('perm', $permission = ($role == 'admin' ? 'creator' : Auth::getPermissions($this->pixie, $id)));
+
+        if (empty($permission)) {
+            return $this->forbidden();
+        }
+
+        $this->response('isEditor', $isEditor = ($permission == 'creator' || $permission == 'editor' || $role == 'admin'));
+        $this->response('isSubscribed', $isSubscribed = ($permission == 'subscriber' || $permission == 'editor' || $permission == 'creator' || $role == 'admin'));
+
+        if (!$isSubscribed) {
+            return true;
+        }
+
+        //Получаем список лекций
+        if ($isEditor) {
+            $this->response('lectures',
+                $this->pixie->db
+                    ->query('select')
+                    ->table('lectures')
+                    ->fields('lecture_id', 'discipline_id', 'title', 'description')
+                    ->where('discipline_id', $id)
+                    ->execute()
+                    ->as_array()
+            );
+        } else {
+            //Если студент, то с учетом групповых прав
+            $groupId = Auth::getGroupId($this->pixie, $id);
+
+            if (!empty($groupId)) {
+                $this->response('lectures',
+                    $this->pixie->db
+                        ->query('select')
+                        ->table('lectures')
+                        ->fields('lecture_id', 'discipline_id', 'title', 'description', 'group_progress.date_deadline')
+                        ->join('group_progress', array('group_progress.lecture_id', 'lectures.lecture_id'), 'inner')
+                        ->where('lectures.discipline_id', $id)
+                        ->where('group_progress.is_visible', 1)
+                        ->execute()
+                        ->as_array()
+                );
+            }
+        }
+
+        //получаем связанные вложения
+        if ($this->isExistsParam('lectures')) {
+            $lecturesList = array();
+
+            //для того, чтобы выбрать вложения только для передаваемых лекций заберем их из уже
+            //сформированной части респонса
+            $lectures = $this->response('lectures');
+            if (is_array($lectures)) {
+                foreach ($lectures as $lecture) {
+                    if (property_exists($lecture, 'lecture_id')) {
+                        $lecturesList[] = $lecture->lecture_id;
                     }
-                } catch
-                (Exception $e) {
-                    $this->response('status', 0);
-                    error_log($e->getMessage());
                 }
-            } else
-                $this->response('status', 403);
-        } else $this->response('status', 403);
+            }
+
+            $lecturesString = implode(",", $lecturesList); //превращаем массив в строку, разделяемую ','
+            if (!empty($lecturesString)) {
+                $this->response('attachments',
+                    $this->pixie->db
+                        ->query('select')
+                        ->table('attachments')
+                        //условие: where lecture_id IN <номера лекций>
+                        ->where('lecture_id', 'IN', $this->pixie->db->expr('(' . $lecturesString . ')'))
+                        ->execute()->as_array());
+            }
+        }
+
+        return $this->ok();
     }
 
     public function action_delete_lesson()
     {
-        if ($this->isAuthorized()) {
+        if (!$this->isAuthorized()) {
             return true;
         }
 
@@ -150,29 +166,33 @@ class ApiDisciplines extends ApiController
 
         $disciplineId = $lectureToDiscipline->discipline_id;
 
-        if (Auth::checkCookie($this->pixie)) {
-            $perm = Auth::getPermissions($this->pixie, $disciplineId);
-            $role = Auth::getRole($this->pixie);
-            if ($role != null) {
-                if ($role == 'admin' || $perm == 'creator' || $perm == 'editor') {
-                    try {
-                        $this->response('status', 1);
-                        $this->pixie->db->query('delete')->table('lectures')->
-                        where('lecture_id', $postId)->
-                        execute();
-                        $this->pixie->db->query('delete')->table('attachments')->
-                        where('lecture_id', $postId)->
-                        execute();
-                        $this->pixie->db->query('delete')->table('group_progress')->
-                        where('lecture_id', $postId)->
-                        execute();
-                    } catch (Exception $e) {
-                        error_log($e->getMessage());
-                        $this->response('status', 500);
-                    }
-                }
-            }
+        $perm = Auth::getPermissions($this->pixie, $disciplineId);
+
+        $isCanDelete = $this->getRole() == 'admin' || $perm == 'creator' || $perm == 'editor';
+
+        if (!$isCanDelete) {
+            return $this->forbidden();
         }
+
+        $this->pixie->db
+            ->query('delete')
+            ->table('lectures')
+            ->where('lecture_id', $postId)
+            ->execute();
+
+        $this->pixie->db
+            ->query('delete')
+            ->table('attachments')
+            ->where('lecture_id', $postId)
+            ->execute();
+
+        $this->pixie->db
+            ->query('delete')
+            ->table('group_progress')
+            ->where('lecture_id', $postId)
+            ->execute();
+
+        return $this->ok();
     }
 
     public function action_edit_lesson()
