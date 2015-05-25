@@ -12,7 +12,7 @@ class ApiGroups extends ApiController
     public function action_list()
     {
         // Проверка прав доступа (Функция в ApiController)
-        if (!$this->isInRole(array('admin', 'teacher'))) {
+        if (!$this->isInRole(array('admin', 'teacher'), false)) {
             return;
         }
 

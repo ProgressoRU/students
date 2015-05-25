@@ -11,59 +11,41 @@ class ApiDisciplines extends ApiController
 
     public function action_index()
     {
-        $this->response('status', 0);
-        $this->response('disciplines', array());
-        if (Auth::checkCookie($this->pixie)) {
-            try {
-                $this->response('status', 1);
-                $this->response('disciplines',
-                    $this->pixie->db->query('select')->table('disciplines')->
-                    execute()->as_array());
-            } catch (Exception $e) {
-                $this->response('status', 0);
-                error_log($e->getMessage());
-            }
+        if ($this->getUserId()) {
+            $this->response('disciplines',
+                $this->pixie->db->query('select')->table('disciplines')->execute()->as_array()
+            );
+        } else {
+            $this->response('disciplines', array());
         }
     }
 
     public function action_my_disciplines()
     {
-        //$this->response('status', 0);
-        $this->response('disciplines', array());
-        if (Auth::checkCookie($this->pixie)) {
-            $role = Auth::getRole($this->pixie);
-            $uID = isset($_COOKIE['id']) ? $_COOKIE['id'] : 0;
-            if ($role != null) {
-                if ($role == 'admin') {
-                    try {
-                        //$this->response('status', 1);
-                        $this->response('disciplines',
-                            $this->pixie->db->query('select')->table('disciplines')->
-                            execute()->as_array());
-                    } catch (Exception $e) {
-                        //$this->response('status', 0);
-                        error_log($e->getMessage());
-                    }
-                }
-                if ($role == 'student') {
-                    try {
-                        //$this->response('status', 1);
-                        $this->response('disciplines',
-                            $this->pixie->db->query('select')->table('disciplines')
-                                ->where('discipline_id', 'IN', $this->pixie->db->query('select')->table('subscriptions')
-                                    ->fields('group_access.discipline_id')
-                                    ->join('group_access', array('group_access.group_id', 'subscriptions.group_id'), 'inner')
-                                    ->where('user_id', $uID))
-                                ->execute()->as_array());
-                    } catch (Exception $e) {
-                        //$this->response('status', 0);
-                        error_log($e->getMessage());
-                    }
-                }
-                if ($role == 'teacher') {
-                    //todo: надо еще обдумать
-                }
-            }
+        if (!$this->getUserId()) {
+            $this->response('disciplines', array());
+            return;
+        }
+
+        switch ($this->getRole()) {
+            case 'admin':
+                $this->response('disciplines',
+                    $this->pixie->db->query('select')->table('disciplines')->execute()->as_array()
+                );
+                break;
+            case 'student':
+                $this->response('disciplines',
+                    $this->pixie->db->query('select')->table('disciplines')
+                        ->where('discipline_id', 'IN', $this->pixie->db->query('select')->table('subscriptions')
+                            ->fields('group_access.discipline_id')
+                            ->join('group_access', array('group_access.group_id', 'subscriptions.group_id'), 'inner')
+                            ->where('user_id', $this->getUserId()))
+                        ->execute()->as_array()
+                );
+                break;
+            case 'teacher':
+                //todo: надо еще обдумать
+                break;
         }
     }
 
@@ -188,15 +170,18 @@ class ApiDisciplines extends ApiController
 
     public function action_edit_lesson()
     {
-        $this->response('status', 403);
         $id = Request::getInt('id');
         $title = Request::getString('title');
         $description = Request::getString('description');
         $attachments = Request::getArray('attachments');
         $disciplineId = Request::getInt('disciplineId');
-        if (empty($title) || empty($description))
-            $this->response('status', 26);
-        elseif (Auth::checkCookie($this->pixie)) {
+
+        if (empty($title) || empty($description)) {
+            return $this->badRequest(26);
+        }
+
+
+        if (Auth::checkCookie($this->pixie)) {
             $role = Auth::getRole($this->pixie);
             $perm = Auth::getPermissions($this->pixie, $disciplineId);
             if ($role != null) {

@@ -8,7 +8,9 @@ class ApiController extends \App\Page
 {
 
     private $_response = array(),
-        $_timer = null;
+            $_timer = null,
+            $_userId = null,
+            $_userRole = null;
 
     public function before()
     {
@@ -58,44 +60,49 @@ class ApiController extends \App\Page
         parent::after();
     }
 
-    public function ok($status = -1)
+    public function ok($status = 200)
     {
         $this->response('status', $status);
         header('HTTP/1.1 200 OK');
+        return true;
     }
 
-    public function badRequest($status = -1)
+    public function badRequest($status = 400)
     {
         $this->response('status', $status);
         header('HTTP/1.1 400 Bad Request');
+        return true;
     }
 
-    public function unauthorized($status = -1)
+    public function unauthorized($status = 401)
     {
         $this->response('status', $status);
         header('HTTP/1.1 401 Unauthorized');
+        return true;
     }
 
-    public function forbidden($status = -1)
+    public function forbidden($status = 403)
     {
         $this->response('status', $status);
         header('HTTP/1.1 403 Forbidden');
+        return true;
     }
 
-    public function notFound($status = -1)
+    public function notFound($status = 404)
     {
         $this->response('status', $status);
         header('HTTP/1.1 404 Not found');
+        return true;
     }
 
     public function isAuthorized($sendErrorAndHttpStatus = true)
     {
-        $cookieCheck = Auth::checkCookie($this->pixie);
-        if (!$cookieCheck) {
+        if (!$this->getUserId()) {
             if ($sendErrorAndHttpStatus) {
                 $this->unauthorized();
             }
-            return false;
+        } else {
+            return true;
         }
 
         return true;
@@ -107,8 +114,7 @@ class ApiController extends \App\Page
             return false;
         }
 
-        $role = Auth::getRole($this->pixie);
-        if (empty($role) || !in_array($role, $arrayRoles)) {
+        if (!in_array($this->getRole(), $arrayRoles)) {
             if ($sendErrorAndHttpStatus) {
                 $this->forbidden();
             }
@@ -116,5 +122,33 @@ class ApiController extends \App\Page
         }
 
         return true;
+    }
+
+    public function getUserId() {
+        if (is_null($this->_userId)) {
+            $cookieCheck = Auth::checkCookie($this->pixie);
+            if (!$cookieCheck) {
+                $this->_userId = 0;
+            } else {
+                $this->_userId = intval($_COOKIE['id']);
+            }
+        }
+
+        return $this->_userId;
+    }
+
+    public function getRole() {
+        if (is_null($this->_userRole)) {
+            if (!$this->isAuthorized(false)) {
+                $this->_userRole = '';
+            } else {
+                $this->_userRole = Auth::getRole($this->pixie);
+                if (is_null($this->_userRole)) {
+                    $this->_userRole = '';
+                }
+            }
+        }
+
+        return $this->_userRole;
     }
 }
