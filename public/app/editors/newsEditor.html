@@ -1,0 +1,32 @@
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <input type="text" class="form-control" data-ng-model="news.editable.title" required placeholder="Заголовок">
+    </div>
+    <div class="panel-body">
+        <div data-text-angular="" data-ng-model="news.editable.body"></div>
+        <br>
+
+        <div class="pull-right">
+            <button type="button" class="btn btn-default" data-ng-click="news.cancelEdit()">Отменить</button>
+            <button type="button" class="btn btn-success" data-ng-click="news.performEdit()">Сохранить</button>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <div class="btn-group pull-right">
+            <label class="ta-news-label" data-ng-model="news.editable.label" data-btn-radio="'1'"
+                   data-uncheckable><span
+                    class="label label-warning pull-right">Обратите внимание</span></label>
+            <label class="ta-news-label" data-ng-model="news.editable.label" data-btn-radio="'2'"
+                   data-uncheckable><span
+                    class="label label-danger pull-right">Важно</span></label>
+        </div>
+        <!-- Date formatting for large devices -->
+        <div class="hidden-xs">
+            <small><em>{{n.date_created|moment: 'lang': 'ru' | moment: 'format': 'LL'}}</em></small>
+        </div>
+        <!-- Date formatting for small devices -->
+        <div class="visible-xs">
+            <small><em>{{n.date_created|moment: 'lang': 'ru' | moment: 'format': 'L'}}</em></small>
+        </div>
+    </div>
+</div>

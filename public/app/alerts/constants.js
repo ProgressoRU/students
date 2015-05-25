@@ -12,6 +12,6 @@
             10: ['success', '<span class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span> Успешно сохранено!'],
             11: ['danger', 'Материал должен содержать заголовок и текст'],
             12: ['danger', 'Заголовок должен содержать более 3, но менее 100 символов'],
-            13: ['danger', "<span class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span> Материал удален"]
+            13: ['success', "<span class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span> Материал удален"]
         });
 })();
