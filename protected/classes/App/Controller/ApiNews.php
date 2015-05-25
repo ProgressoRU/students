@@ -35,14 +35,14 @@ class ApiNews extends ApiController
         if ($newsLabel == null || ($newsLabel != 0 && $newsLabel != 1 && $newsLabel != 2))
             $newsLabel = 0;
         if ($newsTitle == null || $newsText == null)
-            $this->response('status', 25);
+            $this->response('status', 11);
         elseif (Auth::checkCookie($this->pixie)) {
             $role = Auth::getRole($this->pixie);
             if ($role != null) {
                 if ($role == 'admin') {
                     if ($newsId != 0) {
                         try {
-                            $this->response('status', 200);
+                            $this->response('status', 10);
                             $this->pixie->db->query('update')->table('news')->
                             data(array('title' => $newsTitle, 'news' => $newsText, 'importance' => $newsLabel))->
                             where('news_id', $newsId)->
@@ -53,7 +53,7 @@ class ApiNews extends ApiController
                         }
                     } elseif ($newsId == 0) {
                         try {
-                            $this->response('status', 200);
+                            $this->response('status', 10);
                             $this->pixie->db->query('insert')->table('news')->
                             data(array('title' => $newsTitle, 'news' => $newsText, 'importance' => $newsLabel, 'date_created' => date('Y-m-d G:i:s')))->
                             execute();
@@ -76,7 +76,7 @@ class ApiNews extends ApiController
             if ($role != null) {
                 if ($role == 'admin') {
                     try {
-                        $this->response('status', 1);
+                        $this->response('status', 13);
                         $this->pixie->db->query('delete')->table('news')->
                         where('news_id', $newsId)->
                         execute();

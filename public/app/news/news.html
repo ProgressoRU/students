@@ -1,31 +1,34 @@
-<article class="myWrap col-md-10 col-xs-12 col-sm-12" data-ng-controller="NewsCtrl">
+<article class="myWrap col-md-10 col-xs-12 col-sm-12">
     <div class="page-header">
         <h1>Новости
-            <button type="button" class="btn btn-default btn-lg pull-right" data-ng-click="newPost()"
-                    data-ng-if="currentUser.userRole == 'admin'">
+            <button type="button" class="btn btn-default btn-lg pull-right" data-ng-click="news.newPost()"
+                    data-ng-if="wrap.currentUser.userRole == 'admin'">
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> <span class="hidden-xs">Новая</span>
             </button>
         </h1>
     </div>
     <!-- NEWS BLOCK -->
     <!--  -->
-    <news-editor mode="news" data-ng-if="postMode" class="repeat-animation"></news-editor>
-    <div data-ng-repeat="n in currentPageNews(3) track by $index">
+   <!-- <news-editor mode="news" data-ng-if="news.postMode" class="repeat-animation"></news-editor> -->
+    <text-editor body="{{news.editable.news}}" title="{{news.editable.title}}" label="{{news.editable.label}}"></text-editor>
+    {{news.editable.title}}<br>
+    {{news.editable.news}}
+    <div data-ng-repeat="n in news.currentPageNews(3) track by $index">
         <!-- News Editor -->
-        <news-editor mode="news" data-ng-if="editMode && n.news_id == idInDB" class="animate-enter"></news-editor>
+        <news-editor mode="news" data-ng-if="wrap.editMode && n.news_id == news.idInDB" class="animate-enter"></news-editor>
         <!-- //News Editor -->
-        <div class="panel panel-info" data-ng-if="!editMode || (editMode && n.news_id != idInDB)"
+        <div class="panel panel-info" data-ng-if="!news.editMode || (news.editMode && n.news_id != news.idInDB)"
              data-ng-hide="!n.news_id">
             <div class="panel-heading">
                 <div class="pull-right">
-                    <button type="button" class="btn btn-primary btn-xs" data-ng-click="turnEditMode(n.news_id)"
-                            data-ng-if="currentUser.userRole == 'admin'">
+                    <button type="button" class="btn btn-primary btn-xs" data-ng-click="news.editPost(n.news_id, $index)"
+                            data-ng-if="wrap.currentUser.userRole == 'admin'">
                         <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
                     </button>
                     <button type="button" class="btn btn-danger btn-xs"
                             data-ng-really-message="Вы собираетесь удалить запись <strong>«{{n.title}}»</strong> от {{n.date_created|moment: 'lang': 'ru' | moment: 'format': 'LL'}}<br>Продолжить?"
-                            data-ng-really-click="deleteNews(n.news_id)"
-                            data-ng-if="currentUser.userRole == 'admin'">
+                            data-ng-really-click="news.deleteNews(n.news_id)"
+                            data-ng-if="wrap.currentUser.userRole == 'admin'">
                         <span class="glyphicon glyphicon-erase" aria-hidden="true"></span>
                     </button>
                 </div>
@@ -52,6 +55,6 @@
         </div>
     </div>
     <!-- PAGER -->
-    <pager total-items="totalItems" ng-model="currentPage" items-per-page="3" next-text="Старые »"
+    <pager total-items="news.totalItems" ng-model="news.currentPage" items-per-page="3" next-text="Старые »"
            previous-text="« Новые"></pager>
 </article>

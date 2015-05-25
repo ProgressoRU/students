@@ -1,24 +1,24 @@
 <div class="panel panel-info">
     <div class="panel-heading">
-        <input type="text" class="form-control" data-ng-model="editable.title" required placeholder="Заголовок">
+        <input type="text" class="form-control" data-ng-model="vm.editable.title" required placeholder="Заголовок">
     </div>
     <div class="panel-body">
         <div data-text-angular="" data-ng-model="editable.news"></div>
         <br>
 
         <div data-ng-if="mode == 'news'" class="pull-right">
-            <button type="button" class="btn btn-default" data-ng-click="cancelEdit()">Отменить</button>
-            <button type="button" class="btn btn-success" data-ng-click="performEdit()">Сохранить</button>
+            <button type="button" class="btn btn-default" data-ng-click="news.cancelEdit()">Отменить</button>
+            <button type="button" class="btn btn-success" data-ng-click="news.performEdit()">Сохранить</button>
         </div>
-
-        <div class="bs-callout bs-callout-default col-md-12 animate-if" data-ng-class="{'bs-callout-primary': !atc.deleted}"
+        <!--ВЛОЖЕНИЯ -->
+        <div class="bs-callout bs-callout-default col-md-12 animate-if"
+             data-ng-class="{'bs-callout-primary': !atc.deleted}"
              data-ng-repeat="atc in editable.attachments"
              data-ng-if="lesson.lecture_id==atc.lecture_id && mode == 'lecture'">
             <!-- Вложение в режиме просмотра -->
             <div data-ng-if="!atc.editing" class="animate-enter">
                 <a href="{{atc.url}}"><h4><span class="glyphicon glyphicon-cloud-download"
                                                 aria-hidden="true"></span> {{atc.title}}</h4></a>
-
                 {{atc.description}}
                 <div class="pull-right">
                     <button type="button" class="btn btn-default btn-sm"
@@ -46,7 +46,7 @@
                     <input type="text" class="form-control" id="url"
                            placeholder="Добавьте ссылку на файл или страницу в сети Интернет"
                            data-ng-model="atc.url"
-                            data-select-on-click>
+                           data-select-on-click>
                 </div>
                 <div class="form-group col-md-12">
                     <label for="description">Описание: </label>
@@ -71,6 +71,7 @@
                                              data-ng-click="newAttach(lesson.lecture_id)"><span
                 class="glyphicon glyphicon-cloud-upload"></span> Добавить вложение</a><br></div>
     </div>
+    <!--//ВЛОЖЕНИЯ -->
     <div class="panel-footer">
         <div class="btn-group pull-right" data-ng-if="mode == 'news'">
             <label class="ta-news-label" data-ng-model="editable.label" data-btn-radio="'1'" data-uncheckable><span

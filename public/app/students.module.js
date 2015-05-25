@@ -3,16 +3,19 @@
 
     angular
         .module('students', [
+            //Dependencies:
             //angular modules
             'ngAnimate',
             'ngRoute',
             //app modules
+            'alerts',
+            'editor',
             'stControllers',
             'stDirectives',
             'stFilters',
             //3rd party
             'angular-loading-bar',
-            'textAngular',
+            //'textAngular',
             'ui.bootstrap',
             'ui.calendar'
         ])
@@ -21,8 +24,9 @@
             $routeProvider.
                 when('/news',
                 {
-                    controller: 'HomeCtrl',
-                    templateUrl: 'public/app/layout/home.html'
+                    controller: 'NewsController',
+                    templateUrl: 'public/app/news/news.html',
+                    controllerAs: 'news'
                 }).
                 when('/login', {
                     controller: 'LoginModalCtrl',

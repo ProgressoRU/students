@@ -87,10 +87,6 @@ stControllers.controller('SubscribeCtrl', ['$scope', '$modalInstance', 'DataServ
     };
 }]);
 
-stControllers.controller('HomeCtrl', ['$scope', function ($scope) {
-
-}]);
-
 stControllers.controller('LoginModalCtrl', ['$scope', 'AuthService', '$rootScope', 'AUTH_EVENTS', '$route', 'alertService', 'DataService',
     function ($scope, AuthService, $rootScope, AUTH_EVENTS, $route, alertService, DataService) {
         $scope.login = function (credentials) {
@@ -406,121 +402,6 @@ stControllers.controller('DisciplineCtrl', ['$scope', '$routeParams', 'DataServi
 stControllers.controller('HeaderCtrl', ['$scope', function ($scope) {
 
 }]);
-
-stControllers.controller('NewsCtrl', ['$scope', 'DataService', 'alertService',
-    function ($scope, DataService, alertService) {
-        $scope.currentPageNews = function (k) {
-            $scope.visibleNews = [];
-            startPosition = $scope.totalItems - $scope.currentPage * k;
-            var j = 0;
-            for (var i = startPosition; j < k; j++, i++) {
-                $scope.visibleNews[j] = $scope.news[i];
-            }
-            return $scope.visibleNews.reverse();
-        };
-
-        $scope.newPost = function () {
-            $scope.postMode = true;
-            $scope.editMode = false;
-            $scope.editable = {
-                news: '',
-                title: '',
-                label: 0
-            };
-            $scope.idInDB = 0;
-            $scope.idInJSON = null;
-        };
-
-        $scope.turnEditMode = function (id) {
-            for (i = 0; i < $scope.totalItems; i++)
-                if ($scope.news[i].news_id == id) {
-                    $scope.idInDB = $scope.news[i].news_id;
-                    $scope.idInJSON = i;
-                }
-            $scope.editable = {
-                news: $scope.news[$scope.idInJSON].news,
-                title: $scope.news[$scope.idInJSON].title,
-                label: $scope.news[$scope.idInJSON].importance
-            };
-            $scope.editMode = true;
-            $scope.postMode = false;
-        };
-
-        $scope.cancelEdit = function () {
-            $scope.editMode = false;
-            $scope.postMode = false;
-            $scope.editable = null;
-            $scope.idInDB = null;
-            $scope.idInJSON = null;
-        };
-
-        $scope.performEdit = function () {
-            if ($scope.editable.title == null || $scope.editable.news == null)
-                alertService.add("danger", 'Новость должна содержать заголовок и текст!');
-            else if ($scope.editable.title.length <= 3 || $scope.editable.title.length > 100)
-                alertService.add("danger", 'Заголовок должен содержать более 3, но менее 100 символов');
-            else {
-                DataService.get('api/news/edit', {
-                    id: $scope.idInDB,
-                    title: $scope.editable.title,
-                    news: $scope.editable.news,
-                    label: $scope.editable.label
-                }).then(function (data) {
-                    if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
-                    //если пришел ответ с запретом
-                    else if (data.status == 403) alertService.add("danger", "403: Доступ запрещен!");
-                    else if (data.status == 500) alertService.add("danger", "500: Сервер не смог выполнить запрос.");
-                    else if (data.status == 25) alertService.add("danger", "Новость должна содержать заголовок и текст!");
-                    //Если доступ разрешен
-                    else if (data.status == 200) {
-                        alertService.add("success", "<span class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span> Новость сохранена!");
-                        $scope.editMode = false;
-                        $scope.postMode = false;
-                        $scope.editable = null;
-                        $scope.idInDB = null;
-                        $scope.idInJSON = null;
-                        $scope.getNews();
-                    }
-                })
-            }
-        };
-
-        $scope.deleteNews = function (id) {
-            DataService.get('api/news/delete', {id: id}).then(function (data) {
-                if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
-                //если пришел ответ с запретом
-                else if (data.status == 403) alertService.add("danger", "403: Доступ запрещен!");
-                else if (data.status == 500) alertService.add("danger", "500: Сервер не смог выполнить запрос.");
-                //Если доступ разрешен
-                else if (data.status == 1) {
-                    alertService.add("success", "<span class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span> Новость удалена!");
-                    $scope.getNews();
-                }
-            })
-        };
-
-        $scope.getNews = function () {
-            DataService.get('api/news/all').then(function (data) {
-                //если ответ не пришел
-                if (!data.status) alertService.add("danger", 'Ошибка. Сервер не прислал ответ. Обратитесь к администратору.');
-                //если пришел ответ с запретом
-                else if (data.status == 500) alertService.add("danger", "400: Произошла ошибка");
-                //Если доступ разрешен
-                else if (data.status == 1) {
-                    //console.log('News' + $reply); //DEBUG
-                    $scope.news = data.news;
-                    $scope.currentPage = 1;
-                    $scope.totalItems = data.news.length;
-                    $scope.editMode = false;
-                }
-            });
-        };
-        // execute on initialization
-        $scope.news = [];
-        $scope.getNews();
-        $scope.editable = null;
-    }
-]);
 
 stControllers.controller('DisciplineEditCtrl', ['$scope', function ($scope) {
 

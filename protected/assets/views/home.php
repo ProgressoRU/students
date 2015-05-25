@@ -33,10 +33,15 @@
     <script src="/public/app/filters.js"></script>
     <script src="/public/app/layout/wrap.controller.js"></script>
     <script src="/public/app/shared/data.service.js"></script>
-    <script src="/public/app/shared/auth.factory.js"></script>
-    <script src="/public/app/shared/alert.factory.js"></script>
+    <script src="/public/app/shared/auth.service.js"></script>
+    <script src="/public/app/alerts/alerts.module.js"></script>
+    <script src="/public/app/alerts/alerts.js"></script>
+    <script src="/public/app/alerts/constants.js"></script>
     <script src="/public/app/shared/session.service.js"></script>
     <script src="/public/app/shared/authevents.constant.js"></script>
+    <script src="/public/app/news/news.controller.js"></script>
+    <script src="/public/app/editors/editor.module.js"></script>
+    <script src="/public/app/editors/textEditor.directive.js"></script>
 </head>
 <body data-ng-controller="WrapController as wrap">
 <div class="modalAlert">

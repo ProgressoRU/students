@@ -12,8 +12,8 @@
         /*jshint validthis: true */
         var vm = this;
 
-        vm.alerts = alertService.getAlerts();
-        vm.closeAlert = alertService.closeAlert;
+        vm.alerts = alertService.get();
+        vm.closeAlert = alertService.close;
         vm.currentUser = SessionService;
         vm.disciplines = [];
         vm.groups = [];
