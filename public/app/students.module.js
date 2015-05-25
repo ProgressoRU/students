@@ -19,7 +19,7 @@
             'ui.bootstrap',
             'ui.calendar'
         ])
-          //роутинг
+        //роутинг
         .config(function ($routeProvider) {
             $routeProvider.
                 when('/news',
@@ -29,8 +29,9 @@
                     controllerAs: 'news'
                 }).
                 when('/login', {
-                    controller: 'LoginModalCtrl',
-                    templateUrl: 'public/views/login.html'
+                    controller: 'AuthController',
+                    templateUrl: 'public/app/auth/auth.html',
+                    controllerAs: 'auth'
                 }).
                 when('/class/:disciplineID', {
                     controller: 'DisciplineCtrl',
@@ -54,17 +55,15 @@
         .run(function ($rootScope, AUTH_EVENTS, AuthService) {
             $rootScope.$on('$routeChangeStart', function (event, next) {
                 //проверяем авторизацию при каждом переходе
-                AuthService.login().then(function (user) {
-                    var $reply = user.status;
-                    //console.log('Run: ' + $reply); //DEBUG
-                    //console.log('Run: ' + AUTH_EVENTS[$reply]); //DEBUG
-                    //отправляем оповещение
-                    $rootScope.$broadcast(AUTH_EVENTS[$reply]);
-                    //если полномочия не подтверждены, делаем принудительный выход
-                    if ($reply != 200) {
-                        AuthService.logout();
-                    }
-                });
+                AuthService.login()
+                    .error(function (user) {
+                        var $reply = user.status;
+                        $rootScope.$broadcast(AUTH_EVENTS[$reply]);
+                    })
+                    .success(function (user) {
+                        var $reply = user.status;
+                        $rootScope.$broadcast(AUTH_EVENTS[$reply]);
+                    })
             });
         });
 })();

@@ -11,22 +11,21 @@
         /*jshint validthis: true */
         var vm = this;
 
-        vm.news = [];
+        vm.currentPage = 1;
         vm.editable = false;
         vm.editMode = false;
+        vm.news = [];
         vm.postMode = false;
-        vm.visibleNews = [];
         vm.totalItems = 0;
-        vm.currentPage = 1;
-        vm.test = 'test';
+        vm.visibleNews = [];
 
-        vm.currentPageNews = currentPageNews;
-        vm.newPost = newPost;
-        vm.editPost = editPost;
         vm.cancelEdit = cancelEdit;
-        vm.performEdit = performEdit;
+        vm.currentPageNews = currentPageNews;
         vm.deleteNews = deleteNews;
+        vm.editPost = editPost;
         vm.getNews = getNews;
+        vm.newPost = newPost;
+        vm.performEdit = performEdit;
 
         activate();
         //////////////////////////

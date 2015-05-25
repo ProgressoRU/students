@@ -2,50 +2,54 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button class="pull-right btn btn-default" data-ng-click="toReg()" data-ng-if="auth">Регистрация
+                <button class="pull-right btn btn-default" data-ng-click="auth.toReg()" data-ng-if="auth.auth">
+                    Регистрация
                 </button>
-                <button class="pull-right btn btn-default" data-ng-click="toAuth()" data-ng-if="reg">Авторизация
+                <button class="pull-right btn btn-default" data-ng-click="auth.toAuth()" data-ng-if="auth.reg">
+                    Авторизация
                 </button>
-                <h4 class="modal-title" data-ng-if="auth">Авторизация</h4>
-                <h4 class="modal-title" data-ng-if="reg">Регистрация</h4>
+                <h4 class="modal-title" data-ng-if="auth.auth">Авторизация</h4>
+                <h4 class="modal-title" data-ng-if="auth.reg">Регистрация</h4>
             </div>
             <div class="modal-body">
                 <!-- AUTH FORM -->
-                <form class="form-horizontal swipe-enter" method="post" name="loginForm" data-ng-Submit="login(credentials)"
-                      data-ng-if="auth">
+                <form class="form-horizontal swipe-enter" method="post" name="loginForm"
+                      data-ng-Submit="auth.login(auth.credentials)"
+                      data-ng-if="auth.auth">
                     <div style="margin-bottom: 25px" class="input-group">
                         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                         <input id="login-username" type="text" class="form-control" name="username" value=""
-                               placeholder="Логин" required autofocus data-ng-model="credentials.username">
+                               placeholder="Логин" required autofocus data-ng-model="auth.credentials.username">
                     </div>
                     <div class="input-group">
                         <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
                         <input id="login-password" type="password" class="form-control" name="password"
                                placeholder="Пароль"
-                               required data-ng-model="credentials.pass">
+                               required data-ng-model="auth.credentials.pass">
                     </div>
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox" value="remember-me" data-ng-model="credentials.rememberMe"> Запомнить
-                            меня
+                            <input type="checkbox" value="remember-me" data-ng-model="auth.credentials.rememberMe">
+                            Запомнить меня
                         </label>
                     </div>
                     <button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>
                 </form>
                 <!-- REGISTRATION FORM -->
-                <form class="form-horizontal swipe-enter" method="post" name="regForm" data-ng-Submit="regUser(regData)"
-                      data-ng-if="reg">
+                <form class="form-horizontal swipe-enter" method="post" name="regForm"
+                      data-ng-Submit="auth.regUser(auth.regData)"
+                      data-ng-if="auth.reg">
                     <div class="form-group">
                         <div class="col-md-12">
                             <input id="reg-username" type="text" class="form-control" name="username"
-                                   placeholder="Логин" required autofocus data-ng-model="regData.username">
+                                   placeholder="Логин" required autofocus data-ng-model="auth.regData.username">
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-md-12">
                             <input id="reg-password" type="password" class="form-control" name="password"
                                    placeholder="Пароль"
-                                   required data-ng-model="regData.pass">
+                                   required data-ng-model="auth.regData.pass">
                         </div>
                     </div>
                     <hr>
@@ -54,25 +58,25 @@
                                                                                           class="form-control"
                                                                                           name="surname"
                                                                                           placeholder="Фамилия" required
-                                                                                          data-ng-model="regData.surname">
+                                                                                          data-ng-model="auth.regData.surname">
                         </div>
                         <div class="col-sm-6 col-xs-12"><input id="reg-name" type="text" class="form-control"
                                                                name="name"
                                                                placeholder="Имя" required
-                                                               data-ng-model="regData.name"></div>
+                                                               data-ng-model="auth.regData.name"></div>
                     </div>
                     <div class="form-group">
                         <div class="col-md-12">
                             <input id="reg-group" type="text" class="form-control" name="group"
                                    placeholder="Название группы. Например: 4ИС, 3ТОП" required
-                                   data-ng-model="regData.group"></div>
+                                   data-ng-model="auth.regData.group"></div>
                     </div>
                     <hr>
                     <div class="form-group">
                         <div class="col-md-12">
                             <input id="reg-passcode" type="text" class="form-control" name="passcode"
                                    placeholder="Кодовое слово (Выдается преподавателем)" required
-                                   data-ng-model="regData.passcode"></div>
+                                   data-ng-model="auth.regData.passcode"></div>
                     </div>
                     <button class="btn btn-lg btn-primary btn-block" type="submit">Зарегистрироваться</button>
                 </form>

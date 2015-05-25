@@ -11,9 +11,8 @@ class ApiUser extends ApiController
 
     public function action_auth()
     {
-        $this->response('status', 403);
         $this->response('user', array());
-        if (Auth::checkCookie($this->pixie)) {
+        if ($this->isAuthorized(false)) {
             $id = isset($_COOKIE['id']) ? $_COOKIE['id'] : 0;
             try {
                 $this->response('user', $this->pixie->db->query('select')->table('users')
@@ -24,21 +23,28 @@ class ApiUser extends ApiController
                 error_log($e->getMessage());
             }
             if ($this->response('user') != null) {
-                $this->response('status', 200); //200: OK
+                $this->ok(200);
             }
         } else {
             $login = Request::getString('username');
             $pass = Request::getString('pass');
             $rememberMe = Request::getBool('rememberMe');
-            $this->response(null, Auth::login(($this->pixie), $login, $pass, $rememberMe));
+            $user = Auth::login(($this->pixie), $login, $pass, $rememberMe);
+            if (!empty($user))
+            {
+                $this->ok(200);
+                $this->response('user', $user);
+            }
+            else
+                $this->forbidden(403);
         }
     }
 
     public function action_logout()
     {
         if (Auth::logout($this->pixie)) {
-            $this->response('status', true);
-        } else $this->response('status', false);
+            $this->ok();
+        } else $this->badRequest();
     }
 
     public function action_reg()
@@ -52,33 +58,33 @@ class ApiUser extends ApiController
         $role = Request::getString('role');
         $checks = true;
         if (empty($login) || strlen($login) < 4) {
-            $this->response('status', 21);
+            $this->badRequest(31);
             $checks = false;
         }
         if (empty($pass) || strlen($pass) < 6) {
-            $this->response('status', 22);
+            $this->badRequest(32);
             $checks = false;
         }
         if (empty($name) || empty($surname)) {
-            $this->response('status', 29);
+            $this->badRequest(39);
             $checks = false;
         }
         if (!empty($role)) {
             if (!Auth::checkCookie($this->pixie)) {
-                $this->response('status', 31);
+                $this->badRequest(41);
                 $checks = false;
             }
             if (Auth::getRole($this->pixie) != 'admin') {
-                $this->response('status', 30);
+                $this->badRequest(40);
                 $checks = false;
             }
         } else {
             if (empty($passcode)) {
-                $this->response('status', 23);
+                $this->badRequest(33);
                 $checks = false;
             }
             if (empty($userGroup)) {
-                $this->response('status', 24);
+                $this->badRequest(34);
                 $checks = false;
             }
         }
@@ -91,7 +97,7 @@ class ApiUser extends ApiController
                     ->execute()->current();
                 if (!isset($group) || empty ($group)) {
                     $valid = false;
-                    $this->response('status', 26);
+                    $this->badRequest(36);
                 } else {
                     $groupId = $group->group_id;
                     $expirationDate = $group->expire_date;
@@ -100,7 +106,7 @@ class ApiUser extends ApiController
                         $today = time();
                         if ($expirationDate->getTimestamp() < $today) {
                             $valid = false;
-                            $this->response('status', 25);
+                            $this->badRequest(35);
                         }
                     }
                 }
@@ -112,7 +118,7 @@ class ApiUser extends ApiController
                     ->execute()->current();
                 if (!empty($user)) {
                     $nameOccupied = true;
-                    $this->response('status', 27);
+                    $this->badRequest(37);
                 }
                 if (!$nameOccupied) {
                     try {
@@ -126,16 +132,16 @@ class ApiUser extends ApiController
                             $this->pixie->db->query('insert')->table('subscriptions')
                                 ->data(array('user_id' => $uId, 'group_id' => $groupId, 'is_editor' => '0'))
                                 ->execute();
-                            $this->response('status', 200);
+                            $this->ok(30);
                         } else {
                             $this->pixie->db->query('insert')->table('users')
                                 ->data(array('username' => $login, 'role' => $role, 'name' => $name, 'surname' => $surname,
                                     'pass_hash' => crypt($pass, '$5$rounds=5000$Geronimo$')))
                                 ->execute();
-                            $this->response('status', 200);
+                            $this->ok(30);
                         }
                     } catch (Exception $e) {
-                        $this->response('status', 28);
+                        $this->badRequest(38);
                         error_log($e->getMessage());
                     }
                 }

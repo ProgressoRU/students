@@ -82,14 +82,11 @@ abstract class Auth
 
     public static function login(\App\Pixie $pixie, $login, $pass, $rememberMe = false)
     {
-        $reply = array(
-            'status' => 403, //403: Forbidden
-            'user' => array()
-        );
+        $reply = array();
         $passHash = crypt($pass, '$5$rounds=5000$Geronimo$');
         //пытаемся получить информацию о пользователе
         try {
-            $reply['user'] = $pixie->db->query('select')->table('users')
+            $reply = $pixie->db->query('select')->table('users')
                 ->fields('user_id', 'username', 'surname', 'name', 'patronymic', 'role', 'group')
                 ->where('username', $login)
                 ->where('pass_hash', $passHash)
@@ -99,8 +96,7 @@ abstract class Auth
             return $reply;
         }
         //если пользователь найден, то создаем хэш сессии
-        if ($reply['user'] != null) {
-            $reply['status'] = 200; //200: OK
+        if (!empty($reply)) {
             $hash = md5(uniqid(rand(), true));
             //заносим в БД сессию, IP и useragent
             try {
@@ -109,22 +105,21 @@ abstract class Auth
                         'session_hash' => $hash,
                         'last_ip' => $_SERVER['REMOTE_ADDR'],
                         'useragent' => $_SERVER['HTTP_USER_AGENT']))
-                    ->where('user_id', $reply['user'][0]->user_id)
+                    ->where('user_id', $reply[0]->user_id)
                     ->execute();
             } catch (Exception $e) {
                 error_log('User is found, but session update caused an error\nIt\'s might help:\n' . $e->getMessage());
             }
             if (!$rememberMe) {
                 //Устанавливем куки (на час)
-                setcookie("id", $reply['user'][0]->user_id, time() + 3600, '/');
+                setcookie("id", $reply[0]->user_id, time() + 3600, '/');
                 setcookie("hash", $hash, time() + 3600, '/');
             } else {
                 //куки на месяц
-                setcookie("id", $reply['user'][0]->user_id, time() + 2592000, '/');
+                setcookie("id", $reply[0]->user_id, time() + 2592000, '/');
                 setcookie("hash", $hash, time() + 2592000, '/');
             }
-        } else $reply['status'] = 403; //403: Forbidden
-
+        }
         return $reply;
     }
 
