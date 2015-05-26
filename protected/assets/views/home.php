@@ -38,12 +38,14 @@
     <script src="/public/app/alerts/alerts.js"></script>
     <script src="/public/app/alerts/constants.js"></script>
     <script src="/public/app/shared/session.service.js"></script>
-    <script src="/public/app/shared/authevents.constant.js"></script>
+    <script src="/public/app/auth/authevents.constant.js"></script>
     <script src="/public/app/news/news.controller.js"></script>
     <script src="/public/app/editors/editor.module.js"></script>
     <script src="/public/app/editors/newsEditor.directive.js"></script>
     <script src="/public/app/auth/auth.controller.js"></script>
     <script src="/public/app/auth/authmodal.directive.js"></script>
+    <script src="/public/app/groups/newgroup.controller.js"></script>
+    <script src="/public/app/groups/subscription.controller.js"></script>
 </head>
 <body data-ng-controller="WrapController as wrap">
 <div class="modalAlert">
@@ -54,89 +56,5 @@
 <div data-st-Header></div>
 <div data-ng-view class="container-fluid"></div>
 <div data-login-dialog></div>
-<!--TODO: переместить модалы в отдельные вьюхи -->
-<script type="text/ng-template" id="subscribeModal.html">
-    <div class="modal-header">
-        <h3 class="modal-title">Использовать кодовое слово</h3>
-    </div>
-    <div class="modal-body">
-        <p>С помощью кодового слова вы можете подписаться на интересующий вас курс. Кодовое слово может выдать вам
-            преподаватель.</p>
-
-        <h3 class="text-center">Код:</h3>
-
-        <p class="text-center"><input class="form-control input-lg" type="text" data-ng-model="passcode"></p>
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-primary" data-ng-click="ok()">OK</button>
-        <button class="btn btn-warning" data-ng-click="cancel()">Отмена</button>
-    </div>
-</script>
-
-<script type="text/ng-template" id="newGroupModal.html">
-    <div class="modal-header">
-        <h3 class="modal-title">Новая группа</h3>
-    </div>
-    <div class="modal-body">
-        <div class="form-group">
-            <label for="title">Название: </label>
-            <input type="text" class="form-control" id="title" data-ng-model="group.title"
-                   placeholder="Будет известно только вам">
-        </div>
-
-        <div class="form-group">
-            <label for="passcode">Кодовое слово: </label>
-            <input type="text" class="form-control" id="passcode" data-ng-model="group.passcode"
-                   placeholder="Передайте его тем, кого хотите пригласить в группу">
-        </div>
-        <div class="row">
-            <div class="col-sm-9">
-                <label for="expiration">Срок действия кодового слова: </label>
-
-                <p class="input-group" data-ng-hide="turnExpiration == 1">
-                    <input id="expiration" type="text" class="form-control" data-datepicker-popup="dd MMMM yyyy"
-                           data-ng-model="group.expiration"
-                           data-is-open="opened"
-                           data-min-date="minDate" data-datepicker-options="dateOptions"
-                           data-ng-required="true"
-                           data-show-button-bar="false"
-                           data-ng-disabled="turnExpiration == 1"
-                           readonly/>
-              <span class="input-group-btn">
-                <button type="button" data-ng-disabled="turnExpiration == 1" class="btn btn-default"
-                        data-ng-click="open($event)"><i
-                        class="glyphicon glyphicon-calendar"
-                        ></i></button>
-              </span>
-                </p>
-                <!-- DateTime picker placeholder (showing then switcher is ON) -->
-                <p class="input-group" data-ng-if="turnExpiration == 1"><input id="expirationPlaceholder" disabled
-                                                                               placeholder="БЕССРОЧНО"
-                                                                               class="form-control">
-                              <span class="input-group-btn">
-                <button type="button" class="btn btn-default" disabled><i
-                        class="glyphicon glyphicon-calendar"
-                        ></i></button>
-              </span</p>
-                <!-- //Placeholder -->
-            </div>
-            <div class="col-sm-3">
-                <div><label for="needExp">Бессрочно?</label></div>
-                <div class="btn-group btn-toggle">
-                    <button id="needExp" class="btn btn-default" data-ng-model="turnExpiration" data-btn-radio=1
-                            data-ng-class="{'active btn-primary': turnExpiration == 1}">ДА
-                    </button>
-                    <button class="btn btn-default" data-ng-model="turnExpiration" data-btn-radio=0
-                            data-ng-class="{'active btn-primary': turnExpiration == 0}">НЕТ
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-primary" data-ng-click="ok()">OK</button>
-        <button class="btn btn-warning" data-ng-click="cancel()">Отмена</button>
-    </div>
-</script>
 </body>
 </html>

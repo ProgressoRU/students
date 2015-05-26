@@ -20,8 +20,9 @@
         function push(code) {
             if (events[code])
                 alerts.push({'type': events[code][0], 'msg': events[code][1]});
-            else
+            else {
                 alerts.push({'type': 'danger', 'msg': 'Возникла неизвестная ошибка. Обратитесь к администратору'});
+            }
             $timeout(function () {
                 alerts.splice(0, 1);
             }, 6000);

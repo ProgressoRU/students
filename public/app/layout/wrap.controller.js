@@ -25,7 +25,7 @@
         vm.isAuthenticated = isAuthenticated;
         vm.logout = logout;
         vm.newGroupModal = newGroupModal;
-        vm.openSubModal = newSubModal;
+        vm.newSubModal = newSubModal;
 
         activate();
 
@@ -82,8 +82,8 @@
         function newSubModal(size) {
             var modalInstance = $modal.open({
                 animation: true,
-                templateUrl: 'subscribeModal.html',
-                controller: 'SubscribeCtrl',
+                templateUrl: 'public/app/groups/subscription.modal.html',
+                controller: 'SubscriptionController as modal',
                 size: size
             });
             modalInstance.result.then(function (success) {
@@ -95,8 +95,8 @@
         function newGroupModal(size) {
             var modalInstance = $modal.open({
                 animation: true,
-                templateUrl: 'newGroupModal.html',
-                controller: 'newGroupCtrl',
+                templateUrl: 'public/app/groups/newgroup.modal.html',
+                controller: 'NewGroupController as modal',
                 size: size
             });
             modalInstance.result.then(function (success) {
