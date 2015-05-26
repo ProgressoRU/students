@@ -5,9 +5,9 @@
         .module('students')
         .controller('WrapController', WrapController);
 
-    WrapController.$inject = ['SessionService', 'AuthService', 'DataService', 'alertService', 'taOptions', '$modal'];
+    WrapController.$inject = ['SessionService', 'AuthService', 'DataService', 'alertService', '$modal'];
 
-    function WrapController(SessionService, AuthService, DataService, alertService, taOptions, $modal) {
+    function WrapController(SessionService, AuthService, DataService, alertService, $modal) {
 
         /*jshint validthis: true */
         var vm = this;
@@ -34,12 +34,6 @@
         function activate() {
             getGroups(); //TODO: нужно выполнять только у админов и учителей
             getDisciplines();
-            taOptions.toolbar = [ //перенести куда-нибудь
-                ['h3', 'h4', 'h5', 'h6', 'p', 'pre', 'quote'],
-                ['bold', 'italics', 'underline', 'strikeThrough', 'ul', 'ol', 'redo', 'undo', 'clear'],
-                ['justifyLeft', 'justifyCenter', 'justifyRight', 'indent', 'outdent'],
-                ['html', 'insertImage', 'insertLink', 'insertVideo', 'charcount']
-            ];
         }
 
         //локальная проверка авторизации
