@@ -10,12 +10,8 @@
             //app modules
             'alerts',
             'editor',
-            'stControllers',
-            'stDirectives',
-            'stFilters',
             //3rd party
             'angular-loading-bar',
-            //'textAngular',
             'ui.bootstrap',
             'ui.calendar'
         ])
@@ -39,12 +35,14 @@
                     controllerAs: 'vm'
                 }).
                 when('/class/edit/:disciplineID', {
-                    controller: 'DisciplineEditCtrl',
-                    templateUrl: 'public/views/disciplineEdit.html'
+                    controller: 'DisciplineEditController',
+                    templateUrl: 'public/app/disciplines/disciplineEdit.html',
+                    controllerAs: 'vm'
                 }).
                 when('/group/:groupID', {
-                    controller: 'GroupCtrl',
-                    templateUrl: 'public/views/group.html'
+                    controller: 'GroupController',
+                    templateUrl: 'public/app/groups/group.html',
+                    controllerAs: 'vm'
                 }).
                 when('/users', {
                     controller: 'UserRightsController',

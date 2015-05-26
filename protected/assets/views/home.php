@@ -28,10 +28,9 @@
     <script src="/public/lib/angular/calendar.js"></script>
     <script src="/public/lib/angular/loading-bar.js"></script>
     <script src="/public/app/students.module.js"></script>
-    <script src="/public/app/controllers.js"></script>
-    <script src="/public/app/directives.js"></script>
-    <script src="/public/app/filters.js"></script>
+    <script src="/public/app/shared/moment.filter.js"></script>
     <script src="/public/app/layout/wrap.controller.js"></script>
+    <script src="/public/app/layout/header.directive.js"></script>
     <script src="/public/app/shared/data.service.js"></script>
     <script src="/public/app/auth/auth.service.js"></script>
     <script src="/public/app/alerts/alerts.module.js"></script>
@@ -49,6 +48,10 @@
     <script src="/public/app/groups/subscription.controller.js"></script>
     <script src="/public/app/disciplines/discipline.controller.js"></script>
     <script src="/public/app/userRights/userRights.controller.js"></script>
+    <script src="/public/app/shared/reallyClick.directive.js"></script>
+    <script src="/public/app/shared/selectOnClick.directive.js"></script>
+    <script src="/public/app/disciplines/disciplineEdit.controller.js"></script>
+    <script src="/public/app/groups/group.controller.js"></script>
 </head>
 <body data-ng-controller="WrapController as wrap">
 <div class="modalAlert">
@@ -56,7 +59,7 @@
            close="wrap.closeAlert($index)"><span
             data-ng-bind-html="alert.msg"></span></alert>
 </div>
-<div data-st-Header></div>
+<st-header></st-header>
 <div data-ng-view class="container-fluid"></div>
 <div data-login-dialog></div>
 </body>

@@ -1,24 +1,23 @@
-var stDirectives = angular.module('stDirectives', []);
+(function () {
+    'use strict';
 
-//шапка
-stDirectives.directive('stHeader', function () {
-    return {
-        templateUrl: 'public/app/layout/header.html'
-    };
-});
+    angular
+        .module('students')
+        .directive('ngReallyClick', ngReallyClick);
 
-//confirmation
-stDirectives.directive('ngReallyClick', ['$modal',
-    function ($modal) {
-        var ModalInstanceCtrl = function ($scope, $modalInstance) {
+    ngReallyClick.$inject = ['$modal'];
+
+    function ngReallyClick($modal) {
+/* Todo: Additional refactoring? */
+        function ModalInstanceCtrl($scope, $modalInstance) {
             $scope.ok = function () {
                 $modalInstance.close();
             };
-
             $scope.cancel = function () {
                 $modalInstance.dismiss('cancel');
             };
-        };
+        }
+
         return {
             restrict: 'A',
             scope: {
@@ -46,22 +45,4 @@ stDirectives.directive('ngReallyClick', ['$modal',
             }
         }
     }
-]);
-
-stDirectives.directive('selectOnClick', function () {
-    return {
-        restrict: 'A',
-        link: function (scope, element) {
-            var focusedElement;
-            element.on('click', function () {
-                if (focusedElement != this) {
-                    this.select();
-                    focusedElement = this;
-                }
-            });
-            element.on('blur', function () {
-                focusedElement = null;
-            });
-        }
-    };
-})
+})();
