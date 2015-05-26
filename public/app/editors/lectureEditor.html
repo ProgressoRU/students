@@ -1,0 +1,78 @@
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <input type="text" class="form-control" data-ng-model="vm.editable.title" required placeholder="Заголовок">
+    </div>
+    <div class="panel-body">
+        <div data-text-angular="" data-ng-model="vm.editable.body"></div>
+        <br>
+        <!--ВЛОЖЕНИЯ --> <!-- Сделать директивой? -->
+        <div class="bs-callout bs-callout-default col-md-12 animate-if"
+             data-ng-class="{'bs-callout-primary': !atc.deleted}"
+             data-ng-repeat="atc in vm.editable.attachments"
+             data-ng-if="lesson.lecture_id==atc.lecture_id">
+            <!-- Вложение в режиме просмотра -->
+            <div data-ng-if="!atc.editing" class="animate-enter">
+                <a href="{{atc.url}}"><h4><span class="glyphicon glyphicon-cloud-download"
+                                                aria-hidden="true"></span> {{atc.title}}</h4></a>
+                {{atc.description}}
+                <div class="pull-right">
+                    <button type="button" class="btn btn-default btn-sm"
+                            data-ng-click="vm.editAttach(atc.attach_id, $index)"
+                            data-ng-if="!atc.deleted">Изменить
+                    </button>
+                    <button type="button" class="btn btn-danger btn-sm"
+                            data-ng-click="vm.markAttachOnRemoval(atc.attach_id, $index)" data-ng-if="!atc.deleted">
+                        Удалить
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm"
+                            data-ng-click="vm.restoreAttach(atc.attach_id, $index)" data-ng-if="atc.deleted"><span
+                            class="glyphicon glyphicon-share-alt" aria-hidden="true"></span> Восстановить
+                    </button>
+                </div>
+            </div>
+            <!-- Вложение в режиме редактирования -->
+            <div data-ng-if="atc.editing">
+                <div class="form-group col-md-6">
+                    <label for="title">Заголовок: </label>
+                    <input type="text" class="form-control" id="title" placeholder="Введите заголовок"
+                           data-ng-model="atc.title" data-title="{{::atc.title}}">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="url">Ссылка: </label>
+                    <input type="text" class="form-control" id="url"
+                           placeholder="Добавьте ссылку на файл или страницу в сети Интернет"
+                           data-ng-model="atc.url"
+                           data-select-on-click>
+                </div>
+                <div class="form-group col-md-12">
+                    <label for="description">Описание: </label>
+                    <input type="text" class="form-control" id="description"
+                           placeholder="Кратко опишите содержание файла или страницы"
+                           data-ng-model="atc.description">
+                </div>
+                <div class="pull-right">
+                    <button type="button" class="btn btn-default btn-sm"
+                            data-ng-click="vm.cancelAttachEdit($event, $index)"
+                            data-title="{{::atc.title}}"
+                            data-description="{{::atc.description}}"
+                            data-url="{{::atc.url}}">Отменить
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm"
+                            data-ng-click="vm.saveAttach($index)">Сохранить
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div><a class="btn btn-block btn-lg btn-primary col-md-12"
+                data-ng-click="vm.newAttach(lesson.lecture_id)"><span
+                class="glyphicon glyphicon-cloud-upload"></span> Добавить вложение</a><br></div>
+    </div>
+    <!--//ВЛОЖЕНИЯ -->
+    <div class="panel-footer">
+        <div class="pull-right">
+            <button type="button" class="btn btn-default" data-ng-click="vm.cancelEdit()">Отменить</button>
+            <button type="button" class="btn btn-success" data-ng-click="vm.performEdit()">Сохранить</button>
+        </div>
+        <p><br></p>
+    </div>
+</div>

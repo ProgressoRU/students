@@ -62,7 +62,6 @@ class ApiDisciplines extends ApiController
             $this->pixie->db
                 ->query('select')
                 ->table('disciplines')
-                ->fields('title', 'description', 'creator_id')
                 ->where('discipline_id', $id)
                 ->execute()
                 ->current());
@@ -192,7 +191,7 @@ class ApiDisciplines extends ApiController
             ->where('lecture_id', $postId)
             ->execute();
 
-        return $this->ok();
+        return $this->ok(13);
     }
 
     public function action_edit_lesson()
@@ -204,7 +203,7 @@ class ApiDisciplines extends ApiController
         $disciplineId = Request::getInt('disciplineId');
 
         if (empty($title) || empty($description)) {
-            return $this->badRequest(26);
+            return $this->badRequest(11);
         }
 
         if (!$this->isAuthorized()) {
@@ -215,7 +214,7 @@ class ApiDisciplines extends ApiController
 
         $isCanEdit = $this->getRole() == 'admin' || $perm == 'creator' || $perm == 'editor';
 
-        if ($isCanEdit) {
+        if (!$isCanEdit) {
             return $this->forbidden();
         }
 
@@ -239,7 +238,7 @@ class ApiDisciplines extends ApiController
         }
 
         if (empty($attachments)) {
-            return $this->ok();
+            return $this->ok(10);
         }
 
         $newAttaches = array();
@@ -290,6 +289,6 @@ class ApiDisciplines extends ApiController
             }
         }
 
-        return $this->ok();
+        return $this->ok(10);
     }
 }

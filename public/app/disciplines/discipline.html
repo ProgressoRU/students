@@ -1,23 +1,23 @@
 <article class="myWrap col-md-10 col-xs-12 col-sm-12">
     <div class="page-header">
-        <h1>{{discipline.title}}
-            <small><em>{{discipline.description}}</em></small>
+        <h1>{{vm.discipline.title}}
+            <small><em>{{vm.discipline.description}}</em></small>
         </h1>
     </div>
     <div class="row">
-        <accordion close-others="oneAtATime" class="col-md-6">
+        <accordion close-others="vm.oneAtATime" class="col-md-6">
             <!--Editor -->
-            <news-editor mode="lecture" data-ng-if="postMode" class="repeat-animation"></news-editor>
+            <lecture-editor data-ng-if="vm.postMode" class="repeat-animation"></lecture-editor>
             <!-- //Editor -->
-            <div class="panel panel-info animate-if" data-ng-if="!postMode && canEdit">
-                <div class="panel-heading"><a href="" data-ng-click="newPost()"><span class="glyphicon glyphicon-plus"></span> Новый материал</a></div>
+            <div class="panel panel-info animate-if" data-ng-if="!vm.postMode && vm.canEdit">
+                <div class="panel-heading"><a href="" data-ng-click="vm.newPost()"><span class="glyphicon glyphicon-plus"></span> Новый материал</a></div>
             </div>
-            <hr data-ng-if="canEdit">
-            <div data-ng-repeat="lesson in lectures" style="margin-top: 5px" class="repeat-animation">
+            <hr data-ng-if="vm.canEdit">
+            <div data-ng-repeat="lesson in vm.lectures" style="margin-top: 5px" class="repeat-animation">
                 <!--Editor -->
-                <news-editor mode="lecture" data-ng-if="editMode && lesson.lecture_id == idInDB" class="animate-enter"></news-editor>
+                <lecture-editor data-ng-if="vm.editMode && lesson.lecture_id == vm.idInDb" class="animate-enter"></lecture-editor>
                 <!-- //Editor -->
-                <accordion-group data-ng-if="!editMode || (editMode && lesson.lecture_id != idInDB)"
+                <accordion-group data-ng-if="!vm.editMode || (vm.editMode && lesson.lecture_id != vm.idInDb)"
                                  class="panel panel-info" is-open="status.open">
                     <accordion-heading><strong>{{$index+1}}.</strong> <span
                             class="glyphicon glyphicon-eye-close" aria-hidden="true"
@@ -27,7 +27,7 @@
                     </accordion-heading>
                     <div data-ta-bind data-ng-model="lesson.description"></div>
 
-                    <div class="bs-callout bs-callout-primary" data-ng-repeat="atc in attachments"
+                    <div class="bs-callout bs-callout-primary" data-ng-repeat="atc in vm.attachments"
                          data-ng-if="lesson.lecture_id==atc.lecture_id">
                         <h4><a href="{{atc.url}}"><span class="glyphicon glyphicon-cloud-download"
                                                         aria-hidden="true"></span> {{atc.title}}</a></h4>
@@ -38,14 +38,14 @@
                     <div class="accordion-footer">
                         <div class="pull-right">
                             <button type="button" class="btn btn-primary btn-xs"
-                                    data-ng-click="turnEditMode(lesson.lecture_id, $index)"
-                                    data-ng-if="canEdit">
+                                    data-ng-click="vm.turnEditMode(lesson.lecture_id, $index)"
+                                    data-ng-if="vm.canEdit">
                                 <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
                             </button>
                             <button type="button" class="btn btn-danger btn-xs"
                                     data-ng-really-message="Вы собираетесь удалить запись <strong>«{{lesson.title}}»</strong> от {{lesson.date_created|moment: 'lang': 'ru' | moment: 'format': 'LL'}} Будут также удалены вложения и результаты выполнения.<br>Продолжить?"
-                                    data-ng-really-click="deletePost(lesson.lecture_id, $index)"
-                                    data-ng-if="canEdit">
+                                    data-ng-really-click="vm.deletePost(lesson.lecture_id, $index)"
+                                    data-ng-if="vm.canEdit">
                                 <span class="glyphicon glyphicon-erase" aria-hidden="true"></span>
                             </button>
                         </div>
@@ -61,8 +61,8 @@
             </div>
         </accordion>
         <!-- CALENDAR -->
-        <div data-ui-calendar="uiConfig.calendar" class="col-md-6 col-xs-12" data-ng-model="eventSources"
-             data-calendar="lecturesCalendar" data-ng-if="!canEdit"></div>
+        <div data-ui-calendar="vm.uiConfig.calendar" class="col-md-6 col-xs-12" data-ng-model="vm.eventSources"
+             data-calendar="lecturesCalendar" data-ng-if="!vm.canEdit"></div>
     </div>
 
 </article>

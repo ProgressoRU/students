@@ -42,10 +42,12 @@
     <script src="/public/app/news/news.controller.js"></script>
     <script src="/public/app/editors/editor.module.js"></script>
     <script src="/public/app/editors/newsEditor.directive.js"></script>
+    <script src="/public/app/editors/lectureEditor.directive.js"></script>
     <script src="/public/app/auth/auth.controller.js"></script>
     <script src="/public/app/auth/authmodal.directive.js"></script>
     <script src="/public/app/groups/newgroup.controller.js"></script>
     <script src="/public/app/groups/subscription.controller.js"></script>
+    <script src="/public/app/disciplines/discipline.controller.js"></script>
 </head>
 <body data-ng-controller="WrapController as wrap">
 <div class="modalAlert">

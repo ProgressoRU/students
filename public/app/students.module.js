@@ -33,9 +33,10 @@
                     templateUrl: 'public/app/auth/auth.html',
                     controllerAs: 'auth'
                 }).
-                when('/class/:disciplineID', {
-                    controller: 'DisciplineCtrl',
-                    templateUrl: 'public/views/discipline.html'
+                when('/class/:disciplineId', {
+                    controller: 'DisciplineController',
+                    templateUrl: 'public/app/disciplines/discipline.html',
+                    controllerAs: 'vm'
                 }).
                 when('/class/edit/:disciplineID', {
                     controller: 'DisciplineEditCtrl',
