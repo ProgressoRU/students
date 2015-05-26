@@ -26,6 +26,9 @@
                     //console.log('Session'+SessionService);
                     return data;
                 })
+                .error(function (data) {
+                    return data;
+                })
         }
 
         function isAuthenticated() {

@@ -1,22 +1,22 @@
-<article class="myWrap col-md-10 col-xs-12 col-sm-12" data-ng-if="currentUser.userRole == 'admin'">
+<article class="myWrap col-md-10 col-xs-12 col-sm-12" data-ng-if="wrap.currentUser.userRole == 'admin'">
     <div class="page-header">
         <h1>Управление доступом</h1>
     </div>
     <div class="row">
-        <form class="form-horizontal col-md-6" method="post" name="regForm" data-ng-Submit="regUser(regData)">
+        <form class="form-horizontal col-md-6" method="post" name="regForm" data-ng-Submit="vm.regUser(vm.regData)">
             <h4>Создать пользователя</h4>
             <hr>
             <div class="form-group">
                 <div class="col-md-12">
                     <input id="reg-username" type="text" class="form-control" name="username"
-                           placeholder="Логин" required autofocus data-ng-model="regData.username">
+                           placeholder="Логин" required autofocus data-ng-model="vm.regData.username">
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-md-12">
                     <input id="reg-password" type="password" class="form-control" name="password"
                            placeholder="Пароль"
-                           required data-ng-model="regData.pass">
+                           required data-ng-model="vm.regData.pass">
                 </div>
             </div>
             <hr>
@@ -25,17 +25,17 @@
                                                                                   class="form-control"
                                                                                   name="surname"
                                                                                   placeholder="Фамилия" required
-                                                                                  data-ng-model="regData.surname">
+                                                                                  data-ng-model="vm.regData.surname">
                 </div>
                 <div class="col-md-6 col-xs-12"><input id="reg-name" type="text" class="form-control"
                                                        name="name"
                                                        placeholder="Имя" required
-                                                       data-ng-model="regData.name"></div>
+                                                       data-ng-model="vm.regData.name"></div>
             </div>
             <hr>
             <div class="form-group col-md-12">
-                <select class="form-control" data-ng-model="regData.role"
-                        data-ng-options="role.name for role in roles"></select>
+                <select class="form-control" data-ng-model="vm.regData.role"
+                        data-ng-options="role.name for role in vm.roles"></select>
             </div>
             <button class="btn btn-lg btn-primary btn-block" type="submit">Создать</button>
         </form>
@@ -50,23 +50,25 @@
                     <th>Права</th>
                     <th></th>
                 </tr>
-                <tr data-ng-repeat="user in userList">
+                <tr data-ng-repeat="user in vm.userList">
                     <td>{{user.username}}</td>
                     <td>{{user.name}} {{user.surname}}</td>
                     <td>{{user.role}}</td>
-                    <td><button data-ng-if="user.role != 'admin'"
+                    <td>
+                        <button data-ng-if="user.role != 'admin'"
                                 type="button" class="btn btn-primary btn-xs"
                                 data-ng-really-message="<strong>{{user.surname}} {{user.name}}</strong> станет администратором.<br>
                                  <strong>Внимание!</strong> Операция необратима! <br>Продолжить?"
-                                data-ng-really-click="promote(user.user_id)">
-                        <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span></button>
+                                data-ng-really-click="vm.promote(user.user_id)">
+                            <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span></button>
 
                         <button data-ng-if="user.role != 'admin'"
                                 type="button"
                                 class="btn btn-primary btn-xs"
                                 data-ng-really-message="<strong>{{user.surname}} {{user.name}}</strong> будет понижен(а) до роли студента. <br>Продолжить?"
-                                data-ng-really-click="demote(user.user_id)" >
-                            <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span></button></td>
+                                data-ng-really-click="vm.demote(user.user_id)">
+                            <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span></button>
+                    </td>
                 </tr>
             </table>
         </div>

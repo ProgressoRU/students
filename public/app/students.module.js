@@ -47,8 +47,9 @@
                     templateUrl: 'public/views/group.html'
                 }).
                 when('/users', {
-                    controller: 'UserAccessCtrl',
-                    templateUrl: 'public/views/userAccess.html'
+                    controller: 'UserRightsController',
+                    templateUrl: 'public/app/userRights/userRights.html',
+                    controllerAs: 'vm'
                 }).
                 otherwise({redirectTo: '/news'});
         })

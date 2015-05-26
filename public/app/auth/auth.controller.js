@@ -36,23 +36,17 @@
         //////////////////////////////
         function login(credentials) {
             //отправляем сервису Авторизации необходимые данные
-            AuthService.login(credentials).then(function (user) {
-                var reply = user.status;
-                //console.log($reply); //DEBUG
-                //console.log(AUTH_EVENTS[$reply]); //DEBUG
-                //оповещаем все нижестоящие контроллеры об ответе сервера
-                $rootScope.$broadcast(AUTH_EVENTS[reply]);
-                //если ответ 200:OK
-                if (reply == 200) {
+            AuthService.login(credentials)
+                .success(function (user) {
+                    //console.log($reply); //DEBUG
+                    //console.log(AUTH_EVENTS[$reply]); //DEBUG
+                    //оповещаем все нижестоящие контроллеры об ответе сервера
+                    $rootScope.$broadcast(AUTH_EVENTS[user.status]);
+                    //если ответ 200:OK
                     alertService.push(40);
                     $route.reload();
                     $scope.wrap.getDisciplines();
-                    $scope.wrap.getGroups();
-                }
-                else {
-                    alertService.push(41);
-                }
-            });
+                })
         }
 
         function regUser(regData) {
