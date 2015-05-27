@@ -12,33 +12,44 @@ class ApiUser extends ApiController
     public function action_auth()
     {
         $this->response('user', array());
-        if ($this->isAuthorized(false)) {
-            $id = isset($_COOKIE['id']) ? $_COOKIE['id'] : 0;
-            $this->response('user', $this->pixie->db->query('select')->table('users')
-                ->fields('user_id', 'username', 'surname', 'name', 'patronymic', 'group', 'role')
-                ->where('user_id', $id)
-                ->execute()->as_array());
-            if ($this->response('user') != null) {
-                return $this->ok(200);
-            }
-        } else {
-            $login = Request::getString('username');
-            $pass = Request::getString('pass');
-            $rememberMe = Request::getBool('rememberMe');
-            $user = Auth::login(($this->pixie), $login, $pass, $rememberMe);
-            if (!empty($user)) {
-                $this->response('user', $user);
-            } else
-                return $this->forbidden();
+        $login = Request::getString('username');
+        $pass = Request::getString('pass');
+        $rememberMe = Request::getBool('rememberMe');
+        $user = Auth::login(($this->pixie), $login, $pass, $rememberMe);
+        if (!empty($user)) {
+            $this->response('user', $user);
+        } else
+            return $this->forbidden(41);
+        return $this->ok(40);
+    }
+
+    public function action_check_auth()
+    {
+        $this->isAuthorized(false) ? $this->ok() : $this->unauthorized(-1);
+    }
+
+    public function action_restore_session()
+    {
+        $this->response('user', array());
+        if (!$this->isAuthorized()) {
+            return true;
         }
-        return $this->ok(200);
+        $id = isset($_COOKIE['id']) ? $_COOKIE['id'] : 0;
+        $this->response('user', $this->pixie->db->query('select')->table('users')
+            ->fields('user_id', 'username', 'surname', 'name', 'patronymic', 'group', 'role')
+            ->where('user_id', $id)
+            ->execute()->as_array());
+        if ($this->response('user') != null) {
+            return $this->ok();
+        } else
+            return $this->unauthorized(-1);
     }
 
     public function action_logout()
     {
         if (Auth::logout($this->pixie)) {
             return $this->ok();
-        } else return $this->badRequest();
+        } else return $this->badRequest(-1);
     }
 
     public function action_reg()

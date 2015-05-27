@@ -5,9 +5,9 @@
         .module('students')
         .controller('AuthController', AuthController);
 
-    AuthController.$inject = ['$scope', 'AuthService', '$rootScope', 'AUTH_EVENTS', '$route', 'alertService', 'DataService'];
+    AuthController.$inject = ['$scope', 'AuthService', '$route', 'alertService', 'DataService'];
 
-    function AuthController($scope, AuthService, $rootScope, AUTH_EVENTS, $route, alertService, DataService) {
+    function AuthController($scope, AuthService, $route, alertService, DataService) {
         /*jshint validthis: true */
         var vm = this;
 
@@ -37,15 +37,10 @@
         function login(credentials) {
             //отправляем сервису Авторизации необходимые данные
             AuthService.login(credentials)
-                .success(function (user) {
-                    //console.log($reply); //DEBUG
-                    //console.log(AUTH_EVENTS[$reply]); //DEBUG
-                    //оповещаем все нижестоящие контроллеры об ответе сервера
-                    $rootScope.$broadcast(AUTH_EVENTS[user.status]);
-                    //если ответ 200:OK
-                    alertService.push(40);
+                .success(function () {
                     $route.reload();
                     $scope.wrap.getDisciplines();
+                    $scope.wrap.getGroups();
                 })
         }
 

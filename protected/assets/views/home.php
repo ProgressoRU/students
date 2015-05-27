@@ -37,7 +37,6 @@
     <script src="/public/app/alerts/alerts.js"></script>
     <script src="/public/app/alerts/constants.js"></script>
     <script src="/public/app/shared/session.service.js"></script>
-    <script src="/public/app/auth/authevents.constant.js"></script>
     <script src="/public/app/news/news.controller.js"></script>
     <script src="/public/app/editors/editor.module.js"></script>
     <script src="/public/app/editors/newsEditor.directive.js"></script>

@@ -5,9 +5,9 @@
         .module('students')
         .directive('loginDialog', loginDialog);
 
-    loginDialog.$inject = ['AUTH_EVENTS'];
+    loginDialog.$inject = [];
 
-    function loginDialog(AUTH_EVENTS) {
+    function loginDialog() {
         return {
             restrict: 'A',
             templateUrl: 'public/app/auth/auth.html',
@@ -30,8 +30,8 @@
                 };
                 scope.visible = false;
                 //Действия при получении оповещений
-                scope.$on(AUTH_EVENTS['403'], showDialog);
-                scope.$on(AUTH_EVENTS['200'], hideDialog);
+                scope.$on('authFailure', showDialog);
+                scope.$on('authSuccess', hideDialog);
             }
         }
     }

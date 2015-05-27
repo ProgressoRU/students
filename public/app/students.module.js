@@ -52,18 +52,13 @@
                 otherwise({redirectTo: '/news'});
         })
 
-        .run(function ($rootScope, AUTH_EVENTS, AuthService) {
+        .run(function ($rootScope, AuthService) {
+            AuthService.restoreSession();
             $rootScope.$on('$routeChangeStart', function (event, next) {
                 //проверяем авторизацию при каждом переходе
-                AuthService.login()
-                    .error(function (user) {
-                        var $reply = user.status;
-                        $rootScope.$broadcast(AUTH_EVENTS[$reply]);
-                    })
-                    .success(function (user) {
-                        var $reply = user.status;
-                        $rootScope.$broadcast(AUTH_EVENTS[$reply]);
-                    })
+                AuthService.checkAuth().error(function () {
+                    event.preventDefault();
+                })
             });
         });
 })();

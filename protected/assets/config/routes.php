@@ -8,6 +8,20 @@ return array(
             'action' => 'auth'
         ),
     ),
+    'user_checkAuth' => array(
+        '/api/user/checkAuth',
+        array(
+            'controller' => 'apiUser',
+            'action' => 'check_auth'
+        ),
+    ),
+    'user_restore' => array(
+        '/api/user/restore',
+        array(
+            'controller' => 'apiUser',
+            'action' => 'restore_session'
+        ),
+    ),
     'user_logout' => array(
         '/api/user/logout',
         array(
