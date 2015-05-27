@@ -30,51 +30,74 @@ class ApiDisciplines extends ApiController
 
     public function action_my_disciplines()
     {
-        $disciplines = array();
-
-        if (!$this->getUserId()) {
-            $this->response('disciplines', $disciplines);
-            return;
-        }
-
         switch ($this->getRole()) {
             case 'admin':
                 $disciplines = $this->pixie->db
                     ->query('select')
+                    ->fields(
+                        'discipline_id',
+                        'title',
+                        'description',
+                        $this->pixie->db->expr('1 AS `is_creator`'),
+                        $this->pixie->db->expr('1 AS `is_editor`')
+                    )
                     ->table('disciplines')
                     ->execute()
                     ->as_array();
                 break;
             case 'student':
-                $disciplines = $this->pixie->db
-                    ->query('select')
-                    ->table('disciplines')
-                    ->where('discipline_id', 'IN', $this->pixie->db
-                        ->query('select')
-                        ->table('subscriptions')
-                        ->fields('group_access.discipline_id')
-                        ->join('group_access', array('group_access.group_id', 'subscriptions.group_id'), 'inner')
-                        ->where('user_id', $this->getUserId()))
-                    ->execute()
-                    ->as_array();
-                break;
             case 'teacher':
+                $userId = intval($this->getUserId());
                 $disciplines = $this->pixie->db
                     ->query('select')
+                    ->fields(
+                        'discipline_id',
+                        'title',
+                        'description',
+                        $this->pixie->db->expr(
+                            'IF(`disciplines`.`creator_id` = ' . $userId . ', 1, 0) AS `is_creator`'
+                        ),
+                        $this->pixie->db->expr(
+                            'IF(`ga`.`user_id` = ' . $userId . ' AND `ga`.`is_editor` = 1, 1, 0) AS `is_editor`'
+                        )
+                    )
                     ->table('disciplines')
-                    ->where('discipline_id', 'IN', $this->pixie->db
-                        ->query('select')
-                        ->table('subscriptions')
-                        ->fields('group_access.discipline_id')
-                        ->join('group_access', array('group_access.group_id', 'subscriptions.group_id'), 'inner')
-                        ->where('user_id', $this->getUserId()))
-                    ->where('or', array('creator_id', $this->getUserId()))
+                    ->join(
+                        array(
+                            $this->pixie->db
+                                ->query('select')
+                                ->fields(
+                                    'group_access.discipline_id',
+                                    'is_editor',
+                                    'subscriptions.user_id'
+                                )
+                                ->table('subscriptions')
+                                ->join('group_access', array(
+                                    'group_access.group_id',
+                                    '=',
+                                    'subscriptions.group_id'
+                                )),
+                            'ga'
+                        ),
+                        array('disciplines.discipline_id','=','ga.discipline_id'),
+                        'left'
+                    )
+                    ->where('ga.user_id', $userId)
+                    ->where('or', array('disciplines.creator_id', $userId))
+                    ->group_by('discipline_id')
                     ->execute()
                     ->as_array();
                 break;
             default:
+                $disciplines = array();
                 break;
         }
+
+        foreach ($disciplines as &$discipline) {
+            $discipline->is_creator = filter_var($discipline->is_creator, FILTER_VALIDATE_BOOLEAN);
+            $discipline->is_editor = filter_var($discipline->is_editor, FILTER_VALIDATE_BOOLEAN);
+        }
+        unset($discipline);
 
         $this->response('disciplines', $disciplines);
     }
