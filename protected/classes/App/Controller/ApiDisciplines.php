@@ -3,8 +3,13 @@
 namespace App\Controller;
 
 use App\Libraries\Request,
-    App\Libraries\Auth as Auth;
+    App\Libraries\Auth;
 
+/**
+ * Class ApiDisciplines
+ *      API управления курсами/дисциплинами
+ * @package App\Controller
+ */
 class ApiDisciplines extends ApiController
 {
 
@@ -12,7 +17,11 @@ class ApiDisciplines extends ApiController
     {
         if ($this->getUserId()) {
             $this->response('disciplines',
-                $this->pixie->db->query('select')->table('disciplines')->execute()->as_array()
+                $this->pixie->db
+                    ->query('select')
+                    ->table('disciplines')
+                    ->execute()
+                    ->as_array()
             );
         } else {
             $this->response('disciplines', array());
@@ -21,31 +30,53 @@ class ApiDisciplines extends ApiController
 
     public function action_my_disciplines()
     {
+        $disciplines = array();
+
         if (!$this->getUserId()) {
-            $this->response('disciplines', array());
+            $this->response('disciplines', $disciplines);
             return;
         }
 
         switch ($this->getRole()) {
             case 'admin':
-                $this->response('disciplines',
-                    $this->pixie->db->query('select')->table('disciplines')->execute()->as_array()
-                );
+                $disciplines = $this->pixie->db
+                    ->query('select')
+                    ->table('disciplines')
+                    ->execute()
+                    ->as_array();
                 break;
             case 'student':
-                $this->response('disciplines',
-                    $this->pixie->db->query('select')->table('disciplines')
-                        ->where('discipline_id', 'IN', $this->pixie->db->query('select')->table('subscriptions')
-                            ->fields('group_access.discipline_id')
-                            ->join('group_access', array('group_access.group_id', 'subscriptions.group_id'), 'inner')
-                            ->where('user_id', $this->getUserId()))
-                        ->execute()->as_array()
-                );
+                $disciplines = $this->pixie->db
+                    ->query('select')
+                    ->table('disciplines')
+                    ->where('discipline_id', 'IN', $this->pixie->db
+                        ->query('select')
+                        ->table('subscriptions')
+                        ->fields('group_access.discipline_id')
+                        ->join('group_access', array('group_access.group_id', 'subscriptions.group_id'), 'inner')
+                        ->where('user_id', $this->getUserId()))
+                    ->execute()
+                    ->as_array();
                 break;
             case 'teacher':
-                //todo: надо еще обдумать
+                $disciplines = $this->pixie->db
+                    ->query('select')
+                    ->table('disciplines')
+                    ->where('discipline_id', 'IN', $this->pixie->db
+                        ->query('select')
+                        ->table('subscriptions')
+                        ->fields('group_access.discipline_id')
+                        ->join('group_access', array('group_access.group_id', 'subscriptions.group_id'), 'inner')
+                        ->where('user_id', $this->getUserId()))
+                    ->where('or', array('creator_id', $this->getUserId()))
+                    ->execute()
+                    ->as_array();
+                break;
+            default:
                 break;
         }
+
+        $this->response('disciplines', $disciplines);
     }
 
     public function action_info()

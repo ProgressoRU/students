@@ -2,9 +2,13 @@
 
 namespace App\Controller;
 
-use Exception,
-    App\Libraries\Request,
-    App\Libraries\Auth as Auth;
+use App\Libraries\Request;
+
+/**
+ * Class ApiGroups
+ *      API управления группами
+ * @package App\Controller
+ */
 
 class ApiGroups extends ApiController
 {
