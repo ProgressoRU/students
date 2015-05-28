@@ -242,3 +242,8 @@ body
 .animate-enter.ng-enter.ng-enter-active {
     opacity:1;
 }
+
+.pointer
+{
+    cursor: pointer;
+}

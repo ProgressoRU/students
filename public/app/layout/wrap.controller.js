@@ -5,9 +5,9 @@
         .module('students')
         .controller('WrapController', WrapController);
 
-    WrapController.$inject = ['SessionService', 'AuthService', 'DataService', 'alertService', '$modal'];
+    WrapController.$inject = ['SessionService', 'AuthService', 'alertService', '$modal', 'GroupService', 'DisciplineService'];
 
-    function WrapController(SessionService, AuthService, DataService, alertService, $modal) {
+    function WrapController(SessionService, AuthService, alertService, $modal, GroupService, DisciplineService) {
 
         /*jshint validthis: true */
         var vm = this;
@@ -32,8 +32,8 @@
         ////////////
 
         function activate() {
-            getGroups(); //TODO: нужно выполнять только у админов и учителей
             getDisciplines();
+            getGroups(); //TODO: нужно выполнять только у админов и учителей
         }
 
         //локальная проверка авторизации
@@ -50,16 +50,16 @@
 
         //получение доступных предметов
         function getDisciplines() {
-            return DataService.send('api/disciplines/my').success(function (data) {
+            DisciplineService.get().success(function(data){
                 vm.disciplines = data.disciplines;
-            })
+            });
         }
 
         //получение списка групп
         function getGroups() {
-            return DataService.send('api/groups/list').success(function (data) {
-                vm.groups = data.groups;
-            })
+            GroupService.get().success(function(data){
+               vm.groups = data.groups;
+            });
         }
 
         //очистка списка предметов

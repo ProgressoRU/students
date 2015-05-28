@@ -3,6 +3,115 @@
         <h1>Управление группами</h1>
     </div>
     <div class="row">
-        Page is under construction!
+        <tabset justified="true" class="col-md-9">
+            <tab heading="Курсы">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>
+                            Курс
+                        </th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tr class="pointer">
+                        <td>Информационные технологии и платформы разработки информационных систем</td>
+                        <td></td>
+                    </tr>
+                    <tr class="pointer success">
+                        <td>Информационные технологии и платформы разработки информационных систем</td>
+                        <td><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></td>
+                    </tr>
+                    <tr class="pointer">
+                        <td>Короткое название</td>
+                        <td></td>
+                    </tr>
+                </table>
+            </tab>
+            <tab heading="Подписчики">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>ФИО</th>
+                        <th>Группа</th>
+                        <th>Права</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tr>
+                        <td>Константин Константинович Константинопольский</td>
+                        <td>Автоматизированные Системы Обработки Информациии, 4 курс</td>
+                        <td>
+                            Читатель
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-xs"><span
+                                    class="glyphicon glyphicon-minus"
+                                    aria-hidden="true"></span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Константин Константинович Константинопольский</td>
+                        <td>Автоматизированные Системы Обработки Информациии, 4 курс</td>
+                        <td>Читатель</td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-xs"><span
+                                    class="glyphicon glyphicon-minus"
+                                    aria-hidden="true"></span>
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </tab>
+        </tabset>
+
+        <div class="col-md-3">
+            <h4>Управление</h4>
+            <hr>
+            <form class="form-horizontal col-md-12" method="post" name="groupParams">
+                <div class="form-group">
+                    <label for="title">Название: </label>
+                    <input type="text" class="form-control" id="title" data-ng-model="vm.group.title"
+                           placeholder="Будет известно только вам">
+                </div>
+                <div class="form-group">
+                    <label for="passcode">Кодовое слово: </label>
+                    <input type="text" class="form-control" id="passcode" data-ng-model="vm.group.passcode"
+                           placeholder="Передайте его тем, кого хотите пригласить в группу">
+                </div>
+
+                <div class="form-group">
+                    <label for="expiration">Срок действия кодового слова: </label>
+
+                    <span class="input-group" data-ng-hide="modal.turnExpiration == 1">
+                        <span class="input-group-addon">
+                            <input type="checkbox" data-ng-model="vm.expirationOn" data-ng-change="vm.turnExpiration()">
+                        </span>
+                        <input id="expiration" type="text" class="form-control"
+                               data-datepicker-popup="dd.MM.yy"
+                               data-ng-model="vm.group.expire_date"
+                               data-is-open="vm.opened"
+                               data-min-date="vm.minDate" data-datepicker-options="vm.dateOptions"
+                               data-ng-required="true"
+                               data-show-button-bar="false"
+                               data-ng-disabled="!vm.expirationOn"
+                               data-ng-click="vm.open($event)"
+                               placeholder="БЕССРОЧНО"
+                               readonly/>
+                            <span class="input-group-btn">
+                            <button type="button" data-ng-disabled="!vm.expirationOn" class="btn btn-default"
+                                    data-ng-click="vm.open($event)"><i
+                                    class="glyphicon glyphicon-calendar"
+                                    ></i></button>
+                            </span>
+                    </span>
+                </div>
+                <div class="form-group pull-right">
+                    <button class="btn btn-danger">Удалить</button>
+                    <button class="btn btn-primary">Сохранить</button>
+                </div>
+            </form>
+        </div>
     </div>
 </article>

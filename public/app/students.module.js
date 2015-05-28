@@ -34,12 +34,12 @@
                     templateUrl: 'public/app/disciplines/discipline.html',
                     controllerAs: 'vm'
                 }).
-                when('/class/edit/:disciplineID', {
+                when('/class/edit/:disciplineId', {
                     controller: 'DisciplineEditController',
                     templateUrl: 'public/app/disciplines/disciplineEdit.html',
                     controllerAs: 'vm'
                 }).
-                when('/group/:groupID', {
+                when('/group/:groupId', {
                     controller: 'GroupController',
                     templateUrl: 'public/app/groups/group.html',
                     controllerAs: 'vm'

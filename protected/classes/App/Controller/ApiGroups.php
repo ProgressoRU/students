@@ -27,6 +27,19 @@ class ApiGroups extends ApiController
             ->execute()->as_array());
     }
 
+    public function action_details()
+    {
+        // Проверка прав доступа (Функция в ApiController)
+        if (!$this->isInRole(array('admin', 'teacher'), false)) {
+            return;
+        }
+
+        $groupId = Request::getInt('groupId');
+        $this->response('group', $this->pixie->db->query('select')->table('groups')
+            ->where('group_id', $groupId)
+            ->execute()->current());
+    }
+
     public function action_new()
     {
         // Проверка прав доступа (Функция в ApiController)

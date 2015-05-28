@@ -5,9 +5,9 @@
         .module('students')
         .factory('SessionService', SessionService);
 
-    SessionService.$inject = [];
+    SessionService.$inject = ['DisciplineService', 'GroupService'];
 
-    function SessionService() {
+    function SessionService(DisciplineService, GroupService) {
         var service = {
             create: create,
             destroy: destroy
@@ -32,6 +32,8 @@
             this.patronymic = null;
             this.group = null;
             this.userRole = null;
+            DisciplineService.destroy();
+            GroupService.destroy();
         }
     }
 })();

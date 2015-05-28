@@ -106,13 +106,6 @@ return array(
             'action' => 'delete'
         )
     ),
-	'courses' => array(
-		'/api/courses/all',
-		array(
-			'controller' => 'apiCourses',
-			'action' => 'index'
-		)
-	),
     'subscribe' => array(
         '/api/groups/subscribe',
         array(
@@ -125,6 +118,13 @@ return array(
         array(
             'controller' => 'apiGroups',
             'action' => 'list'
+        )
+    ),
+    'group_details' => array(
+        '/api/groups/details',
+        array(
+            'controller' => 'apiGroups',
+            'action' => 'details'
         )
     ),
     'group_new' => array(
