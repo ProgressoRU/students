@@ -5,9 +5,9 @@
         .module('students')
         .service('DisciplineService', DisciplineService);
 
-    DisciplineService.$inject = ['DataService', '$q'];
+    DisciplineService.$inject = ['DataService', '$q', '$timeout'];
 
-    function DisciplineService(DataService, $q) {
+    function DisciplineService(DataService, $q, $timeout) {
         var disciplines = null;
         var service = {
             append: append,
@@ -32,9 +32,7 @@
                     return disciplines = data.disciplines;
                 })
             } else {
-                return $q(function(resolve/*, reject*/) {
-                    resolve(disciplines);
-                })
+                return $q.when({ data: {disciplines: disciplines} });
             }
         }
     }

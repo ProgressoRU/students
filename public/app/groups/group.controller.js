@@ -41,8 +41,9 @@
 
         function getAvailableDisciplines()
         {
-            DisciplineService.get().success(function(data) {
-                vm.disciplines = data.disciplines;
+            DisciplineService.get().then(function(response) {
+                console.log(response.data);
+                vm.disciplines = response.data.disciplines;
             })
         }
 
