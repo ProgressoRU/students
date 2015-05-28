@@ -56,8 +56,8 @@
         }
 
         //получение списка групп
-        function getGroups() {
-            GroupService.get().success(function(data){
+        function getGroups(clearCache) {
+            GroupService.get(clearCache).success(function(data){
                vm.groups = data.groups;
             });
         }

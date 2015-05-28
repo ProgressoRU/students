@@ -5,10 +5,10 @@
         .module('students')
         .service('GroupService', GroupService);
 
-    GroupService.$inject = ['DataService'];
+    GroupService.$inject = ['$q', 'DataService'];
 
-    function GroupService(DataService) {
-        var groups = [];
+    function GroupService($q, DataService) {
+        var groups = null;
         var service = {
             append: append,
             destroy: destroy,
@@ -27,10 +27,16 @@
             groups = [];
         }
 
-        function get() {
-            return DataService.send('api/groups/list').success(function(data){
-                return groups = data.groups;
-            })
+        function get(clearCache) {
+            if (clearCache || groups === null) {
+                return DataService.send('api/groups/list').success(function(data){
+                    return groups = data.groups;
+                })
+            } else {
+                return $q(function(resolve/*, reject*/) {
+                    resolve(groups);
+                })
+            }
         }
 
         function getDetails(groupId){

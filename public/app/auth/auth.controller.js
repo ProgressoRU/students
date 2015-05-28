@@ -40,7 +40,7 @@
                 .success(function () {
                     $route.reload();
                     $scope.wrap.getDisciplines();
-                    $scope.wrap.getGroups();
+                    $scope.wrap.getGroups(true);
                 })
         }
 
