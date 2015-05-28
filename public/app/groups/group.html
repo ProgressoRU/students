@@ -14,16 +14,8 @@
                         <th></th>
                     </tr>
                     </thead>
-                    <tr class="pointer">
-                        <td>Информационные технологии и платформы разработки информационных систем</td>
-                        <td></td>
-                    </tr>
-                    <tr class="pointer success">
-                        <td>Информационные технологии и платформы разработки информационных систем</td>
-                        <td><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></td>
-                    </tr>
-                    <tr class="pointer">
-                        <td>Короткое название</td>
+                    <tr class="pointer" data-ng-repeat="discipline in vm.disciplines" data-ng-if="discipline.is_creator">
+                        <td>{{discipline.title}}</td>
                         <td></td>
                     </tr>
                 </table>

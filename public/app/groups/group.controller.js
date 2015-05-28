@@ -17,11 +17,12 @@
         };
         vm.groupId = $routeParams.groupId;
         vm.group = null;
-        vm.disciplines = DisciplineService.append();
+        vm.disciplines = null;
         vm.minDate = null;
         vm.opened = false;
         vm.expirationOn = false;
 
+        vm.getAvailableDisciplines = getAvailableDisciplines;
         vm.getGroupDetails = getGroupDetails;
         vm.open = open;
         vm.toggleMin = toggleMin;
@@ -34,7 +35,15 @@
         function activate()
         {
             getGroupDetails(vm.groupId);
+            getAvailableDisciplines();
             toggleMin();
+        }
+
+        function getAvailableDisciplines()
+        {
+            DisciplineService.get().success(function(data) {
+                vm.disciplines = data.disciplines;
+            })
         }
 
         function getGroupDetails(groupId)

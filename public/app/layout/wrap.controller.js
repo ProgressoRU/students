@@ -49,8 +49,8 @@
         }
 
         //получение доступных предметов
-        function getDisciplines() {
-            DisciplineService.get().success(function(data){
+        function getDisciplines(clearCache) {
+            DisciplineService.get(clearCache).success(function(data){
                 vm.disciplines = data.disciplines;
             });
         }

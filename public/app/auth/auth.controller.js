@@ -39,7 +39,7 @@
             AuthService.login(credentials)
                 .success(function () {
                     $route.reload();
-                    $scope.wrap.getDisciplines();
+                    $scope.wrap.getDisciplines(true);
                     $scope.wrap.getGroups(true);
                 })
         }
