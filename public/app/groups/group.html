@@ -1,8 +1,8 @@
 <article class="myWrap col-md-10 col-xs-12 col-sm-12">
     <div class="page-header">
-        <h1>Управление группами</h1>
+        <h1>Управление группой {{vm.group.title}}</h1>
     </div>
-    <div class="row">
+    <div class="row" data-ng-if="vm.group.teacher_id == wrap.currentUser.userId">
         <tabset justified="true" class="col-md-9">
             <tab heading="Курсы">
                 <table class="table table-hover">
@@ -14,7 +14,10 @@
                         <th></th>
                     </tr>
                     </thead>
-                    <tr class="pointer" data-ng-repeat="discipline in vm.disciplines" data-ng-if="discipline.is_creator">
+                    <tr class="pointer"
+                        data-ng-repeat="discipline in vm.disciplines"
+                        data-ng-if="discipline.is_creator"
+                        data-ng-class="{success: discipline.access}">
                         <td>{{discipline.title}}</td>
                         <td></td>
                     </tr>
@@ -30,23 +33,10 @@
                         <th></th>
                     </tr>
                     </thead>
-                    <tr>
-                        <td>Константин Константинович Константинопольский</td>
-                        <td>Автоматизированные Системы Обработки Информациии, 4 курс</td>
-                        <td>
-                            Читатель
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-danger btn-xs"><span
-                                    class="glyphicon glyphicon-minus"
-                                    aria-hidden="true"></span>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Константин Константинович Константинопольский</td>
-                        <td>Автоматизированные Системы Обработки Информациии, 4 курс</td>
-                        <td>Читатель</td>
+                    <tr data-ng-repeat="user in vm.subscribers">
+                        <td>{{user.surname}} {{user.name}} {{user.patronymic}}</td>
+                        <td>{{user.group}}</td>
+                        <td>{{user.is_editor}}</td>
                         <td>
                             <button type="button" class="btn btn-danger btn-xs"><span
                                     class="glyphicon glyphicon-minus"

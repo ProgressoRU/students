@@ -9,7 +9,6 @@ use App\Libraries\Request;
  *      API управления группами
  * @package App\Controller
  */
-
 class ApiGroups extends ApiController
 {
 
@@ -33,11 +32,51 @@ class ApiGroups extends ApiController
         if (!$this->isInRole(array('admin', 'teacher'), false)) {
             return;
         }
-
+        $uId = isset($_COOKIE['id']) ? $_COOKIE['id'] : 0;
         $groupId = Request::getInt('groupId');
         $this->response('group', $this->pixie->db->query('select')->table('groups')
             ->where('group_id', $groupId)
+            ->where('teacher_id', $uId)
             ->execute()->current());
+    }
+
+    public function action_subscribers()
+    {
+        // Проверка прав доступа (Функция в ApiController)
+        if (!$this->isInRole(array('admin', 'teacher'), false)) {
+            return true;
+        }
+
+        $uId = $this->getUserId();
+        $groupId = Request::getInt('groupId');
+        $group = $this->pixie->db->query('select')->table('groups')
+            ->where('group_id', $groupId)
+            ->where('teacher_id', $uId)
+            ->execute()->current();
+
+        if (empty($group))
+            return $this->forbidden();
+
+        $this->response('subscribers', $this->pixie->db->query('select')->table('subscriptions')
+            ->join('users', array('users.user_id', 'subscriptions.user_id'), 'inner')
+            ->where('group_id', $groupId)
+            ->fields('user_id', 'users.surname', 'users.name', 'users.patronymic', 'users.group', 'is_editor')
+            ->execute()->as_array());
+        return $this->ok();
+    }
+
+    public function action_group_access()
+    {
+        if (!$this->isInRole(array('admin', 'teacher'), false)) {
+            return true;
+        }
+        //todo: проверка
+        $groupId = Request::getInt('groupId');
+        $this->response('access', $this->pixie->db->query('select')->table('group_access')
+            ->fields('discipline_id')
+            ->where('group_id', $groupId)
+            ->execute()->as_array());
+        return $this->ok();
     }
 
     public function action_new()
@@ -134,15 +173,15 @@ class ApiGroups extends ApiController
                     ->fields('discipline_id')
                     ->where('group_id', $groupId))
                 ->execute()->as_array();
-                /*
-                 * Ниже расположена полная версия запроса на SQL для справки
-                 * SELECT * FROM
-                 * (SELECT discipline_id FROM subscriptions AS sub
-                 * INNER JOIN group_access AS ga1 ON sub.group_id = ga1.group_id
-                 * WHERE user_id = <$uId>) AS subquery
-                 * WHERE discipline_id IN (SELECT discipline_id FROM group_access
-                 * WHERE group_id = <$groupId>)
-                 */
+        /*
+         * Ниже расположена полная версия запроса на SQL для справки
+         * SELECT * FROM
+         * (SELECT discipline_id FROM subscriptions AS sub
+         * INNER JOIN group_access AS ga1 ON sub.group_id = ga1.group_id
+         * WHERE user_id = <$uId>) AS subquery
+         * WHERE discipline_id IN (SELECT discipline_id FROM group_access
+         * WHERE group_id = <$groupId>)
+         */
         if (!empty($coincidence)) {
             return $this->badRequest(28);
         }

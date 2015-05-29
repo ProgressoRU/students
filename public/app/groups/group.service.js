@@ -8,40 +8,55 @@
     GroupService.$inject = ['$q', 'DataService'];
 
     function GroupService($q, DataService) {
-        var groups = null;
-        var service = {
-            append: append,
+        var service =
+        {
+            groups: null,
+            details: null,
+            access: null,
+            subscribers: null,
+            ////////
             destroy: destroy,
             get: get,
-            getDetails: getDetails
+            getDetails: getDetails,
+            getGroupAccess: getGroupAccess,
+            getSubscribers: getSubscribers
         };
 
         return service;
         ////////////////
 
-        function append() {
-            return groups;
-        }
-
         function destroy() {
-            groups = [];
+            service.groups = null;
+            service.details = null;
+            service.access = null;
+            service.subscribers = null;
         }
 
         function get(clearCache) {
-            if (clearCache || groups === null) {
-                return DataService.send('api/groups/list').success(function(data){
-                    return groups = data.groups;
+            if (clearCache || service.groups === null) {
+                return DataService.send('api/groups/list').success(function (data) {
+                    return service.groups = data.groups;
                 })
             } else {
-                return $q(function(resolve/*, reject*/) {
-                    resolve(groups);
-                })
+                return $q.when({data: {groups: service.groups}});
             }
         }
 
-        function getDetails(groupId){
-            return DataService.send('api/groups/details', {groupId: groupId}).success(function(data){
-                return data.group;
+        function getDetails(groupId) {
+            return DataService.send('api/groups/details', {groupId: groupId}).success(function (data) {
+                return service.details = data.group;
+            })
+        }
+
+        function getGroupAccess(groupId){
+            return DataService.send('api/groups/access', {groupId: groupId}).success(function (data) {
+                return service.access = data.access;
+            })
+        }
+
+        function getSubscribers(groupId) {
+            return DataService.send('api/groups/subscribers', {groupId: groupId}).success(function (data) {
+                return service.subscribers = data.subscribers;
             })
         }
     }

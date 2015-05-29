@@ -5,34 +5,34 @@
         .module('students')
         .service('DisciplineService', DisciplineService);
 
-    DisciplineService.$inject = ['DataService', '$q', '$timeout'];
+    DisciplineService.$inject = ['DataService', '$q'];
 
-    function DisciplineService(DataService, $q, $timeout) {
-        var disciplines = null;
+    function DisciplineService(DataService, $q) {
         var service = {
             append: append,
             destroy: destroy,
-            get: get
+            get: get,
+            disciplines: null
         };
 
         return service;
         ////////////////
 
         function append() {
-            return disciplines;
+            return service.disciplines;
         }
 
         function destroy() {
-            disciplines = [];
+            service.disciplines = null;
         }
 
         function get(clearCache) {
-            if (clearCache || disciplines === null) {
+            if (clearCache || service.disciplines === null) {
                 return DataService.send('api/disciplines/my').success(function(data){
-                    return disciplines = data.disciplines;
+                    return service.disciplines = data.disciplines;
                 })
             } else {
-                return $q.when({ data: {disciplines: disciplines} });
+                return $q.when({ data: {disciplines: service.disciplines} });
             }
         }
     }

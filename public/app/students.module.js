@@ -42,7 +42,21 @@
                 when('/group/:groupId', {
                     controller: 'GroupController',
                     templateUrl: 'public/app/groups/group.html',
-                    controllerAs: 'vm'
+                    controllerAs: 'vm',
+                    resolve: { //todo: рефакторинг
+                        getDisciplines: function (DisciplineService) {
+                            return DisciplineService.get();
+                        },
+                        getDetails: function (GroupService, $route) {
+                            return GroupService.getDetails($route.current.params.groupId);
+                        },
+                        getGroupAccess: function (GroupService, $route) {
+                            return GroupService.getGroupAccess($route.current.params.groupId);
+                        },
+                        getSubscribers: function (GroupService, $route) {
+                            return GroupService.getSubscribers($route.current.params.groupId);
+                        }
+                    }
                 }).
                 when('/users', {
                     controller: 'UserRightsController',

@@ -127,6 +127,20 @@ return array(
             'action' => 'details'
         )
     ),
+    'group_subscribers' => array(
+        '/api/groups/subscribers',
+        array(
+            'controller' => 'apiGroups',
+            'action' => 'subscribers'
+        )
+    ),
+    'group_access' => array(
+        '/api/groups/access',
+        array(
+            'controller' => 'apiGroups',
+            'action' => 'group_access'
+        )
+    ),
     'group_new' => array(
         '/api/groups/new',
         array(
