@@ -15,13 +15,17 @@
                     </tr>
                     </thead>
                     <tr class="pointer"
-                        data-ng-repeat="discipline in vm.disciplines"
+                        data-ng-repeat="discipline in vm.disciplines track by discipline.discipline_id"
                         data-ng-if="discipline.is_creator"
+                        data-ng-click="vm.setAccess(discipline.discipline_id, $index)"
                         data-ng-class="{success: discipline.access}">
                         <td>{{discipline.title}}</td>
-                        <td></td>
+                        <td><span class="glyphicon glyphicon-ok" data-ng-if="discipline.access"></span></td>
                     </tr>
                 </table>
+                <button data-ng-if="vm.changed" class="btn btn-primary pull-right" data-ng-click="vm.saveAccessData()">
+                    Сохранить
+                </button>
             </tab>
             <tab heading="Подписчики">
                 <table class="table table-hover">

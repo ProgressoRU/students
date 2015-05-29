@@ -19,7 +19,8 @@
             get: get,
             getDetails: getDetails,
             getGroupAccess: getGroupAccess,
-            getSubscribers: getSubscribers
+            getSubscribers: getSubscribers,
+            saveAccessData: saveAccessData
         };
 
         return service;
@@ -58,6 +59,10 @@
             return DataService.send('api/groups/subscribers', {groupId: groupId}).success(function (data) {
                 return service.subscribers = data.subscribers;
             })
+        }
+
+        function saveAccessData(accessData, groupId){
+            return DataService.send('api/groups/access_save', {groupId: groupId, accessData: accessData});
         }
     }
 })();

@@ -141,6 +141,13 @@ return array(
             'action' => 'group_access'
         )
     ),
+    'group_access_save' => array(
+        '/api/groups/access_save',
+        array(
+            'controller' => 'apiGroups',
+            'action' => 'access_save'
+        )
+    ),
     'group_new' => array(
         '/api/groups/new',
         array(
