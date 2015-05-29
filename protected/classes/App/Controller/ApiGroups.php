@@ -295,4 +295,30 @@ class ApiGroups extends ApiController
 
         return $this->ok(29);
     }
+
+    public function action_unsubscribe(){
+        if (!$this->isInRole(array('admin', 'teacher'), false)) {
+            return true;
+        }
+
+        $uId = $this->getUserId();
+        $groupId = Request::getInt('groupId');
+        $subscriberId = Request::getInt('userId');
+        $role = $this->getRole();
+        if ($role != 'admin') {
+            $group = $this->pixie->db->query('select')->table('groups')
+                ->where('group_id', $groupId)
+                ->where('teacher_id', $uId)
+                ->execute()->current();
+
+            if (empty($group))
+                return $this->forbidden();
+        }
+
+        $this->pixie->db->query('delete')->table('subscriptions')
+            ->data(array(array('group_id', $groupId), array('user_id', $subscriberId)))
+            ->execute();
+
+        return $this->ok(98);
+    }
 }

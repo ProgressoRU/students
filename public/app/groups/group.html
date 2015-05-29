@@ -23,7 +23,9 @@
                         <td><span class="glyphicon glyphicon-ok" data-ng-if="discipline.access"></span></td>
                     </tr>
                 </table>
-                <button data-ng-if="vm.changed" class="btn btn-primary pull-right animate-if" data-ng-click="vm.saveAccessData()">
+                <button data-ng-if="vm.changed"
+                        class="btn btn-primary pull-right animate-if"
+                        data-ng-click="vm.saveAccessData()">
                     Сохранить
                 </button>
             </tab>
@@ -42,9 +44,13 @@
                         <td>{{user.group}}</td>
                         <td>{{user.is_editor}}</td>
                         <td>
-                            <button type="button" class="btn btn-danger btn-xs"><span
-                                    class="glyphicon glyphicon-minus"
-                                    aria-hidden="true"></span>
+                            <button type="button"
+                                    class="btn btn-danger btn-xs"
+                                    data-ng-click="vm.unsubscribeUser(user.user_id)">
+                                        <span
+                                                class="glyphicon glyphicon-minus"
+                                                aria-hidden="true">
+                                        </span>
                             </button>
                         </td>
                     </tr>

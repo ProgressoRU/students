@@ -21,7 +21,8 @@
             getDetails: getDetails,
             getGroupAccess: getGroupAccess,
             getSubscribers: getSubscribers,
-            saveAccessData: saveAccessData
+            saveAccessData: saveAccessData,
+            unsubscribe: unsubscribe
         };
 
         return service;
@@ -72,6 +73,10 @@
                 addList: addList,
                 deleteList: deleteList
             });
+        }
+
+        function unsubscribe(userId, groupId) {
+            return DataService.send('api/groups/unsubscribe', {userId: userId, groupId: groupId});
         }
     }
 })();

@@ -155,6 +155,13 @@ return array(
             'action' => 'delete'
         )
     ),
+    'group_unsubscribe_user' => array(
+        '/api/groups/unsubscribe',
+        array(
+            'controller' => 'apiGroups',
+            'action' => 'unsubscribe'
+        )
+    ),
     'group_new' => array(
         '/api/groups/new',
         array(

@@ -35,6 +35,7 @@
         vm.setAccess = setAccess;
         vm.toggleMin = toggleMin;
         vm.turnExpiration = turnExpiration;
+        vm.unsubscribeUser = unsubscribeUser;
 
         activate();
 
@@ -132,6 +133,15 @@
                 vm.group.expire_date = new Date();
             else
                 vm.group.expire_date = null;
+        }
+
+        function unsubscribeUser(userId){
+            GroupService.unsubscribe(userId, vm.groupId).success(function(){
+                GroupService.getSubscribers(vm.groupId).then(function()
+                {
+                    vm.subscribers = GroupService.subscribers;
+                })
+            })
         }
 
     }
