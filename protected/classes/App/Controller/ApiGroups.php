@@ -99,14 +99,43 @@ class ApiGroups extends ApiController
             ->where('group_id', $groupId)
             ->execute();
 
-        $accessData = Request::getArray('accessData');
-        //var_dump($accessData);
+        $addList = Request::getArray('addList');
+        $deleteList = Request::getArray('deleteList');
 
-        foreach ($accessData as $entry)
-            $this->pixie->db->query('insert')->table('group_access')
-                ->data(array('group_id' => $groupId, 'discipline_id' => $entry['discipline_id']))
-                ->execute();
+        //DELETING
+        if (!empty($deleteList)) {
+            foreach ($deleteList as $entry) {
+                //прогресс
+                $lectureList = $this->pixie->db->query('select')->table('lectures')
+                    ->fields('lecture_id')
+                    ->where('discipline_id', $entry);
+                $this->pixie->db->query('delete')->table('group_progress')
+                    ->where('group_id', $groupId)
+                    ->where('lecture_id', 'IN', $lectureList)
+                    ->execute();
+                //доступ
+                $this->pixie->db->query('delete')->table('group_access')
+                    ->where(array(array('discipline_id', $entry), array('group_id', $groupId)))
+                    ->execute();
+            }
+        }
 
+        //ADDING
+        if (!empty ($addList)) {
+            foreach ($addList as $entry) {
+                $lectureList = $this->pixie->db->query('select')->table('lectures')
+                    ->fields('lecture_id')
+                    ->where('discipline_id', $entry)
+                    ->execute()->as_array();
+                foreach ($lectureList as $lecture)
+                    $this->pixie->db->query('insert')->table('group_progress')
+                        ->data(array('group_id' => $groupId, 'lecture_id' => $lecture->lecture_id, 'is_visible' => 0))
+                        ->execute();
+                $this->pixie->db->query('insert')->table('group_access')
+                    ->data(array('group_id' => $groupId, 'discipline_id' => $entry['discipline_id']))
+                    ->execute();
+            }
+        }
         return $this->ok(10);
     }
 
@@ -171,17 +200,17 @@ class ApiGroups extends ApiController
 
         //удаляем подписчиков
         $this->pixie->db->query('delete')->table('subscriptions')
-            ->where('group_id',$groupId)
+            ->where('group_id', $groupId)
             ->execute();
 
         //удаляем информацию по лекциям
         $this->pixie->db->query('delete')->table('group_progress')
-            ->where('group_id',$groupId)
+            ->where('group_id', $groupId)
             ->execute();
 
         //удаляем информацию о доступных курсах
         $this->pixie->db->query('delete')->table('group_progress')
-            ->where('group_id',$groupId)
+            ->where('group_id', $groupId)
             ->execute();
 
         //удаляем группу

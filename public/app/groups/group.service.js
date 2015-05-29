@@ -27,7 +27,7 @@
         return service;
         ////////////////
 
-        function deleteGroup(groupId){
+        function deleteGroup(groupId) {
             return DataService.send('api/groups/delete', {groupId: groupId});
         }
 
@@ -54,7 +54,7 @@
             })
         }
 
-        function getGroupAccess(groupId){
+        function getGroupAccess(groupId) {
             return DataService.send('api/groups/access', {groupId: groupId}).success(function (data) {
                 return service.access = data.access;
             })
@@ -66,8 +66,12 @@
             })
         }
 
-        function saveAccessData(accessData, groupId){
-            return DataService.send('api/groups/access_save', {groupId: groupId, accessData: accessData});
+        function saveAccessData(addList, deleteList, groupId) {
+            return DataService.send('api/groups/access_save', {
+                groupId: groupId,
+                addList: addList,
+                deleteList: deleteList
+            });
         }
     }
 })();

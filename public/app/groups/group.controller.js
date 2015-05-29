@@ -24,6 +24,8 @@
         vm.expirationOn = false;
         vm.subscribers = GroupService.subscribers;
         vm.changed = false;
+        vm.addList = [];
+        vm.deleteList = [];
 
         vm.deleteGroup = deleteGroup;
         vm.prepareData = prepareData;
@@ -43,8 +45,8 @@
             toggleMin();
         }
 
-        function deleteGroup(){
-            GroupService.deleteGroup(vm.groupId).success(function(){
+        function deleteGroup() {
+            GroupService.deleteGroup(vm.groupId).success(function () {
                 GroupService.get(true);
                 $location.url('/news');
             })
@@ -67,28 +69,52 @@
             });
         }
 
-        function saveAccessData()
-        {
-            GroupService.saveAccessData(vm.accessData, vm.groupId).success(function(){
+        function saveAccessData() {
+            GroupService.saveAccessData(vm.addList, vm.deleteList, vm.groupId).success(function () {
                 vm.changed = false;
-            });
+                GroupService.getGroupAccess(vm.groupId).then(function()
+                {
+                    vm.accessData = GroupService.access;
+                    prepareData();
+                })
+            })
         }
 
-        function saveGroup()
-        {
+        function saveGroup() {
         }
 
         function setAccess(idInDb, idInJson) {
             vm.disciplines[idInJson].access = !vm.disciplines[idInJson].access;
             vm.changed = true;
-            if (vm.disciplines[idInJson].access)
-                vm.accessData.push({
-                    discipline_id: idInDb
-                });
-            else
-                for (var i = 0; i < vm.accessData.length; i++)
+            if (vm.disciplines[idInJson].access) {
+                if (vm.deleteList != null)
+                    for (var i = 0; i < vm.deleteList.length; i++)
+                        if (vm.deleteList[i] == idInDb)
+                            vm.deleteList.splice(i, 1);
+                var exist = false;
+                for (i = 0; i < vm.accessData.length; i++)
                     if (vm.accessData[i].discipline_id == idInDb)
-                        vm.accessData.splice(i, 1);
+                        exist = true;
+                if (!exist)
+                    vm.addList.push(idInDb);
+            }
+            else {
+                if (vm.addList != null)
+                    for (i = 0; i < vm.addList.length; i++)
+                        if (vm.addList[i] == idInDb)
+                            vm.addList.splice(i, 1);
+                exist = false;
+                for (i = 0; i < vm.accessData.length; i++)
+                    if (vm.accessData[i].discipline_id == idInDb)
+                        exist = true;
+                if (exist)
+                    vm.deleteList.push(idInDb);
+            }
+
+            console.log(vm.deleteList);
+
+            if (vm.addList.length == 0 && vm.deleteList.length == 0)
+                vm.changed = false;
         }
 
         function open($event) {
@@ -109,4 +135,5 @@
         }
 
     }
-})();
+})
+();
