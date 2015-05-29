@@ -148,6 +148,13 @@ return array(
             'action' => 'access_save'
         )
     ),
+    'group_delete' => array(
+        '/api/groups/delete',
+        array(
+            'controller' => 'apiGroups',
+            'action' => 'delete'
+        )
+    ),
     'group_new' => array(
         '/api/groups/new',
         array(

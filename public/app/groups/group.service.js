@@ -15,6 +15,7 @@
             access: null,
             subscribers: null,
             ////////
+            deleteGroup: deleteGroup,
             destroy: destroy,
             get: get,
             getDetails: getDetails,
@@ -25,6 +26,10 @@
 
         return service;
         ////////////////
+
+        function deleteGroup(groupId){
+            return DataService.send('api/groups/delete', {groupId: groupId});
+        }
 
         function destroy() {
             service.groups = null;

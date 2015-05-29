@@ -15,8 +15,8 @@
         vm.alerts = alertService.get();
         vm.closeAlert = alertService.close;
         vm.currentUser = SessionService;
-        vm.disciplines = [];
-        vm.groups = [];
+        vm.disciplines = DisciplineService.disciplines;
+        vm.groups = GroupService.groups;
 
         vm.clearDisciplineList = clearDisciplineList;
         vm.clearGroupList = clearGroupList;
@@ -81,7 +81,7 @@
                 size: size
             });
             modalInstance.result.then(function (success) {
-                if (success) getDisciplines();
+                if (success) getDisciplines(true);
             });
         }
 
@@ -94,7 +94,7 @@
                 size: size
             });
             modalInstance.result.then(function (success) {
-                if (success) getGroups();
+                if (success) getGroups(true);
             });
         }
     }

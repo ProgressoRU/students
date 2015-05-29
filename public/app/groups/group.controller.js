@@ -5,9 +5,9 @@
         .module('students')
         .controller('GroupController', GroupController);
 
-    GroupController.$inject = ['$routeParams', 'GroupService', 'DisciplineService'];
+    GroupController.$inject = ['$routeParams', 'GroupService', 'DisciplineService', '$location'];
 
-    function GroupController($routeParams, GroupService, DisciplineService) {
+    function GroupController($routeParams, GroupService, DisciplineService, $location) {
         /*jshint validthis: true */
         var vm = this;
 
@@ -25,9 +25,11 @@
         vm.subscribers = GroupService.subscribers;
         vm.changed = false;
 
+        vm.deleteGroup = deleteGroup;
         vm.prepareData = prepareData;
         vm.open = open;
         vm.saveAccessData = saveAccessData;
+        vm.saveGroup = saveGroup;
         vm.setAccess = setAccess;
         vm.toggleMin = toggleMin;
         vm.turnExpiration = turnExpiration;
@@ -39,6 +41,13 @@
         function activate() {
             prepareData();
             toggleMin();
+        }
+
+        function deleteGroup(){
+            GroupService.deleteGroup(vm.groupId).success(function(){
+                GroupService.get(true);
+                $location.url('/news');
+            })
         }
 
         function prepareData() {
@@ -63,6 +72,10 @@
             GroupService.saveAccessData(vm.accessData, vm.groupId).success(function(){
                 vm.changed = false;
             });
+        }
+
+        function saveGroup()
+        {
         }
 
         function setAccess(idInDb, idInJson) {

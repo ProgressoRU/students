@@ -28,6 +28,7 @@
             27: ["danger", "Вы уже подписаны на эту группу."],
             28: ["danger", "Вы не можете подписаться на группу, изучающую предметы на которые вы уже подписаны."],
             29: ["success", "<span class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span> Подписка оформлена"],
+            99: ["success", "<span class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span> Группа удалена. Сейчас вы будете перенаправлены на главную страницу."],
             //Registration and Auth (3x-4x)
             30: ["success", '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Регистрация завершена'],
             31: ["danger", "Имя пользователя должно содержать более 3, но менее 16 символов"],

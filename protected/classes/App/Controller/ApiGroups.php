@@ -102,7 +102,7 @@ class ApiGroups extends ApiController
         $accessData = Request::getArray('accessData');
         //var_dump($accessData);
 
-        foreach($accessData as $entry)
+        foreach ($accessData as $entry)
             $this->pixie->db->query('insert')->table('group_access')
                 ->data(array('group_id' => $groupId, 'discipline_id' => $entry['discipline_id']))
                 ->execute();
@@ -148,6 +148,48 @@ class ApiGroups extends ApiController
         // сообщаем что ошибок нет и номер новой группы
         $this->response('group_id', intval($this->pixie->db->insert_id()));
         return $this->ok(26);
+    }
+
+    public function action_delete()
+    {
+        if (!$this->isInRole(array('admin', 'teacher'), false)) {
+            return true;
+        }
+
+        $uId = $this->getUserId();
+        $groupId = Request::getInt('groupId');
+        $role = $this->getRole();
+        if ($role != 'admin') {
+            $group = $this->pixie->db->query('select')->table('groups')
+                ->where('group_id', $groupId)
+                ->where('teacher_id', $uId)
+                ->execute()->current();
+
+            if (empty($group))
+                return $this->forbidden();
+        }
+
+        //удаляем подписчиков
+        $this->pixie->db->query('delete')->table('subscriptions')
+            ->where('group_id',$groupId)
+            ->execute();
+
+        //удаляем информацию по лекциям
+        $this->pixie->db->query('delete')->table('group_progress')
+            ->where('group_id',$groupId)
+            ->execute();
+
+        //удаляем информацию о доступных курсах
+        $this->pixie->db->query('delete')->table('group_progress')
+            ->where('group_id',$groupId)
+            ->execute();
+
+        //удаляем группу
+        $this->pixie->db->query('delete')->table('groups')
+            ->where('group_id', $groupId)
+            ->execute();
+
+        return $this->ok(99);
     }
 
     public function action_subscribe()
