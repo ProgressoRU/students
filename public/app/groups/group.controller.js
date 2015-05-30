@@ -54,6 +54,8 @@
         }
 
         function prepareData() {
+            vm.addList = [];
+            vm.deleteList = [];
             if (vm.group.expire_date != null) {
                 var t = vm.group.expire_date.split(/[- :]/);
                 vm.group.expire_date = new Date(t[0], t[1] - 1, t[2], t[3], t[4], t[5]);
@@ -111,8 +113,6 @@
                 if (exist)
                     vm.deleteList.push(idInDb);
             }
-
-            console.log(vm.deleteList);
 
             if (vm.addList.length == 0 && vm.deleteList.length == 0)
                 vm.changed = false;

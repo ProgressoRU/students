@@ -95,10 +95,6 @@ class ApiGroups extends ApiController
         if (empty($group))
             return $this->forbidden();
 
-        $this->pixie->db->query('delete')->table('group_access')
-            ->where('group_id', $groupId)
-            ->execute();
-
         $addList = Request::getArray('addList');
         $deleteList = Request::getArray('deleteList');
 
@@ -115,7 +111,8 @@ class ApiGroups extends ApiController
                     ->execute();
                 //доступ
                 $this->pixie->db->query('delete')->table('group_access')
-                    ->where(array(array('discipline_id', $entry), array('group_id', $groupId)))
+                    ->where('discipline_id', $entry)
+                    ->where('group_id', $groupId)
                     ->execute();
             }
         }
@@ -127,12 +124,13 @@ class ApiGroups extends ApiController
                     ->fields('lecture_id')
                     ->where('discipline_id', $entry)
                     ->execute()->as_array();
-                foreach ($lectureList as $lecture)
+                foreach ($lectureList as $lecture) {
                     $this->pixie->db->query('insert')->table('group_progress')
                         ->data(array('group_id' => $groupId, 'lecture_id' => $lecture->lecture_id, 'is_visible' => 0))
                         ->execute();
+                }
                 $this->pixie->db->query('insert')->table('group_access')
-                    ->data(array('group_id' => $groupId, 'discipline_id' => $entry['discipline_id']))
+                    ->data(array('group_id' => $groupId, 'discipline_id' => $entry))
                     ->execute();
             }
         }
@@ -316,7 +314,8 @@ class ApiGroups extends ApiController
         }
 
         $this->pixie->db->query('delete')->table('subscriptions')
-            ->data(array(array('group_id', $groupId), array('user_id', $subscriberId)))
+            ->where('group_id', $groupId)
+            ->where('user_id', $subscriberId)
             ->execute();
 
         return $this->ok(98);
