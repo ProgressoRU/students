@@ -39,14 +39,16 @@
                         <th></th>
                     </tr>
                     </thead>
-                    <tr data-ng-repeat="user in vm.subscribers">
+                    <tr data-ng-repeat="user in vm.subscribers" class="repeat-animation">
                         <td>{{user.surname}} {{user.name}} {{user.patronymic}}</td>
                         <td>{{user.group}}</td>
-                        <td>{{user.is_editor}}</td>
+                        <td><span data-ng-if="user.is_editor == 1">Редактор</span>
+                            <span data-ng-if="!user.is_editor == 0">Подписчик</span>
+                        </td>
                         <td>
                             <button type="button"
                                     class="btn btn-danger btn-xs"
-                                    data-ng-click="vm.unsubscribeUser(user.user_id)">
+                                    data-ng-click="vm.unsubscribeUser(user.user_id, $index)">
                                         <span
                                                 class="glyphicon glyphicon-minus"
                                                 aria-hidden="true">

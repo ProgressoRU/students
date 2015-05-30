@@ -135,12 +135,9 @@
                 vm.group.expire_date = null;
         }
 
-        function unsubscribeUser(userId){
+        function unsubscribeUser(userId, index){
             GroupService.unsubscribe(userId, vm.groupId).success(function(){
-                GroupService.getSubscribers(vm.groupId).then(function()
-                {
-                    vm.subscribers = GroupService.subscribers;
-                })
+                vm.subscribers.splice(index,1)
             })
         }
 
