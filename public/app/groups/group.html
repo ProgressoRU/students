@@ -1,6 +1,6 @@
 <article class="myWrap col-md-10 col-xs-12 col-sm-12">
     <div class="page-header">
-        <h1>Управление группой {{vm.group.title}}</h1>
+        <h1>Управление группой {{vm.groupTitle}}</h1>
     </div>
     <div class="row" data-ng-if="vm.group.teacher_id == wrap.currentUser.userId">
         <tabset justified="true" class="col-md-9">
@@ -107,7 +107,7 @@
                             data-ng-really-click="vm.deleteGroup()">
                         Удалить группу
                     </button>
-                    <button class="btn btn-primary">Сохранить</button>
+                    <button class="btn btn-primary" data-ng-click="vm.saveGroup()">Сохранить</button>
                 </div>
             </form>
         </div>

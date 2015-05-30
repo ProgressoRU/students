@@ -22,6 +22,7 @@
             getGroupAccess: getGroupAccess,
             getSubscribers: getSubscribers,
             saveAccessData: saveAccessData,
+            saveGroup: saveGroup,
             unsubscribe: unsubscribe
         };
 
@@ -73,6 +74,16 @@
                 addList: addList,
                 deleteList: deleteList
             });
+        }
+
+        function saveGroup(title, passcode, expirationFlag, expirationDate, groupId) {
+            return DataService.send('api/groups/edit', {
+                title: title,
+                passcode: passcode,
+                expirationFlag: expirationFlag,
+                expiration: expirationDate,
+                groupId: groupId
+            })
         }
 
         function unsubscribe(userId, groupId) {

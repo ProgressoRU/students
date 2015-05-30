@@ -177,6 +177,50 @@ class ApiGroups extends ApiController
         return $this->ok(26);
     }
 
+    public function action_edit()
+    {
+        //TODO: Немного отличий отaction_new, объединить?
+        // Проверка прав доступа (Функция в ApiController)
+        if (!$this->isInRole(array('admin', 'teacher'))) {
+            return true;
+        }
+
+        $uId = isset($_COOKIE['id']) ? $_COOKIE['id'] : 0;
+
+        $title = Request::getString('title');
+        $passcode = Request::getString('passcode');
+        $expirationFlag = Request::getBool('expirationFlag');
+        $groupId = Request::getInt('groupId');
+
+        if ($expirationFlag) {
+            $expiration = date('Y-m-d', strtotime(Request::getDate('expiration')));
+        } else {
+            $expiration = null;
+        }
+
+        if (empty($title) || empty($passcode)) {
+            return $this->badRequest(21);
+        }
+
+        // проверка повторного кода
+        $passCheck = $this->pixie->db->query('select')->table('groups')
+            ->where('passcode', $passcode)
+            ->execute()->current();
+        if (!empty($passCheck) && $passCheck->group_id != $groupId) {
+            return $this->badRequest(22);
+        }
+
+        // Обновление группы
+        $this->pixie->db->query('update')->table('groups')
+            ->where('group_id', $groupId)
+            ->data(array('passcode' => $passcode, 'expire_date' => $expiration, 'title' => $title))
+            ->execute();
+
+        // сообщаем что ошибок нет и номер новой группы
+        $this->response('group_id', intval($this->pixie->db->insert_id()));
+        return $this->ok(10);
+    }
+
     public function action_delete()
     {
         if (!$this->isInRole(array('admin', 'teacher'), false)) {
@@ -294,7 +338,8 @@ class ApiGroups extends ApiController
         return $this->ok(29);
     }
 
-    public function action_unsubscribe(){
+    public function action_unsubscribe()
+    {
         if (!$this->isInRole(array('admin', 'teacher'), false)) {
             return true;
         }

@@ -5,9 +5,9 @@
         .module('students')
         .controller('GroupController', GroupController);
 
-    GroupController.$inject = ['$routeParams', 'GroupService', 'DisciplineService', '$location'];
+    GroupController.$inject = ['$routeParams', 'GroupService', 'DisciplineService', '$location', 'alertService', '$scope'];
 
-    function GroupController($routeParams, GroupService, DisciplineService, $location) {
+    function GroupController($routeParams, GroupService, DisciplineService, $location, alertService, $scope) {
         /*jshint validthis: true */
         var vm = this;
 
@@ -19,6 +19,7 @@
         vm.groupId = $routeParams.groupId;
         vm.group = GroupService.details;
         vm.disciplines = DisciplineService.disciplines;
+        vm.groupTitle = null;
         vm.minDate = null;
         vm.opened = false;
         vm.expirationOn = false;
@@ -48,12 +49,13 @@
 
         function deleteGroup() {
             GroupService.deleteGroup(vm.groupId).success(function () {
-                GroupService.get(true);
+                $scope.wrap.getGroups(true);
                 $location.url('/news');
             })
         }
 
         function prepareData() {
+            vm.groupTitle = vm.group.title;
             vm.addList = [];
             vm.deleteList = [];
             if (vm.group.expire_date != null) {
@@ -75,8 +77,7 @@
         function saveAccessData() {
             GroupService.saveAccessData(vm.addList, vm.deleteList, vm.groupId).success(function () {
                 vm.changed = false;
-                GroupService.getGroupAccess(vm.groupId).then(function()
-                {
+                GroupService.getGroupAccess(vm.groupId).then(function () {
                     vm.accessData = GroupService.access;
                     prepareData();
                 })
@@ -84,6 +85,14 @@
         }
 
         function saveGroup() {
+            if (vm.group.title == '') alertService.push(21);
+            else if (vm.group.passcode == '' || vm.group.passcode.length < 3)
+                alertService.push(23);
+            else GroupService.saveGroup(vm.group.title, vm.group.passcode, vm.expirationOn, vm.group.expire_date, vm.groupId)
+                    .success(function () {
+                        $scope.wrap.getGroups(true);
+                        vm.groupTitle = vm.group.title;
+                    })
         }
 
         function setAccess(idInDb, idInJson) {
@@ -135,9 +144,9 @@
                 vm.group.expire_date = null;
         }
 
-        function unsubscribeUser(userId, index){
-            GroupService.unsubscribe(userId, vm.groupId).success(function(){
-                vm.subscribers.splice(index,1)
+        function unsubscribeUser(userId, index) {
+            GroupService.unsubscribe(userId, vm.groupId).success(function () {
+                vm.subscribers.splice(index, 1)
             })
         }
 

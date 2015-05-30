@@ -169,6 +169,13 @@ return array(
             'action' => 'new'
         )
     ),
+    'group_edit' => array(
+        '/api/groups/edit',
+        array(
+            'controller' => 'apiGroups',
+            'action' => 'edit'
+        )
+    ),
 	'default' => array(
 		'(/<controller>(/<action>(/<id>)))', 
 		array(
