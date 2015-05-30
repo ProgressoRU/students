@@ -1,0 +1,18 @@
+<div class="modal-header">
+    <h3 class="modal-title">Новая группа</h3>
+</div>
+<div class="modal-body">
+    <p>Введите название и описание группы. </p>
+
+    <h3 class="text-center">Название:</h3>
+
+    <p class="text-center"><input class="form-control input-lg" type="text" data-ng-model="modal.title"></p>
+
+    <h3 class="text-center">Описание:</h3>
+
+    <p class="text-center"><input class="form-control input-lg" type="text" data-ng-model="modal.description"></p>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" data-ng-click="modal.ok()">OK</button>
+    <button class="btn btn-warning" data-ng-click="modal.cancel()">Отмена</button>
+</div>

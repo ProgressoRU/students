@@ -85,6 +85,13 @@ return array(
             'action' => 'edit_lesson'
         ),
     ),
+    'new_discipline' => array(
+        '/api/disciplines/new',
+        array(
+            'controller' => 'apiDisciplines',
+            'action' => 'new'
+        ),
+    ),
 	'news' => array(
 		'/api/news/all',
 		array(

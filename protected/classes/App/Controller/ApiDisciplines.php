@@ -79,7 +79,7 @@ class ApiDisciplines extends ApiController
                                 )),
                             'ga'
                         ),
-                        array('disciplines.discipline_id','=','ga.discipline_id'),
+                        array('disciplines.discipline_id', '=', 'ga.discipline_id'),
                         'left'
                     )
                     ->where('ga.user_id', $userId)
@@ -344,5 +344,29 @@ class ApiDisciplines extends ApiController
         }
 
         return $this->ok(10);
+    }
+
+    public function action_new()
+    {
+        if (!$this->isInRole(array('admin', 'teacher'))) {
+            return true;
+        }
+
+        $uId = isset($_COOKIE['id']) ? $_COOKIE['id'] : 0;
+
+        $title = Request::getString('title');
+        $description = Request::getString('description');
+
+        if (!strlen($title) || strlen($title) < 3 || strlen($title) > 64)
+            return $this->badRequest(51);
+
+        if (strlen($description) > 144)
+            return $this->badRequest(52);
+
+        $this->pixie->db->query('insert')->table('disciplines')
+            ->data(array('title'=>$title, 'description'=>$description, 'creator_id'=>$uId))
+            ->execute();
+
+        return $this->ok(53);
     }
 }

@@ -24,6 +24,7 @@
         vm.getGroups = getGroups;
         vm.isAuthenticated = isAuthenticated;
         vm.logout = logout;
+        vm.newDisciplineModal = newDisciplineModal;
         vm.newGroupModal = newGroupModal;
         vm.newSubModal = newSubModal;
 
@@ -95,6 +96,19 @@
             });
             modalInstance.result.then(function (success) {
                 if (success) getGroups(true);
+            });
+        }
+
+        //discipline modal
+        function newDisciplineModal(size) {
+            var modalInstance = $modal.open({
+                animation: true,
+                templateUrl: 'public/app/disciplines/discipline.modal.html',
+                controller: 'NewDisciplineController as modal',
+                size: size
+            });
+            modalInstance.result.then(function (success) {
+                if (success) getDisciplines(true);
             });
         }
     }

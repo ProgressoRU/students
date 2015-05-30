@@ -47,6 +47,7 @@
     <script src="/public/app/groups/subscription.controller.js"></script>
     <script src="/public/app/disciplines/discipline.service.js"></script>
     <script src="/public/app/disciplines/discipline.controller.js"></script>
+    <script src="/public/app/disciplines/newDiscipline.controller.js"></script>
     <script src="/public/app/userRights/userRights.controller.js"></script>
     <script src="/public/app/shared/reallyClick.directive.js"></script>
     <script src="/public/app/shared/selectOnClick.directive.js"></script>

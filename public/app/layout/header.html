@@ -22,7 +22,7 @@
                             aria-expanded="false">Мои курсы<span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
                             <li data-ng-if="wrap.currentUser.userRole=='admin' || wrap.currentUser.userRole=='teacher'">
-                                <a href="#/class/edit/0">Создать курс</a></li>
+                                <a href="" data-ng-click="wrap.newDisciplineModal()">Создать курс</a></li>
                             <li data-ng-if="wrap.currentUser.userRole=='admin' || wrap.currentUser.userRole=='teacher'"
                                 class="divider"></li>
                             <li data-ng-repeat="discipline in wrap.disciplines"><a
