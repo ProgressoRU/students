@@ -85,58 +85,34 @@
             else if (vm.editable.title.length <= 3 || vm.editable.title.length > 100)
                 alertService.push(12);
             else {
-                DataService.get('api/news/edit', {
+                DataService.send('api/news/edit', {
                     id: vm.idInDb,
                     title: vm.editable.title,
                     news: vm.editable.body,
                     label: vm.editable.label
-                }).then(function (data) {
-                    if (!data.status) alertService.push(0);
-                    //если пришел ответ с запретом
-                    else if (data.status == 403) alertService.push(403);
-                    else if (data.status == 500) alertService.push(500);
-                    else if (data.status == 11) alertService.push(11);
-                    //Если доступ разрешен
-                    else if (data.status == 10) {
-                        alertService.push(10);
-                        vm.editMode = false;
-                        vm.postMode = false;
-                        vm.editable = null;
-                        vm.idInDb = null;
-                        vm.idInJson = null;
-                        vm.getNews();
-                    }
+                }).success(function () {
+                    vm.editMode = false;
+                    vm.postMode = false;
+                    vm.editable = null;
+                    vm.idInDb = null;
+                    vm.idInJson = null;
+                    vm.getNews();
                 })
             }
         }
 
         function deleteNews(id) {
-            DataService.get('api/news/delete', {id: id}).then(function (data) {
-                if (!data.status) alertService.push(0);
-                //если пришел ответ с запретом
-                else if (data.status == 403) alertService.push(403);
-                else if (data.status == 500) alertService.push(500);
-                //Если доступ разрешен
-                else if (data.status == 13) {
-                    alertService.push(13);
-                    vm.getNews();
-                }
+            DataService.send('api/news/delete', {id: id}).success(function () {
+                vm.getNews();
             });
         }
 
         function getNews() {
-            DataService.get('api/news/all').then(function (data) {
-                //если ответ не пришел
-                if (!data.status) alertService.push(0);
-                //если пришел ответ с запретом
-                else if (data.status == 500) alertService.push(500);
-                //Если доступ разрешен
-                else if (data.status == 1) {
-                    vm.news = data.news;
-                    vm.currentPage = 1;
-                    vm.totalItems = data.news.length;
-                    vm.editMode = false;
-                }
+            DataService.send('api/news/all').success(function (data) {
+                vm.news = data.news;
+                vm.currentPage = 1;
+                vm.totalItems = data.news.length;
+                vm.editMode = false;
             });
         }
     }

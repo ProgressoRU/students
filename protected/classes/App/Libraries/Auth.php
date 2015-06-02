@@ -8,55 +8,35 @@ abstract class Auth
 
     public static function checkCookie(\App\Pixie $pixie)
     {
-        //TODO: XSRF Protection!
-        $isOk = true;
         //Проверяем наличие куки
-        if (isset($_COOKIE['id'])) $id = $_COOKIE['id'];
-        else {
-            $isOk = false;
-            return $isOk;
-        }
-        if (isset($_COOKIE['hash'])) $hash = $_COOKIE['hash'];
-        else {
-            $isOk = false;
-            return $isOk;
-        }
-        try {
-            //находим пользователя, соответствующего кукам
-            $user = $pixie->db->query('select')->table('users')
+        if (!isset($_COOKIE['id']) || !isset($_COOKIE['hash']))
+            return false;
+
+        $id = $_COOKIE['id'];
+        $hash = $_COOKIE['hash'];
+
+        //находим пользователя, соответствующего кукам
+        $user = $pixie->db->query('select')->table('users')
+            ->where('user_id', $id)
+            ->where('session_hash', $hash)
+            ->execute()->current();
+        //проверяем совпадают ли последний IP и браузер с текущими
+        if (
+            (empty($user)) || (!property_exists($user, 'last_ip') || $user->last_ip != $_SERVER['REMOTE_ADDR'])
+            || (!property_exists($user, 'useragent') || $user->useragent != $_SERVER['HTTP_USER_AGENT'])
+        ) {
+            //если что-то не совпало, то трем сессию пользователя
+            $pixie->db->query('update')->table('users')
+                ->data(array(
+                    'session_hash' => '',
+                    'last_ip' => '127.0.0.1',
+                    'useragent' => ''
+                ))
                 ->where('user_id', $id)
-                ->where('session_hash', $hash)
-                ->execute()->current();
-
-            //проверяем совпадают ли последний IP и браузер с текущими
-            if (
-                (!property_exists($user, 'last_ip') || $user->last_ip != $_SERVER['REMOTE_ADDR'])
-                || (!property_exists($user, 'useragent') || $user->useragent != $_SERVER['HTTP_USER_AGENT'])
-            ) {
-                $isOk = false;
-            }
-
-        } catch (Exception $e) {
-            error_log($e->getMessage());
-            $isOk = false;
+                ->execute();
+            return false;
         }
-
-        //если что-то не совпало, то на всякий случай трем сессию пользователя
-        if (!$isOk) {
-            try {
-                $pixie->db->query('update')->table('users')
-                    ->data(array(
-                        'session_hash' => '',
-                        'last_ip' => '127.0.0.1',
-                        'useragent' => ''
-                    ))
-                    ->where('user_id', $id)
-                    ->execute();
-            } catch (Exception $e) {
-                error_log($e->getMessage());
-            }
-        }
-        return $isOk;
+        return true;
     }
 
     public static function getRole(\App\Pixie $pixie)
@@ -66,14 +46,10 @@ abstract class Auth
             $id = $_COOKIE['id'];
         else
             return $role;
-        try {
-            $query = $pixie->db->query('select')->table('users')
-                ->fields('role')
-                ->where('user_id', $id)
-                ->execute()->current();
-        } catch (Exception $e) {
-            error_log($e->getMessage());
-        }
+        $query = $pixie->db->query('select')->table('users')
+            ->fields('role')
+            ->where('user_id', $id)
+            ->execute()->current();
         if (isset($query))
             $role = $query->role;
         else $role = null;
@@ -85,31 +61,22 @@ abstract class Auth
         $reply = array();
         $passHash = crypt($pass, '$5$rounds=5000$Geronimo$');
         //пытаемся получить информацию о пользователе
-        try {
-            $reply = $pixie->db->query('select')->table('users')
-                ->fields('user_id', 'username', 'surname', 'name', 'patronymic', 'role', 'group')
-                ->where('username', $login)
-                ->where('pass_hash', $passHash)
-                ->execute()->as_array();
-        } catch (Exception $e) {
-            error_log('SQL Error\nIt\'s might help:\n' . $e->getMessage());
-            return $reply;
-        }
+        $reply = $pixie->db->query('select')->table('users')
+            ->fields('user_id', 'username', 'surname', 'name', 'patronymic', 'role', 'group')
+            ->where('username', $login)
+            ->where('pass_hash', $passHash)
+            ->execute()->as_array();
         //если пользователь найден, то создаем хэш сессии
         if (!empty($reply)) {
             $hash = md5(uniqid(rand(), true));
             //заносим в БД сессию, IP и useragent
-            try {
-                $pixie->db->query('update')->table('users')
-                    ->data(array(
-                        'session_hash' => $hash,
-                        'last_ip' => $_SERVER['REMOTE_ADDR'],
-                        'useragent' => $_SERVER['HTTP_USER_AGENT']))
-                    ->where('user_id', $reply[0]->user_id)
-                    ->execute();
-            } catch (Exception $e) {
-                error_log('User is found, but session update caused an error\nIt\'s might help:\n' . $e->getMessage());
-            }
+            $pixie->db->query('update')->table('users')
+                ->data(array(
+                    'session_hash' => $hash,
+                    'last_ip' => $_SERVER['REMOTE_ADDR'],
+                    'useragent' => $_SERVER['HTTP_USER_AGENT']))
+                ->where('user_id', $reply[0]->user_id)
+                ->execute();
             if (!$rememberMe) {
                 //Устанавливем куки (на час)
                 setcookie("id", $reply[0]->user_id, time() + 3600, '/');
@@ -128,18 +95,14 @@ abstract class Auth
         //TODO: добавить проверки
         if (isset($_COOKIE['id'])) $id = $_COOKIE['id'];
         else return false;
-        try {
-            $pixie->db->query('update')->table('users')
-                ->data(array(
-                    'session_hash' => '',
-                    'last_ip' => '127.0.0.1',
-                    'useragent' => ''
-                ))
-                ->where('user_id', $id)
-                ->execute();
-        } catch (Exception $e) {
-            error_log($e->getMessage());
-        }
+        $pixie->db->query('update')->table('users')
+            ->data(array(
+                'session_hash' => '',
+                'last_ip' => '127.0.0.1',
+                'useragent' => ''
+            ))
+            ->where('user_id', $id)
+            ->execute();
 
         setcookie("id", "", 0, '/');
         setcookie("hash", "", 0, '/');
